@@ -1,0 +1,14 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# RemObjects Water
+Project("{00000000-0000-0000-0000-000000000000}") = "TestConsoleApplication", "TestConsoleApplication.lpr", "{a413f782-03ed-4ab5-b339-a6e04768e926}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

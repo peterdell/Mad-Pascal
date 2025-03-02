@@ -1,0 +1,16 @@
+{$i '..\define.inc' }
+
+uses FileIO in '..\FileIO.pas';
+
+const filePath = '..\Test-MP.pas';
+var binFile: TBinaryFile2;
+begin
+
+  binFile:=TBinaryFile2.Create;
+  binFile.Assign2(filePath);
+  binFile.Reset2;
+  binFile.Close2;
+  binFile.Free;
+  Writeln('Test completed.');
+end.
+
