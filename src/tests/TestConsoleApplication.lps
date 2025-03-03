@@ -9,9 +9,8 @@
         <Filename Value="TestConsoleApplication.lpr"/>
         <IsPartOfProject Value="True"/>
         <CursorPos Y="2"/>
-        <UsageCount Value="140"/>
+        <UsageCount Value="142"/>
         <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="Console.lpr"/>
@@ -22,99 +21,88 @@
       </Unit>
       <Unit>
         <Filename Value="..\FileIO.pas"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="56"/>
-        <CursorPos X="72" Y="43"/>
-        <UsageCount Value="69"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="178"/>
+        <CursorPos X="21" Y="192"/>
+        <UsageCount Value="70"/>
+        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="..\mp.pas"/>
-        <EditorIndex Value="3"/>
-        <TopLine Value="56"/>
-        <CursorPos X="20" Y="17516"/>
-        <UsageCount Value="69"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="283"/>
+        <CursorPos X="25" Y="292"/>
+        <UsageCount Value="70"/>
         <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="..\Utilities.pas"/>
         <EditorIndex Value="1"/>
         <TopLine Value="9"/>
         <CursorPos Y="39"/>
-        <UsageCount Value="69"/>
+        <UsageCount Value="70"/>
         <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="..\Common.pas"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="10"/>
         <TopLine Value="722"/>
         <CursorPos X="80" Y="723"/>
-        <UsageCount Value="69"/>
+        <UsageCount Value="70"/>
         <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="..\Scanner.pas"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="8"/>
         <TopLine Value="1949"/>
         <CursorPos Y="1963"/>
-        <UsageCount Value="69"/>
+        <UsageCount Value="70"/>
         <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="..\Messages.pas"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="6"/>
         <TopLine Value="263"/>
         <CursorPos X="10" Y="277"/>
-        <UsageCount Value="68"/>
+        <UsageCount Value="69"/>
         <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="..\Parser.pas"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="9"/>
         <TopLine Value="404"/>
         <CursorPos X="42" Y="413"/>
-        <UsageCount Value="62"/>
+        <UsageCount Value="63"/>
         <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="..\Optimize.pas"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="7"/>
         <TopLine Value="461"/>
         <CursorPos X="83" Y="475"/>
-        <UsageCount Value="35"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="..\include\opt6502\opt_SPL.inc"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="5"/>
         <CursorPos X="8" Y="3"/>
-        <UsageCount Value="35"/>
+        <UsageCount Value="36"/>
         <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="..\Diagnostic.pas"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="38"/>
-        <CursorPos X="21" Y="52"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="51"/>
+        <CursorPos X="25" Y="65"/>
+        <UsageCount Value="11"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
     </Units>
-    <JumpHistory HistoryIndex="18">
-      <Position>
-        <Filename Value="..\mp.pas"/>
-        <Caret Line="14039" Column="10" TopLine="14025"/>
-      </Position>
+    <JumpHistory HistoryIndex="29">
       <Position>
         <Filename Value="..\mp.pas"/>
         <Caret Line="17521" Column="11" TopLine="17507"/>
@@ -187,28 +175,79 @@
         <Filename Value="..\Diagnostic.pas"/>
         <Caret Line="54" Column="11" TopLine="38"/>
       </Position>
+      <Position>
+        <Filename Value="..\Diagnostic.pas"/>
+        <Caret Line="52" Column="21" TopLine="38"/>
+      </Position>
+      <Position>
+        <Filename Value="..\Diagnostic.pas"/>
+        <Caret Line="55" Column="31" TopLine="40"/>
+      </Position>
+      <Position>
+        <Filename Value="..\Diagnostic.pas"/>
+        <Caret Line="54" Column="88" TopLine="40"/>
+      </Position>
+      <Position>
+        <Filename Value="..\Diagnostic.pas"/>
+        <Caret Line="62" Column="21" TopLine="48"/>
+      </Position>
+      <Position>
+        <Filename Value="..\Diagnostic.pas"/>
+        <Caret Line="65" Column="26" TopLine="51"/>
+      </Position>
+      <Position>
+        <Filename Value="..\Parser.pas"/>
+        <Caret Line="413" Column="42" TopLine="404"/>
+      </Position>
+      <Position>
+        <Filename Value="..\FileIO.pas"/>
+        <Caret Line="192" Column="21" TopLine="178"/>
+      </Position>
+      <Position>
+        <Filename Value="..\mp.pas"/>
+        <Caret Line="296" Column="15" TopLine="282"/>
+      </Position>
+      <Position>
+        <Filename Value="..\mp.pas"/>
+        <Caret Line="11726" Column="29" TopLine="11712"/>
+      </Position>
+      <Position>
+        <Filename Value="..\mp.pas"/>
+        <Caret Line="14018" Column="23" TopLine="13994"/>
+      </Position>
+      <Position>
+        <Filename Value="..\mp.pas"/>
+        <Caret Line="11726" Column="29" TopLine="11713"/>
+      </Position>
+      <Position>
+        <Filename Value="..\mp.pas"/>
+        <Caret Line="15703" Column="21" TopLine="15689"/>
+      </Position>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
       <Modes ActiveMode="default">
         <Mode Name="default">
           <local>
-            <CommandLineParams Value="Test-MP.pas"/>
+            <CommandLineParams Value="-ipath:..\lib Test-MP.pas"/>
+            <LaunchingApplication Use="True" PathPlusParams="C:\Windows\system32\cmd.exe /K ${TargetCmdLine}"/>
             <WorkingDirectory Value="C:\jac\system\Atari800\Programming\Repositories\Mad-Pascal\src"/>
           </local>
         </Mode>
       </Modes>
     </RunParams>
     <HistoryLists>
-      <List Name="WorkingDirectory" Type="File" Count="2">
+      <List Name="WorkingDirectory" Type="File" Count="1">
         <Item1 Value="C:\jac\system\Atari800\Programming\Repositories\Mad-Pascal\src"/>
       </List>
-      <List Name="LaunchingApplication" Type="File" Count="1">
-        <Item1 Value="C:\Windows\system32\cmd.exe /C ${TargetCmdLine}"/>
+      <List Name="LaunchingApplication" Type="File" Count="2">
+        <Item1 Value="C:\Windows\system32\cmd.exe /K ${TargetCmdLine}"/>
+        <Item2 Value="C:\Windows\system32\cmd.exe /C ${TargetCmdLine}"/>
       </List>
       <List Name="CommandLineParameters" Count="3">
-        <Item1 Value="Test-MP.pas"/>
-        <Item2 Value="Test-0.pas"/>
+        <Item1 Value="-ipath:..\lib Test-MP.pas"/>
+        <Item2 Value="Test-MP.pas"/>
+        <Item3 Value="Test-0.pas"/>
       </List>
     </HistoryLists>
   </ProjectSession>
