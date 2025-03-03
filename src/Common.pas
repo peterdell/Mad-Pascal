@@ -2,7 +2,10 @@ unit Common;
 
 interface
 
+uses FileIO;
+
 {$i define.inc}
+{$i Types.inc}
 
 // ----------------------------------------------------------------------------
 
@@ -10,7 +13,7 @@ const
 
   title = '1.7.2';
 
-  TAB = ^I;		// Char for a TAB
+  TAB = ^I;		// Char f or a TAB
   CR  = ^M;		// Char for a CR
   LF  = ^J;		// Char for a LF
 
@@ -334,11 +337,13 @@ const
 
 type
 
-  ModifierCode = (mKeep = $100, mOverload= $80, mInterrupt = $40, mRegister = $20, mAssembler = $10, mForward = $08, mPascal = $04, mStdCall = $02, mInline = $01);
+//  ModifierCode = (mKeep = $100, mOverload= $80, mInterrupt = $40, mRegister = $20, mAssembler = $10, mForward = $08, mPascal = $04, mStdCall = $02, mInline = $01);
+  ModifierCode = (mKeep, mOverload, mInterrupt, mRegister, mAssembler, mForward, mPascal, mStdCall, mInline);
 
   irCode = (iDLI, iVBLD, iVBLI, iTIM1, iTIM2, iTIM4);
 
-  ioCode = (ioOpenRead = 4, ioReadRecord = 5, ioRead = 7, ioOpenWrite = 8, ioAppend = 9, ioWriteRecord = 9, ioWrite = $0b, ioOpenReadWrite = $0c, ioFileMode = $f0, ioClose = $ff);
+// ioCode = (ioOpenRead = 4, ioReadRecord = 5, ioRead = 7, ioOpenWrite = 8, ioAppend = 9, ioWriteRecord = 9, ioWrite = $0b, ioOpenReadWrite = $0c, ioFileMode = $f0, ioClose = $ff);
+  ioCode = (ioOpenRead, ioReadRecord, ioRead, ioOpenWrite, ioAppend, ioWriteRecord, ioWrite, ioOpenReadWrite, ioFileMode, ioClose);
 
 
   code65 =
@@ -363,8 +368,10 @@ type
 
   );
 
-  TString = string [MAXSTRLENGTH];
-  TName   = string [MAXNAMELENGTH];
+//  TString = string[MAXSTRLENGTH];
+//  TName   = string[MAXNAMELENGTH];
+  TString = string;
+  TName   = string;
 
   TDefinesParam = array [1..MAXPARAMS] of TString;
 
@@ -384,7 +391,7 @@ type
     i, i_: integer;
    end;
 
-  TFloat = array [0..1] of integer;
+  TFloat = array [0..1] of integer; // 2*32 bits
 
   TParamList = array [1..MAXPARAMS] of TParam;
 
@@ -409,16 +416,24 @@ type
   TToken = record
     UnitIndex, Column: Smallint;
     Line: Integer;
-    case Kind: Byte of
-      IDENTTOK:
-	(Name: ^TString);
-      INTNUMBERTOK:
-	(Value: Int64);
-      FRACNUMBERTOK:
-	(FracValue: Single);
-      STRINGLITERALTOK:
-	(StrAddress: Word;
-	 StrLength: Word);
+//    case Kind: Byte of
+//      IDENTTOK:
+//	(Name: ^TString);
+//      INTNUMBERTOK:
+//	(Value: Int64);
+//      FRACNUMBERTOK:
+//	(FracValue: Single);
+//      STRINGLITERALTOK:
+//	(StrAddress: Word;
+//	 StrLength: Word);
+     Kind: Byte;
+//     Name: ^TString;
+     Name: TString;
+     Value: Int64;
+     FracValue: Single;
+     StrAddress: Word;
+     StrLength: Word;
+
     end;
 
   TIdentifier = record
@@ -448,9 +463,12 @@ type
     isInitialized,
     Section: Boolean;
 
-    case Kind: Byte of
-      PROCEDURETOK, FUNCTIONTOK:
-	(NumParams: Word;
+    Kind: Byte;
+    
+//    case Kind: Byte of
+//      PROCEDURETOK, FUNCTIONTOK:
+//	(
+	 NumParams: Word;
 	 Param: TParamList;
 	 ProcAsBlock: Integer;
 	 ObjectIndex: Integer;
@@ -469,11 +487,14 @@ type
 	 isKeep,
 	 isVolatile,
 	 isStriped,
-	 IsNotDead: Boolean;);
+	 IsNotDead: Boolean;
+//    );
 
-      VARIABLE, USERTYPE:
-	(NumAllocElements, NumAllocElements_: Cardinal;
-	 AllocElementType: Byte);
+//      VARIABLE, USERTYPE:
+//
+	 NumAllocElements, NumAllocElements_: Cardinal;
+	 AllocElementType: Byte
+	 // );
     end;
 
 
@@ -525,7 +546,11 @@ type
 
 {$i targets/var.inc}
 
-
+  const MIN_MEMORY_ADDRESS=$0000;
+  const MAX_MEMORY_ADDRESS=$FFFF;
+  
+  type TWordMemory = array [MIN_MEMORY_ADDRESS..MAX_MEMORY_ADDRESS] of Word;
+  
 var
 
   PROGRAM_NAME: string = 'Program';
@@ -533,7 +558,7 @@ var
 
   AsmBlock: array [0..4095] of string;
 
-  Data, DataSegment, StaticStringData: array [0..$FFFF] of word;
+  Data, DataSegment, StaticStringData: TWordMemory;
 
   Types: array [1..MAXTYPES] of TType;
   Tok: array of TToken;
@@ -572,7 +597,7 @@ var
 
   FastMul: Integer = -1;
 
-  OutFile: TextFile;
+  OutFile: TTextFile2;
 
   //AsmLabels: array of integer;
 
@@ -607,11 +632,15 @@ var
 
 {$IFDEF USEOPTFILE}
 
-  OptFile: TextFile;
+  OptFile: TTextFile2;
 
 {$ENDIF}
 
 // ----------------------------------------------------------------------------
+
+	procedure ClearWordMemory(anArray: TWordMemory);
+	procedure MoveTFloat(ConstVal: Int64; ftmp: TFloat); overload;
+	procedure MoveTFloat(ftmp: TFloat; ConstVal: Int64); overload;
 
 	procedure AddDefine(X: string);
 
@@ -667,7 +696,7 @@ var
 
 implementation
 
-uses SysUtils, Messages;
+uses SysUtils, Messages, Utilities;
 
 // ----------------------------------------------------------------------------
 
@@ -867,9 +896,11 @@ end;	//GetEnumName
 function StrToInt(const a: string): Int64;
 (*----------------------------------------------------------------------------*)
 (*----------------------------------------------------------------------------*)
+var value: integer;
 var i: integer;
 begin
- val(a,Result, i);
+ val(a,value, i);
+ Result := value;
 end;
 
 
@@ -905,11 +936,7 @@ end;
 
 
 procedure FreeTokens;
-var i: Integer;
 begin
-
- for i := 1 to NumTok do
-  if (Tok[i].Kind = IDENTTOK) and (Tok[i].Name <> nil) then Dispose(Tok[i].Name);
 
  SetLength(Tok, 0);
  SetLength(IFTmpPosStack, 0);
@@ -963,7 +990,7 @@ end;
 procedure CheckOperator(ErrTokenIndex: Integer; op: Byte; DataType: Byte; RightType: Byte = 0);
 begin
 
-//writeln(tok[ErrTokenIndex].Name^,',', op,',',DataType);
+//writeln(tok[ErrTokenIndex].Name,',', op,',',DataType);
 
  if {(not (DataType in (OrdinalTypes + [REALTOK, POINTERTOK]))) or}
    ((DataType in RealTypes) and
@@ -1337,7 +1364,10 @@ if len > 255 then
 else
  Data[0] := len;
 
-if (NumStaticStrChars + len > $FFFF) then begin writeln('DefineStaticString: ', len); halt end;
+if (NumStaticStrChars + len > $FFFF) then
+   begin writeln('DefineStaticString: ' + IntToStr(len));
+         RaiseHaltException(2);
+   end;
 
 for i:=1 to len do Data[i] := ord(StrValue[i]);
 
@@ -1371,5 +1401,28 @@ end;	//DefineStaticString
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
+procedure ClearWordMemory(anArray: TWordMemory);
+begin
+  for i := Low(Ident) to High(Ident) do
+  begin
+  	anArray[i]:=0;
+  end;
+end;
+
+ 
+procedure MoveTFloat(ConstVal: Int64; ftmp: TFloat); overload;
+begin
+{$IFNDEF PAS2JS}
+     move(ConstVal, ftmp, sizeof(ftmp));
+{$ENDIF}
+end;
+
+procedure MoveTFloat(ftmp: TFloat; ConstVal: Int64); overload;
+begin
+{$IFNDEF PAS2JS}
+     move(ftmp, ConstVal, sizeof(ftmp));
+{$ENDIF}
+
+end;
 
 end.

@@ -74,13 +74,14 @@ begin
 
    if ConstValType in RealTypes then begin
      ftmp[0] := round(fl * TWOPOWERFRACBITS);
-     ftmp[1] := integer(fl);
+     // JAC! ftmp[1] := integer(fl);
+     ftmp[1] := trunc(fl);
    end else begin
      ftmp[0] := round(fl);
      ftmp[1] := 0;
    end;
 
-   move(ftmp, ConstVal, sizeof(ftmp));
+   MoveTFloat(ftmp, ConstVal);
 
    SaveData(false);
 

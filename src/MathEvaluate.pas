@@ -21,7 +21,8 @@ implementation
 uses math, common, parser, scanner, messages;
 
 type
-  sop=string[10];
+//  sop=string[10];
+  sop=string;
 
 var
     s: string;
@@ -51,9 +52,11 @@ end;
 function constant: real;
 var
      n: string;
-    v1: real;
+//  v1: real; // For FPC
+    v1: ValReal; // For PAS2JS, should also work for FPC and be used a return value there
      v, k, ln: integer;
-     p: word;
+//   p: word; // For FPC
+     p: integer; // For PAS2JS, see Test-70287.pas
   pflg: boolean;
 
   IdentTemp: integer;

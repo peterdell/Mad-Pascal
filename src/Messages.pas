@@ -41,7 +41,7 @@ type
 
 implementation
 
-uses Crt;
+   uses Console, FileIO, Utilities;
 
 // -----------------------------------------------------------------------------
 
@@ -79,7 +79,7 @@ begin
   UnknownIdentifier: if IdentIndex > 0 then
 			Result := 'Identifier not found ''' + Ident[IdentIndex].Alias + ''''
 		     else
-  			Result := 'Identifier not found ''' + Tok[ErrTokenIndex].Name^ + '''';
+  			Result := 'Identifier not found ''' + Tok[ErrTokenIndex].Name + '''';
 
  IncompatibleTypeOf: Result := 'Incompatible type of ' + Ident[IdentIndex].Name;
    IncompatibleEnum: if DstType < 0 then
@@ -238,10 +238,10 @@ begin
 
  FreeTokens;
 
- CloseFile(OutFile);
- Erase(OutFile);
+ OutFile.Close2;
+ OutFile.Erase2;
 
- Halt(2);
+ RaiseHaltException(2);
 
  end;
 
@@ -273,10 +273,10 @@ begin
 
  FreeTokens;
 
- CloseFile(OutFile);
- Erase(OutFile);
+ OutFile.Close2;
+ OutFile.Erase2;
 
- Halt(2);
+ RaiseHaltException(2);
 
  end;
 

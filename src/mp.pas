@@ -39,7 +39,7 @@ Contributors:
 + David Schmenk :
 	- IEEE-754 (32bit) Single[Float]
 
-+ Daniel Koźmiński :
++ Daniel Kozminski :
 	- unit STRINGUTILS
 	- unit CIO
 
@@ -70,10 +70,10 @@ Contributors:
 	- unit LZ4: unLZ4
 	- unit aPLib: unAPL
 
-+ Krzysztof Święcicki :
++ Krzysztof Swiecicki :
 	- unit PP
 
-+ Marcin Żukowski :
++ Marcin Zukowski :
 	- unit FASTGRAPH: fLine
 
 + Michael Jaskula :
@@ -114,7 +114,7 @@ Contributors:
 	- unit LZJB
 	- unit RC4
 
-+ Wojciech Bociański (http://bocianu.atari.pl/) :
++ Wojciech Bocianski (http://bocianu.atari.pl/) :
 	- library BLIBS: B_CRT, B_DL, B_PMG, B_SYSTEM, B_UTILS, XBIOS
 	- MADSTRAP
 	- PASDOC
@@ -180,13 +180,14 @@ program MADPASCAL;
 {$i define.inc}
 
 uses
-	Crt, SysUtils,
-
+        SysUtils,
 {$IFDEF WINDOWS}
 	Windows,
 {$ENDIF}
-
-	Common, Messages, Scanner, Parser, Optimize, Diagnostic, MathEvaluate;
+{$IFDEF PAS2JS}
+         browserconsole,
+{$ENDIF}
+	Common, Console, Messages, Scanner, Parser, Optimize, Diagnostic, MathEvaluate, FileIO, Utilities;
 
 
 // ----------------------------------------------------------------------------
@@ -506,19 +507,23 @@ end;	//GetIdentProc
 
 
 procedure TestIdentProc(x: integer; S: TString);
+type TOV = record
+             i,j,u,b: integer;
+           end;
+
+type TL = record
+		  u,b: integer;
+		  Param: TParamList;
+		  NumParams: word;
+          end;
+
 var IdentIndex, BlockStackIndex: Integer;
     k, m: integer;
     ok: Boolean;
 
-    ov: array of record
-		  i,j,u,b: integer;
-	end;
+    ov: array of TOV;
 
-    l: array of record
-		  u,b: integer;
-		  Param: TParamList;
-		  NumParams: word;
-       end;
+    l: array of TL;
 
 
 procedure addOverlay(UnitIndex, Block: integer; ovr: Boolean);
@@ -6197,7 +6202,7 @@ begin
       iError(i + 1, IdentifierExpected)
     else
       begin
-      IdentIndex := GetIdent(Tok[i + 1].Name^);
+      IdentIndex := GetIdent(Tok[i + 1].Name);
 
 
       if IdentIndex > 0 then
@@ -6336,14 +6341,14 @@ begin
 //		    DEREFERENCE := true;
 
 		    CheckTok(i + 4, IDENTTOK);
-	      	    IdentTemp := RecordSize(IdentIndex, Tok[i + 4].Name^);
+	      	    IdentTemp := RecordSize(IdentIndex, Tok[i + 4].Name);
 
  	            if IdentTemp < 0 then
-	              Error(i + 4, 'identifier idents no member '''+Tok[i + 4].Name^+'''');
+	              Error(i + 4, 'identifier idents no member '''+Tok[i + 4].Name+'''');
 
 	            AllocElementType := IdentTemp shr 16;
 
-		    IdentTemp:=GetIdent(svar + '.' + string(Tok[i + 4].Name^) );
+		    IdentTemp:=GetIdent(svar + '.' + string(Tok[i + 4].Name) );
 
 		    if IdentTemp = 0 then
 		     iError(i + 4, UnknownIdentifier);
@@ -6499,7 +6504,7 @@ begin
 
 	if (ActualParamType in [POINTERTOK, STRINGPOINTERTOK]) and (Tok[i].Kind = IDENTTOK) then begin
 
-	  IdentTemp := GetIdent(Tok[i].Name^);
+	  IdentTemp := GetIdent(Tok[i].Name);
 
 	  if (Tok[i - 1].Kind = ADDRESSTOK) and (not (Ident[IdentTemp].DataType in [RECORDTOK, OBJECTTOK])) then
 
@@ -6523,7 +6528,7 @@ begin
 
 	 if Tok[i].Kind = IDENTTOK then begin
 
-	  IdentTemp := GetIdent(Tok[i].Name^);
+	  IdentTemp := GetIdent(Tok[i].Name);
 
 	  AllocElementType := Ident[IdentTemp].AllocElementType;
 	  NumAllocElements := Ident[IdentTemp].NumAllocElements;
@@ -6791,7 +6796,7 @@ begin
 
 
 	if Tok[i].Kind = IDENTTOK then
-	 IdentTemp := GetIdent(Tok[i].Name^)
+	 IdentTemp := GetIdent(Tok[i].Name)
 	else
 	 IdentTemp := 0;
 
@@ -6801,7 +6806,7 @@ begin
 	if Ident[IdentTemp].Kind = FUNCTIONTOK then iError(i, CantAdrConstantExp);	// VARPASSING function not possible
 
 
-//	writeln(' - ',Tok[i].Name^,',',ActualParamType,',',AllocElementType, ',', Ident[IdentTemp].NumAllocElements );
+//	writeln(' - ',Tok[i].Name,',',ActualParamType,',',AllocElementType, ',', Ident[IdentTemp].NumAllocElements );
 //	writeln(Ident[IdentTemp].Kind,',',Ident[IdentTemp].DataType,',',Ident[IdentIndex].Param[NumActualParams].DataType);
 
 	if Ident[IdentTemp].DataType in Pointers then
@@ -6914,14 +6919,14 @@ begin
 
 
 	if (Tok[i].Kind = IDENTTOK) and (ActualParamType in [RECORDTOK, OBJECTTOK]) and not (Ident[IdentIndex].Param[NumActualParams].DataType in Pointers) then
-	 if Ident[GetIdent(Tok[i].Name^)].isNestedFunction then begin
+	 if Ident[GetIdent(Tok[i].Name)].isNestedFunction then begin
 
-	  if Ident[GetIdent(Tok[i].Name^)].NestedFunctionNumAllocElements <> Ident[IdentIndex].Param[NumActualParams].NumAllocElements then
-	    iError(i, IncompatibleTypeOf, GetIdent(Tok[i].Name^));
+	  if Ident[GetIdent(Tok[i].Name)].NestedFunctionNumAllocElements <> Ident[IdentIndex].Param[NumActualParams].NumAllocElements then
+	    iError(i, IncompatibleTypeOf, GetIdent(Tok[i].Name));
 
 	 end else
-	  if Ident[GetIdent(Tok[i].Name^)].NumAllocElements <> Ident[IdentIndex].Param[NumActualParams].NumAllocElements then
-	    iError(i, IncompatibleTypeOf, GetIdent(Tok[i].Name^));
+	  if Ident[GetIdent(Tok[i].Name)].NumAllocElements <> Ident[IdentIndex].Param[NumActualParams].NumAllocElements then
+	    iError(i, IncompatibleTypeOf, GetIdent(Tok[i].Name));
 
 
 	if ((ActualParamType in [RECORDTOK, OBJECTTOK]) and (Ident[IdentIndex].Param[NumActualParams].DataType in Pointers)) or
@@ -6931,7 +6936,7 @@ begin
 	begin
 
          if (ActualParamType = POINTERTOK) and (Tok[i].Kind = IDENTTOK) then begin
-	   IdentTemp := GetIdent(Tok[i].Name^);
+	   IdentTemp := GetIdent(Tok[i].Name);
 
            if (Tok[i - 1].Kind = ADDRESSTOK) then
 	    AllocElementType := UNTYPETOK
@@ -6955,7 +6960,7 @@ begin
 	else begin
 
          if (ActualParamType = POINTERTOK) and (Tok[i].Kind = IDENTTOK) then begin
-	   IdentTemp := GetIdent(Tok[i].Name^);
+	   IdentTemp := GetIdent(Tok[i].Name);
 
            if (Tok[i - 1].Kind = ADDRESSTOK) then
 	    AllocElementType := UNTYPETOK
@@ -6978,7 +6983,7 @@ begin
 
 	 end else
           if (Ident[IdentIndex].Param[NumActualParams].DataType in [POINTERTOK, STRINGPOINTERTOK]) and (Tok[i].Kind = IDENTTOK) then begin
-	    IdentTemp := GetIdent(Tok[i].Name^);
+	    IdentTemp := GetIdent(Tok[i].Name);
 
 //	writeln('1 > ',Ident[IdentTemp].name,',', Ident[IdentTemp].DataType,',',Ident[IdentTemp].AllocElementType,',',Ident[IdentTemp].NumAllocElements,' | ',Ident[IdentIndex].Param[NumActualParams].DataType,',',Ident[IdentIndex].Param[NumActualParams].NumAllocElements );
 
@@ -7297,7 +7302,7 @@ if (yes = FALSE) and (Ident[IdentIndex].NumParams > 0) then begin
     if Tok[old_i].Kind <> IDENTTOK then
       iError(old_i, IdentifierExpected)
     else
-      IdentTemp := GetIdent(copy(Tok[old_i].Name^, 1, pos('.', Tok[old_i].Name^)-1 ));
+      IdentTemp := GetIdent(copy(Tok[old_i].Name, 1, pos('.', Tok[old_i].Name)-1 ));
 
      asm65(#9'lda ' + GetLocalName(IdentTemp));
      asm65(#9'ldy ' + GetLocalName(IdentTemp) + '+1');
@@ -7479,7 +7484,7 @@ case Tok[i].Kind of
       if ValType = ENUMTYPE then begin
 
        if Tok[j].Kind = IDENTTOK then
-	IdentIndex := GetIdent(Tok[j].Name^)
+	IdentIndex := GetIdent(Tok[j].Name)
        else
 	 iError(i, TypeMismatch);
 
@@ -7496,7 +7501,7 @@ case Tok[i].Kind of
       end else begin
 }
       if ValType in Pointers then begin
-       IdentIndex := GetIdent(Tok[i + 2].Name^);
+       IdentIndex := GetIdent(Tok[i + 2].Name);
 
        if Ident[IdentIndex].AllocElementType in [RECORDTOK, OBJECTTOK] then
 	Value := Ident[IdentIndex].NumAllocElements_ - 1
@@ -7548,7 +7553,7 @@ case Tok[i].Kind of
       if ValType = ENUMTYPE then begin
 
        if Tok[j].Kind = IDENTTOK then
-	IdentIndex := GetIdent(Tok[j].Name^)
+	IdentIndex := GetIdent(Tok[j].Name)
        else
 	 iError(i, TypeMismatch);
 
@@ -7659,7 +7664,7 @@ case Tok[i].Kind of
 
       if Tok[i + 2].Kind = IDENTTOK then begin
 
-	IdentIndex := GetIdent(Tok[i + 2].Name^);
+	IdentIndex := GetIdent(Tok[i + 2].Name);
 
 	if IdentIndex = 0 then
 	 iError(i + 2, UnknownIdentifier);
@@ -7687,12 +7692,12 @@ case Tok[i].Kind of
 	    CheckTok(i + 2, DOTTOK);
 	    CheckTok(i + 3, IDENTTOK);
 
-	    IdentTemp := RecordSize(IdentIndex, Tok[i + 3].Name^);
+	    IdentTemp := RecordSize(IdentIndex, Tok[i + 3].Name);
 
 	    if IdentTemp < 0 then
-	      Error(i + 3, 'identifier idents no member '''+Tok[i + 3].Name^+'''');
+	      Error(i + 3, 'identifier idents no member '''+Tok[i + 3].Name+'''');
 
-//	     ValType := Ident[GetIdent(Ident[IdentIndex].Name + '.' + Tok[i + 3].Name^)].AllocElementType;
+//	     ValType := Ident[GetIdent(Ident[IdentIndex].Name + '.' + Tok[i + 3].Name)].AllocElementType;
 
 
 	     if (IdentTemp shr 16) = CHARTOK then begin
@@ -8377,7 +8382,7 @@ case Tok[i].Kind of
     i := CompileExpression(i + 1, SelectorType);
 
 	if Tok[i].Kind = IDENTTOK then
-	 EnumName := GetEnumName(GetIdent(Tok[i].Name^));
+	 EnumName := GetEnumName(GetIdent(Tok[i].Name));
 
 
     if DataSize[SelectorType]<>1 then
@@ -8404,8 +8409,8 @@ case Tok[i].Kind of
 	GetCommonType(i, ConstValType, SelectorType);
 
 	if (Tok[i].Kind = IDENTTOK) then
-	 if ((EnumName = '') and (GetEnumName(GetIdent(Tok[i].Name^)) <> '')) or
-  	    ((EnumName <> '') and (GetEnumName(GetIdent(Tok[i].Name^)) <> EnumName)) then
+	 if ((EnumName = '') and (GetEnumName(GetIdent(Tok[i].Name)) <> '')) or
+  	    ((EnumName <> '') and (GetEnumName(GetIdent(Tok[i].Name)) <> EnumName)) then
 		Error(i, 'Constant and CASE types do not match');
 
 	if Tok[i + 1].Kind = RANGETOK then				      // Range check
@@ -8496,7 +8501,7 @@ case Tok[i].Kind of
 
   IDENTTOK:
     begin
-    IdentIndex := GetIdent(Tok[i].Name^);
+    IdentIndex := GetIdent(Tok[i].Name);
 
     if IdentIndex > 0 then
 	  if (Ident[IdentIndex].Kind = USERTYPE) and (Tok[i + 1].Kind = OPARTOK) then begin
@@ -8630,7 +8635,7 @@ case Tok[i].Kind of
 
 			if Tok[j].Kind <> IDENTTOK then iError(j, VariableExpected);
 
-			svar := GetLocalName(GetIdent(Tok[j].Name^));
+			svar := GetLocalName(GetIdent(Tok[j].Name));
 
 			asm65(#9'lda ' + svar);
 	       		asm65(#9'sta :TMP+1');
@@ -8667,10 +8672,10 @@ case Tok[i].Kind of
 		   if Tok[j+2].Kind = DOTTOK then begin					// (pointer).field :=
 
 			CheckTok(j + 3, IDENTTOK);
-	        	IdentTemp := RecordSize(IdentIndex, Tok[j + 3].Name^);
+	        	IdentTemp := RecordSize(IdentIndex, Tok[j + 3].Name);
 
 	        	if IdentTemp < 0 then
-	        	  Error(j + 3, 'identifier idents no member '''+Tok[j + 3].Name^+'''');
+	        	  Error(j + 3, 'identifier idents no member '''+Tok[j + 3].Name+'''');
 
 	        	ValType := IdentTemp shr 16;
 
@@ -8854,13 +8859,13 @@ case Tok[i].Kind of
 
 	     if (Tok[i + 2].Kind = DOTTOK) then begin
 
-//	writeln(Ident[IdentIndex].Name,',',Tok[i + 3].Name^,' | ',Ident[IdentIndex].DataType,',',Ident[IdentIndex].AllocElementType,',',Ident[IdentIndex].NumAllocElements);
+//	writeln(Ident[IdentIndex].Name,',',Tok[i + 3].Name,' | ',Ident[IdentIndex].DataType,',',Ident[IdentIndex].AllocElementType,',',Ident[IdentIndex].NumAllocElements);
 
 	      CheckTok(i + 3, IDENTTOK);
-	      IdentTemp := RecordSize(IdentIndex, Tok[i + 3].Name^);
+	      IdentTemp := RecordSize(IdentIndex, Tok[i + 3].Name);
 
  	      if IdentTemp < 0 then
-	       Error(i + 3, 'identifier idents no member '''+Tok[i + 3].Name^+'''');
+	       Error(i + 3, 'identifier idents no member '''+Tok[i + 3].Name+'''');
 
 	      ValType := IdentTemp shr 16;
 
@@ -8871,9 +8876,9 @@ case Tok[i].Kind of
 
 	       inc(i);
 
-	       ValType := Ident[GetIdent(Ident[IdentIndex].Name + '.' + Tok[i].Name^)].AllocElementType;
+	       ValType := Ident[GetIdent(Ident[IdentIndex].Name + '.' + Tok[i].Name)].AllocElementType;
 
-	       i := CompileArrayIndex(i, GetIdent(Ident[IdentIndex].Name + '.' + Tok[i].Name^));
+	       i := CompileArrayIndex(i, GetIdent(Ident[IdentIndex].Name + '.' + Tok[i].Name));
 
 	       Push(Ident[IdentIndex].Value, ASPOINTERTORECORDARRAYORIGIN, DataSize[ValType], IdentIndex, IdentTemp and $ffff);
 
@@ -8929,10 +8934,10 @@ case Tok[i].Kind of
 	     CheckTok(i + 1, CBRACKETTOK);
 
 	     CheckTok(i + 3, IDENTTOK);
-	     IdentTemp := RecordSize(IdentIndex, Tok[i + 3].Name^);
+	     IdentTemp := RecordSize(IdentIndex, Tok[i + 3].Name);
 
 	     if IdentTemp < 0 then
-	      Error(i + 3, 'identifier idents no member '''+Tok[i + 3].Name^+'''');
+	      Error(i + 3, 'identifier idents no member '''+Tok[i + 3].Name+'''');
 
 	     ValType := IdentTemp shr 16;
 
@@ -8943,28 +8948,28 @@ case Tok[i].Kind of
 
 	       inc(i);
 
-	       ValType := Ident[GetIdent(Ident[IdentIndex].Name + '.' + Tok[i].Name^)].AllocElementType;
+	       ValType := Ident[GetIdent(Ident[IdentIndex].Name + '.' + Tok[i].Name)].AllocElementType;
 
  	       IndirectionLevel := ASPOINTERTORECORDARRAYORIGIN;
 
 
 	      if (Ident[IdentIndex].DataType = POINTERTOK) and (Ident[IdentIndex].AllocElementType in [RECORDTOK, OBJECTTOK]) then begin
 
-//	writeln(ValType,',',Ident[IdentIndex].Name + '||' + Tok[i].Name^,',',Ident[IdentIndex].DataType,',',Ident[IdentIndex].AllocElementType,',',Ident[IdentIndex].NumAllocElements,',',Ident[IdentIndex].NumAllocElements_ );
+//	writeln(ValType,',',Ident[IdentIndex].Name + '||' + Tok[i].Name,',',Ident[IdentIndex].DataType,',',Ident[IdentIndex].AllocElementType,',',Ident[IdentIndex].NumAllocElements,',',Ident[IdentIndex].NumAllocElements_ );
 
-	       IdentTemp := RecordSize(IdentIndex, Tok[i].Name^);
+	       IdentTemp := RecordSize(IdentIndex, Tok[i].Name);
 
 	       if IdentTemp < 0 then
-	        Error(i, 'identifier idents no member '''+Tok[i].Name^+'''');
+	        Error(i, 'identifier idents no member '''+Tok[i].Name+'''');
 
-	       ValType := Ident[GetIdent(Ident[IdentIndex].Name + '.' + Tok[i].Name^)].AllocElementType;
+	       ValType := Ident[GetIdent(Ident[IdentIndex].Name + '.' + Tok[i].Name)].AllocElementType;
 
 	       IndirectionLevel := ASARRAYORIGINOFPOINTERTORECORDARRAYORIGIN;
 
 	      end;
 
 
-	       i := CompileArrayIndex(i, GetIdent(Ident[IdentIndex].Name + '.' + Tok[i].Name^));
+	       i := CompileArrayIndex(i, GetIdent(Ident[IdentIndex].Name + '.' + Tok[i].Name));
 
 	       Push(Ident[IdentIndex].Value, IndirectionLevel, DataSize[ValType], IdentIndex, IdentTemp and $ffff);
 
@@ -9581,7 +9586,7 @@ case Tok[i].Kind of
 
     if (ValType in Pointers) and (Tok[i + 2].Kind = IDENTTOK) and (Tok[i + 3].Kind <> OBRACKETTOK) then begin
 
-      IdentIndex := GetIdent(Tok[i + 2].Name^);
+      IdentIndex := GetIdent(Tok[i + 2].Name);
 
       if (Ident[IdentIndex].DataType in Pointers) and ( (Ident[IdentIndex].NumAllocElements > 0) and (Ident[IdentIndex].AllocElementType <> RECORDTOK) ) then
        if ((Ident[IdentIndex].AllocElementType <> UNTYPETOK) and (Ident[IdentIndex].NumAllocElements in [0,1])) or (Ident[IdentIndex].DataType = STRINGPOINTERTOK) then
@@ -10157,7 +10162,7 @@ i := CompileSimpleExpression(i, ValType, VarType);
 
 if (Tok[i].Kind = STRINGLITERALTOK) or (ValType = STRINGPOINTERTOK) then sLeft:=true else
  if (ValType in Pointers) and (Tok[i].Kind = IDENTTOK) then
-  if (Ident[GetIdent(Tok[i].Name^)].AllocElementType = CHARTOK) and (Elements(GetIdent(Tok[i].Name^)) > 0) then sLeft:=true;
+  if (Ident[GetIdent(Tok[i].Name)].AllocElementType = CHARTOK) and (Elements(GetIdent(Tok[i].Name)) > 0) then sLeft:=true;
 
 
 if Tok[i + 1].Kind = INTOK then writeln('IN');				// not yet programmed
@@ -10207,7 +10212,7 @@ if Tok[i + 1].Kind in [EQTOK, NETOK, LTTOK, LETOK, GTTOK, GETOK] then
 
   if (Tok[i + 2].Kind = STRINGLITERALTOK) or (RightValType = STRINGPOINTERTOK) then sRight:=true else
    if (RightValType in Pointers) and (Tok[i + 2].Kind = IDENTTOK) then
-    if (Ident[GetIdent(Tok[i + 2].Name^)].AllocElementType = CHARTOK) and (Elements(GetIdent(Tok[i + 2].Name^)) > 0) then sRight:=true;
+    if (Ident[GetIdent(Tok[i + 2].Name)].AllocElementType = CHARTOK) and (Elements(GetIdent(Tok[i + 2].Name)) > 0) then sRight:=true;
 
 
 //  if (ValType in [SHORTREALTOK, REALTOK]) and (RightValType in [SHORTREALTOK, REALTOK]) then
@@ -10407,7 +10412,7 @@ begin
 	if Tok[i + 2].Kind <> IDENTTOK then
 	 iError(i + 2, VariableExpected)
 	else begin
-	 idx:=GetIdent(Tok[i + 2].Name^);
+	 idx:=GetIdent(Tok[i + 2].Name);
 
 
 	if (Ident[idx].Kind = CONSTTOK)	then begin
@@ -10536,7 +10541,7 @@ case Tok[i].Kind of
      if Tok[i + 2].Kind <> IDENTTOK then
       iError(i + 2, VariableExpected)
      else
-      IdentIndex := GetIdent(Tok[i + 2].Name^);
+      IdentIndex := GetIdent(Tok[i + 2].Name);
 
      VarType := Ident[IdentIndex].DataType;
 
@@ -10559,7 +10564,7 @@ case Tok[i].Kind of
 
   IDENTTOK:
     begin
-     IdentIndex := GetIdent(Tok[i].Name^);
+     IdentIndex := GetIdent(Tok[i].Name);
 
     if (IdentIndex > 0) and (Ident[IdentIndex].Kind = FUNCTIONTOK) and (BlockStackTop > 1) and (Tok[i + 1].Kind <> OPARTOK) then
      for j:=NumIdent downto 1 do
@@ -10649,10 +10654,10 @@ case Tok[i].Kind of
 	      IndirectionLevel := ASPOINTERTODEREFERENCE;
 
 	      CheckTok(i + 3, IDENTTOK);
-	      IdentTemp := RecordSize(IdentIndex, Tok[i + 3].Name^);		// (pointer^).field :=
+	      IdentTemp := RecordSize(IdentIndex, Tok[i + 3].Name);		// (pointer^).field :=
 
 	      if IdentTemp < 0 then
-	        Error(i + 3, 'identifier idents no member '''+Tok[i + 3].Name^+'''');
+	        Error(i + 3, 'identifier idents no member '''+Tok[i + 3].Name+'''');
 
 	      VarType := IdentTemp shr 16;
 	      par2 := '$'+IntToHex(IdentTemp and $ffff, 2);
@@ -10670,10 +10675,10 @@ case Tok[i].Kind of
 	     if (VarType in [RECORDTOK, OBJECTTOK]) and (Tok[i + 2].Kind = DOTTOK) then begin
 
 	       CheckTok(i + 3, IDENTTOK);
-	       IdentTemp := RecordSize(IdentIndex, Tok[i + 3].Name^);		// (pointer)^.field :=
+	       IdentTemp := RecordSize(IdentIndex, Tok[i + 3].Name);		// (pointer)^.field :=
 
 	       if IdentTemp < 0 then
-	         Error(i + 3, 'identifier idents no member '''+Tok[i + 3].Name^+'''');
+	         Error(i + 3, 'identifier idents no member '''+Tok[i + 3].Name+'''');
 
 	       VarType := IdentTemp shr 16;
 	       par2 := '$'+IntToHex(IdentTemp and $ffff, 2);
@@ -10690,10 +10695,10 @@ case Tok[i].Kind of
 	       IndirectionLevel := ASPOINTERTODEREFERENCE;
 
 	       CheckTok(i + 3, IDENTTOK);
-	       IdentTemp := RecordSize(IdentIndex, Tok[i + 3].Name^);		// (pointer).field :=
+	       IdentTemp := RecordSize(IdentIndex, Tok[i + 3].Name);		// (pointer).field :=
 
 	       if IdentTemp < 0 then
-	         Error(i + 3, 'identifier idents no member '''+Tok[i + 3].Name^+'''');
+	         Error(i + 3, 'identifier idents no member '''+Tok[i + 3].Name+'''');
 
 	       VarType := IdentTemp shr 16;
 	       par2 := '$'+IntToHex(IdentTemp and $ffff, 2);
@@ -10746,10 +10751,10 @@ case Tok[i].Kind of
 	    if (VarType in [RECORDTOK, OBJECTTOK]) and (Tok[i + 2].Kind = DOTTOK) then begin
 
 	     CheckTok(i + 3, IDENTTOK);
-	     IdentTemp := RecordSize(IdentIndex, Tok[i + 3].Name^);
+	     IdentTemp := RecordSize(IdentIndex, Tok[i + 3].Name);
 
 	     if IdentTemp < 0 then
-	      Error(i + 3, 'identifier idents no member '''+Tok[i + 3].Name^+'''');
+	      Error(i + 3, 'identifier idents no member '''+Tok[i + 3].Name+'''');
 
 
 	    if Tok[i + 4].Kind = OBRACKETTOK then begin				// pp^.field[index] :=
@@ -10757,12 +10762,12 @@ case Tok[i].Kind of
 	     if not (Ident[IdentIndex].DataType in Pointers) then
 	       iError(i + 2, IncompatibleTypeOf, IdentIndex);
 
-	     VarType := Ident[GetIdent(Ident[IdentIndex].Name + '.' + Tok[i + 3].Name^)].AllocElementType;
+	     VarType := Ident[GetIdent(Ident[IdentIndex].Name + '.' + Tok[i + 3].Name)].AllocElementType;
 	     par2 := '$' + IntToHex(IdentTemp and $ffff, 2);
 
 	     IndirectionLevel := ASPOINTERTORECORDARRAYORIGIN;
 
-	     i := CompileArrayIndex(i + 3, GetIdent(Ident[IdentIndex].Name + '.' + Tok[i + 3].Name^));
+	     i := CompileArrayIndex(i + 3, GetIdent(Ident[IdentIndex].Name + '.' + Tok[i + 3].Name));
 
 	     CheckTok(i + 1, CBRACKETTOK);
 
@@ -10771,7 +10776,7 @@ case Tok[i].Kind of
 	     VarType := IdentTemp shr 16;
 	     par2 := '$' + IntToHex(IdentTemp and $ffff, 2);
 
-	     if GetIdent(Ident[IdentIndex].name+'.'+Tok[i + 3].Name^) > 0 then IdentIndex := GetIdent(Ident[IdentIndex].name+'.'+Tok[i + 3].Name^);
+	     if GetIdent(Ident[IdentIndex].name+'.'+Tok[i + 3].Name) > 0 then IdentIndex := GetIdent(Ident[IdentIndex].name+'.'+Tok[i + 3].Name);
 
 	     inc(i, 2);
 
@@ -10831,19 +10836,19 @@ case Tok[i].Kind of
 	    end;
 
 
-//	    writeln(Ident[IdentIndex].Name,',',vartype,',',Ident[IdentIndex].DataType,',',Ident[IdentIndex].AllocElementType,',',Ident[IdentIndex].NumAllocElements,',',Ident[IdentIndex].Kind);//+ '.' + Tok[i + 3].Name^);
+//	    writeln(Ident[IdentIndex].Name,',',vartype,',',Ident[IdentIndex].DataType,',',Ident[IdentIndex].AllocElementType,',',Ident[IdentIndex].NumAllocElements,',',Ident[IdentIndex].Kind);//+ '.' + Tok[i + 3].Name);
 
 	    if (VarType in [RECORDTOK, OBJECTTOK]) and (Tok[i + 2].Kind = DOTTOK) then begin
 	       IndirectionLevel := ASPOINTERTOARRAYRECORD;
 
 	       CheckTok(i + 3, IDENTTOK);
-	       IdentTemp := RecordSize(IdentIndex, Tok[i + 3].Name^);
+	       IdentTemp := RecordSize(IdentIndex, Tok[i + 3].Name);
 
 	       if IdentTemp < 0 then
-	        Error(i + 3, 'identifier idents no member '''+Tok[i + 3].Name^+'''');
+	        Error(i + 3, 'identifier idents no member '''+Tok[i + 3].Name+'''');
 
 
-//	       writeln('>',Ident[IdentIndex].Name+ '||' + Tok[i + 3].Name^,',',IdentTemp shr 16,',',VarType,'||',Tok[i+4].Kind,',',ident[GetIdent(Ident[IdentIndex].Name+ '.' + Tok[i + 3].Name^)].AllocElementTYpe);
+//	       writeln('>',Ident[IdentIndex].Name+ '||' + Tok[i + 3].Name,',',IdentTemp shr 16,',',VarType,'||',Tok[i+4].Kind,',',ident[GetIdent(Ident[IdentIndex].Name+ '.' + Tok[i + 3].Name)].AllocElementTYpe);
 
 
 	      if Tok[i + 4].Kind = OBRACKETTOK then begin				// array_to_record_pointers[x].field[index] :=
@@ -10851,12 +10856,12 @@ case Tok[i].Kind of
 	        if not (Ident[IdentIndex].DataType in Pointers) then
 	          iError(i + 2, IncompatibleTypeOf, IdentIndex);
 
-	        VarType := Ident[GetIdent(Ident[IdentIndex].Name + '.' + Tok[i + 3].Name^)].AllocElementType;
+	        VarType := Ident[GetIdent(Ident[IdentIndex].Name + '.' + Tok[i + 3].Name)].AllocElementType;
 	        par2 := '$' + IntToHex(IdentTemp and $ffff, 2);
 
 	        IndirectionLevel := ASARRAYORIGINOFPOINTERTORECORDARRAYORIGIN;
 
-	        i := CompileArrayIndex(i + 3, GetIdent(Ident[IdentIndex].Name + '.' + Tok[i + 3].Name^));
+	        i := CompileArrayIndex(i + 3, GetIdent(Ident[IdentIndex].Name + '.' + Tok[i + 3].Name));
 
 	        CheckTok(i + 1, CBRACKETTOK);
 
@@ -10865,7 +10870,7 @@ case Tok[i].Kind of
 	        VarType := IdentTemp shr 16;
 	        par2 := '$' + IntToHex(IdentTemp and $ffff, 2);
 
- 	        if GetIdent(Ident[IdentIndex].name+'.'+Tok[i + 3].Name^) > 0 then IdentIndex := GetIdent(Ident[IdentIndex].name+'.'+Tok[i + 3].Name^);
+ 	        if GetIdent(Ident[IdentIndex].name+'.'+Tok[i + 3].Name) > 0 then IdentIndex := GetIdent(Ident[IdentIndex].name+'.'+Tok[i + 3].Name);
 
 		if VarType = STRINGPOINTERTOK then IndirectionLevel := ASPOINTERTOARRAYRECORDTOSTRING;
 
@@ -10994,18 +10999,18 @@ case Tok[i].Kind of
 
 
 //	if (Tok[k].Kind = IDENTTOK) then
-//	  writeln(Ident[IdentIndex].Name,'/',Tok[k].Name^,',', VarType,':', ExpressionType,' - ', Ident[IdentIndex].DataType,':',Ident[IdentIndex].AllocElementType,':',Ident[IdentIndex].NumAllocElements,' | ',Ident[GetIdent(Tok[k].Name^)].DataType,':',Ident[GetIdent(Tok[k].Name^)].AllocElementType,':',Ident[GetIdent(Tok[k].Name^)].NumAllocElements ,' / ',IndirectionLevel)
+//	  writeln(Ident[IdentIndex].Name,'/',Tok[k].Name,',', VarType,':', ExpressionType,' - ', Ident[IdentIndex].DataType,':',Ident[IdentIndex].AllocElementType,':',Ident[IdentIndex].NumAllocElements,' | ',Ident[GetIdent(Tok[k].Name)].DataType,':',Ident[GetIdent(Tok[k].Name)].AllocElementType,':',Ident[GetIdent(Tok[k].Name)].NumAllocElements ,' / ',IndirectionLevel)
 //	else
 //	  writeln(Ident[IdentIndex].Name,',', VarType,',', ExpressionType,' - ', Ident[IdentIndex].DataType,':',Ident[IdentIndex].AllocElementType,':',Ident[IdentIndex].NumAllocElements,' / ',IndirectionLevel);
 
 
 	     if  VarType <> ExpressionType then
 	      if (ExpressionType = POINTERTOK) and (Tok[k].Kind = IDENTTOK) then
-	       if (Ident[GetIdent(Tok[k].Name^)].DataType = POINTERTOK) and (Ident[GetIdent(Tok[k].Name^)].AllocElementType = PROCVARTOK) then begin
+	       if (Ident[GetIdent(Tok[k].Name)].DataType = POINTERTOK) and (Ident[GetIdent(Tok[k].Name)].AllocElementType = PROCVARTOK) then begin
 
-	         IdentTemp := GetIdent('@FN' + IntToHex(Ident[GetIdent(Tok[k].Name^)].NumAllocElements_, 4) );
+	         IdentTemp := GetIdent('@FN' + IntToHex(Ident[GetIdent(Tok[k].Name)].NumAllocElements_, 4) );
 
-		 //CompileActualParameters(i, IdentTemp, GetIdent(Tok[k].Name^));
+		 //CompileActualParameters(i, IdentTemp, GetIdent(Tok[k].Name));
 
 		 if Ident[IdentTemp].Kind = FUNCTIONTOK then ExpressionType := Ident[IdentTemp].DataType;
 
@@ -11042,13 +11047,13 @@ case Tok[i].Kind of
 
 		  if (ExpressionType in Pointers - [STRINGPOINTERTOK]) and (Tok[k].Kind = IDENTTOK) then begin
 
-		    IdentTemp := GetIdent(Tok[k].Name^);
+		    IdentTemp := GetIdent(Tok[k].Name);
 
 		    if (IdentTemp > 0) and (Ident[IdentTemp].Kind = FUNCTIONTOK) then
 		      IdentTemp := GetIdentResult(Ident[IdentTemp].ProcAsBlock);
 
 		    {if (Tok[i + 3].Kind <> OBRACKETTOK) and ((Elements(IdentTemp) <> Elements(IdentIndex)) or (Ident[IdentTemp].AllocElementType <> Ident[IdentIndex].AllocElementType)) then
-		     iError(k, IncompatibleTypesArray, GetIdent(Tok[k].Name^), ExpressionType )
+		     iError(k, IncompatibleTypesArray, GetIdent(Tok[k].Name), ExpressionType )
 		    else
 		     if (Elements(IdentTemp) > 0) and (Tok[i + 3].Kind <> OBRACKETTOK) then
 		      iError(k, IncompatibleTypesArray, IdentTemp, ExpressionType )
@@ -11082,7 +11087,7 @@ case Tok[i].Kind of
 		 end else
 		    if (ExpressionType in [RECORDTOK, OBJECTTOK]) then begin
 
-			IdentTemp := GetIdent(Tok[k].Name^);
+			IdentTemp := GetIdent(Tok[k].Name);
 
 			case IndirectionLevel of
 			           ASPOINTER:
@@ -11116,7 +11121,7 @@ case Tok[i].Kind of
 			     if (VarType = ENUMTYPE) {and (Tok[k].Kind = IDENTTOK)} then begin
 
 				  if (Tok[k].Kind = IDENTTOK) then
-				    IdentTemp := GetIdent(Tok[k].Name^)
+				    IdentTemp := GetIdent(Tok[k].Name)
 				  else
 				    IdentTemp := 0;
 
@@ -11146,7 +11151,7 @@ case Tok[i].Kind of
 				 end else begin
 
 				  if (Tok[k].Kind = IDENTTOK) then
-				    IdentTemp := GetIdent(Tok[k].Name^)
+				    IdentTemp := GetIdent(Tok[k].Name)
 				  else
 				    IdentTemp := 0;
 
@@ -11198,7 +11203,7 @@ case Tok[i].Kind of
 
 		if Tok[k].Kind <> IDENTTOK then iError(k, IdentifierExpected);
 
-		IdentTemp := GetIdent(Tok[k].Name^);
+		IdentTemp := GetIdent(Tok[k].Name);
 
 
 		if Ident[IdentIndex].PassMethod = Ident[IdentTemp].PassMethod then
@@ -11237,7 +11242,7 @@ case Tok[i].Kind of
 
 	       if (ExpressionType in [RECORDTOK, OBJECTTOK]) or ( (ExpressionType = POINTERTOK) and (Ident[IdentTemp].AllocElementType in [RECORDTOK, OBJECTTOK]) ) then begin
 
-		svar := Tok[k].Name^;
+		svar := Tok[k].Name;
 
 		if (Ident[IdentTemp].DataType = RECORDTOK) and (Ident[IdentTemp].AllocElementType <> RECORDTOK) then
 		  Name := 'adr.' + svar
@@ -11267,7 +11272,7 @@ case Tok[i].Kind of
 
 		 CheckTok(k + 2, IDENTTOK);
 
-		 Name := svar + '.' + Tok[k+2].Name^;
+		 Name := svar + '.' + Tok[k+2].Name;
 		 IdentTemp := GetIdent(Name);
 
 		end;
@@ -11415,14 +11420,14 @@ case Tok[i].Kind of
 		   (VarType = STRINGPOINTERTOK) and (ExpressionType in Pointers) {and (Ident[IdentIndex].AllocElementType in [RECORDTOK, OBJECTTOK])} then begin
 
 
-//	writeln(Ident[IdentIndex].DataType,',',Ident[IdentIndex].AllocElementType ,',',Ident[IdentIndex].NumAllocElements,',',Ident[IdentIndex].Name,',',IndirectionLevel,',',vartype,' || ',Ident[GetIdent(Tok[k].Name^)].NumAllocElements,',',Ident[GetIdent(Tok[k].Name^)].PassMethod);
+//	writeln(Ident[IdentIndex].DataType,',',Ident[IdentIndex].AllocElementType ,',',Ident[IdentIndex].NumAllocElements,',',Ident[IdentIndex].Name,',',IndirectionLevel,',',vartype,' || ',Ident[GetIdent(Tok[k].Name)].NumAllocElements,',',Ident[GetIdent(Tok[k].Name)].PassMethod);
 
 //	writeln(address,',',Tok[k].kind,',',Ident[IdentIndex].NumAllocElements,',',Ident[IdentIndex].AllocElementType,' / ', VarType,',',ExpressionType,',',IndirectionLevel);
 
 
 		 if (Tok[k].Kind <> ADDRESSTOK) and (IndirectionLevel in [ASPOINTERTOARRAYORIGIN, ASPOINTERTOARRAYORIGIN2]) and (Ident[IdentIndex].AllocElementType = STRINGPOINTERTOK) then begin
 
-		  if (Tok[k].Kind = IDENTTOK) and (Ident[GetIdent(Tok[k].Name^)].AllocElementType <> UNTYPETOK) then IndirectionLevel := ASSTRINGPOINTERTOARRAYORIGIN;
+		  if (Tok[k].Kind = IDENTTOK) and (Ident[GetIdent(Tok[k].Name)].AllocElementType <> UNTYPETOK) then IndirectionLevel := ASSTRINGPOINTERTOARRAYORIGIN;
 
 		  GenerateAssignment(IndirectionLevel, DataSize[VarType], IdentIndex);
 
@@ -11437,19 +11442,19 @@ case Tok[i].Kind of
 	        end else
 
 
-// dla PROC, FUNC -> Ident[GetIdent(Tok[k].Name^)].NumAllocElements -> oznacza liczbe parametrow takiej procedury/funkcji
+// dla PROC, FUNC -> Ident[GetIdent(Tok[k].Name)].NumAllocElements -> oznacza liczbe parametrow takiej procedury/funkcji
 
 		if (VarType in Pointers) and ( (ExpressionType in Pointers) and (Tok[k].Kind = IDENTTOK) ) and
-		   ( not (Ident[IdentIndex].AllocElementType in Pointers + [RECORDTOK, OBJECTTOK]) and not (Ident[GetIdent(Tok[k].Name^)].AllocElementType in Pointers + [RECORDTOK, OBJECTTOK])  ) (* and
-		   (({DataSize[Ident[IdentIndex].AllocElementType] *} Ident[IdentIndex].NumAllocElements > 1) and ({DataSize[Ident[GetIdent(Tok[k].Name^)].AllocElementType] *} Ident[GetIdent(Tok[k].Name^)].NumAllocElements > 1)) *) then begin
+		   ( not (Ident[IdentIndex].AllocElementType in Pointers + [RECORDTOK, OBJECTTOK]) and not (Ident[GetIdent(Tok[k].Name)].AllocElementType in Pointers + [RECORDTOK, OBJECTTOK])  ) (* and
+		   (({DataSize[Ident[IdentIndex].AllocElementType] *} Ident[IdentIndex].NumAllocElements > 1) and ({DataSize[Ident[GetIdent(Tok[k].Name)].AllocElementType] *} Ident[GetIdent(Tok[k].Name)].NumAllocElements > 1)) *) then begin
 
 
 		j := Ident[IdentIndex].NumAllocElements * DataSize[Ident[IdentIndex].AllocElementType];
 
-		IdentTemp := GetIdent(Tok[k].Name^);
+		IdentTemp := GetIdent(Tok[k].Name);
 
-		Name := 'adr.'+Tok[k].Name^;
-		svar := Tok[k].Name^;
+		Name := 'adr.'+Tok[k].Name;
+		svar := Tok[k].Name;
 
 		if IdentTemp > 0 then begin
 
@@ -11635,7 +11640,7 @@ case Tok[i].Kind of
     begin
      CheckTok(i + 1, IDENTTOK);
 
-     IdentIndex := GetIdent(Tok[i + 1].Name^);
+     IdentIndex := GetIdent(Tok[i + 1].Name);
 
      if IdentIndex > 0 then begin
 
@@ -11682,9 +11687,9 @@ case Tok[i].Kind of
     i := CompileExpression(i + 1, SelectorType);
 
 
-    if (SelectorType = ENUMTOK) and (Tok[j].Kind = IDENTTOK) and (Ident[GetIdent(Tok[j].Name^)].Kind = FUNCTIONTOK) then begin
+    if (SelectorType = ENUMTOK) and (Tok[j].Kind = IDENTTOK) and (Ident[GetIdent(Tok[j].Name)].Kind = FUNCTIONTOK) then begin
 
-       IdentTemp:=GetIdent(Tok[j].Name^);
+       IdentTemp:=GetIdent(Tok[j].Name);
 
        SelectorType := Ident[GetIdentResult(Ident[IdentTemp].ProcAsBlock)].AllocElementType;
 
@@ -11693,7 +11698,7 @@ case Tok[i].Kind of
     end else
 
     if Tok[i].Kind = IDENTTOK then
-      EnumName := GetEnumName(GetIdent(Tok[i].Name^));
+      EnumName := GetEnumName(GetIdent(Tok[i].Name));
 
 
     if SelectorType <> ENUMTYPE then
@@ -11733,8 +11738,8 @@ case Tok[i].Kind of
 	GetCommonType(i, ConstValType, SelectorType);
 
 	if (Tok[i].Kind = IDENTTOK)  then
-	 if ((EnumName = '') and (GetEnumName(GetIdent(Tok[i].Name^)) <> '')) or
-  	    ((EnumName <> '') and (GetEnumName(GetIdent(Tok[i].Name^)) <> EnumName)) then
+	 if ((EnumName = '') and (GetEnumName(GetIdent(Tok[i].Name)) <> '')) or
+  	    ((EnumName <> '') and (GetEnumName(GetIdent(Tok[i].Name)) <> EnumName)) then
 		Error(i, 'Constant and CASE types do not match');
 
 
@@ -12079,7 +12084,7 @@ WHILETOK:
       iError(i + 1, IdentifierExpected)
     else
       begin
-      IdentIndex := GetIdent(Tok[i + 1].Name^);
+      IdentIndex := GetIdent(Tok[i + 1].Name);
 
       inc(CodeSize);		      // !!! aby dzialaly zagniezdzone FOR
 
@@ -12188,9 +12193,9 @@ WHILETOK:
 		   ((Tok[j].Kind = OPARTOK) and (Tok[j + 1].Kind = IDENTTOK) and (Tok[j + 2].Kind = CPARTOK) and (Tok[j + 3].Kind = DOTOK)) then begin
 
 		 if Tok[j].Kind = IDENTTOK then
-		  IdentTemp := GetIdent(Tok[j].Name^)
+		  IdentTemp := GetIdent(Tok[j].Name)
 		 else
-		  IdentTemp := GetIdent(Tok[j + 1].Name^);
+		  IdentTemp := GetIdent(Tok[j + 1].Name);
 
 		 j := CompileExpression(j, ExpressionType, Ident[IdentIndex].DataType);
 		 ExpandParam(Ident[IdentIndex].DataType, ExpressionType);
@@ -12412,7 +12417,7 @@ WHILETOK:
 	iError(i + 2, IdentifierExpected)
       else
 	begin
-	IdentIndex := GetIdent(Tok[i + 2].Name^);
+	IdentIndex := GetIdent(Tok[i + 2].Name);
 
 	if IdentIndex = 0 then
 	 iError(i + 2, UnknownIdentifier);
@@ -12463,7 +12468,7 @@ WHILETOK:
 	iError(i + 2, IdentifierExpected)
       else
 	begin
-	IdentIndex := GetIdent(Tok[i + 2].Name^);
+	IdentIndex := GetIdent(Tok[i + 2].Name);
 
 	if IdentIndex = 0 then
 	 iError(i + 2, UnknownIdentifier);
@@ -12513,7 +12518,7 @@ WHILETOK:
 	iError(i + 2, IdentifierExpected)
       else
 	begin
-	IdentIndex := GetIdent(Tok[i + 2].Name^);
+	IdentIndex := GetIdent(Tok[i + 2].Name);
 
 	if IdentIndex = 0 then
 	 iError(i + 2, UnknownIdentifier);
@@ -12565,7 +12570,7 @@ WHILETOK:
       else
        begin
 
-	IdentIndex := GetIdent(Tok[i + 2].Name^);
+	IdentIndex := GetIdent(Tok[i + 2].Name);
 
 	if IdentIndex = 0 then
 	 iError(i + 2, UnknownIdentifier);
@@ -12600,7 +12605,7 @@ WHILETOK:
 	iError(i + 2, IdentifierExpected)
       else
 	begin
-	IdentIndex := GetIdent(Tok[i + 2].Name^);
+	IdentIndex := GetIdent(Tok[i + 2].Name);
 
 	if IdentIndex = 0 then
 	 iError(i + 2, UnknownIdentifier);
@@ -12625,9 +12630,9 @@ WHILETOK:
 //	asm65('; GetResourceHandle');
 
 	asm65(#9'lda <MAIN.@RESOURCE.' + svar);
-	asm65(#9'sta ' + Tok[i + 2].Name^);
+	asm65(#9'sta ' + Tok[i + 2].Name);
 	asm65(#9'lda >MAIN.@RESOURCE.' + svar);
-	asm65(#9'sta ' + Tok[i + 2].Name^ + '+1');
+	asm65(#9'sta ' + Tok[i + 2].Name + '+1');
 
 	inc(i, 5);
 
@@ -12643,7 +12648,7 @@ WHILETOK:
 	iError(i + 2, IdentifierExpected)
       else
 	begin
-	IdentIndex := GetIdent(Tok[i + 2].Name^);
+	IdentIndex := GetIdent(Tok[i + 2].Name);
 
 	if IdentIndex = 0 then
 	 iError(i + 2, UnknownIdentifier);
@@ -12666,10 +12671,10 @@ WHILETOK:
 //	asm65('; GetResourceHandle');
 
 	asm65(#9'lda <MAIN.@RESOURCE.' + svar + '.end-MAIN.@RESOURCE.' + svar);
-	asm65(#9'sta ' + Tok[i + 2].Name^);
+	asm65(#9'sta ' + Tok[i + 2].Name);
 
 	asm65(#9'lda >MAIN.@RESOURCE.' + svar + '.end-MAIN.@RESOURCE.' + svar);
-	asm65(#9'sta ' + Tok[i + 2].Name^ + '+1');
+	asm65(#9'sta ' + Tok[i + 2].Name + '+1');
 
 	inc(i, 5);
 
@@ -12685,7 +12690,7 @@ WHILETOK:
 	iError(i + 2, IdentifierExpected)
       else
 	begin
-	IdentIndex := GetIdent(Tok[i + 2].Name^);
+	IdentIndex := GetIdent(Tok[i + 2].Name);
 
 	if IdentIndex = 0 then
 	 iError(i + 2, UnknownIdentifier);
@@ -12715,7 +12720,7 @@ WHILETOK:
 	iError(i + 2, IdentifierExpected)
       else
 	begin
-	IdentIndex := GetIdent(Tok[i + 2].Name^);
+	IdentIndex := GetIdent(Tok[i + 2].Name);
 
 	if IdentIndex = 0 then
 	 iError(i + 2, UnknownIdentifier);
@@ -12744,7 +12749,7 @@ WHILETOK:
 	iError(i + 2, IdentifierExpected)
       else
 	begin
-	IdentIndex := GetIdent(Tok[i + 2].Name^);
+	IdentIndex := GetIdent(Tok[i + 2].Name);
 
 	if IdentIndex = 0 then
 	 iError(i + 2, UnknownIdentifier);
@@ -12777,7 +12782,7 @@ WHILETOK:
 	iError(i + 2, IdentifierExpected)
       else
 	begin
-	IdentIndex := GetIdent(Tok[i + 2].Name^);
+	IdentIndex := GetIdent(Tok[i + 2].Name);
 
 	if (IdentIndex > 0) and (Ident[identIndex].DataType = TEXTFILETOK) then begin
 
@@ -12790,10 +12795,10 @@ WHILETOK:
 	  CheckTok(i, COMMATOK);
 	  CheckTok(i + 1, IDENTTOK);
 
-	  if Ident[GetIdent(Tok[i + 1].Name^)].DataType <> STRINGPOINTERTOK then
+	  if Ident[GetIdent(Tok[i + 1].Name)].DataType <> STRINGPOINTERTOK then
 	   iError(i + 1, VariableExpected);
 
-	  IdentIndex := GetIdent(Tok[i + 1].Name^);
+	  IdentIndex := GetIdent(Tok[i + 1].Name);
 
 	  asm65(#9'@moveRECORD ' +  GetLocalName(IdentIndex) );
 
@@ -12874,9 +12879,9 @@ WHILETOK:
 
      inc(i);
 
-     if (Tok[i + 1].Kind = IDENTTOK) and (Ident[GetIdent(Tok[i + 1].Name^)].DataType = TEXTFILETOK) then begin
+     if (Tok[i + 1].Kind = IDENTTOK) and (Ident[GetIdent(Tok[i + 1].Name)].DataType = TEXTFILETOK) then begin
 
-      IdentIndex := GetIdent(Tok[i + 1].Name^);
+      IdentIndex := GetIdent(Tok[i + 1].Name);
 
       inc(i);
       CheckTok(i + 1, COMMATOK);
@@ -12887,10 +12892,10 @@ WHILETOK:
         IDENTTOK:					// variable (pointer to string)
 		begin
 
-		  if Ident[GetIdent(Tok[i + 1].Name^)].DataType <> STRINGPOINTERTOK then
+		  if Ident[GetIdent(Tok[i + 1].Name)].DataType <> STRINGPOINTERTOK then
 		   iError(i + 1, VariableExpected);
 
-	   	   asm65(#9'mwy ' + GetLocalName(GetIdent(Tok[i + 1].Name^)) +' :bp2');
+	   	   asm65(#9'mwy ' + GetLocalName(GetIdent(Tok[i + 1].Name)) +' :bp2');
 		   asm65(#9'ldy #$01');
 		   asm65(#9'mva:rne (:bp2),y @buf-1,y+');
 		   asm65(#9'lda (:bp2),y');
@@ -13084,10 +13089,10 @@ WHILETOK:
 	  else if ExpressionType in Pointers then begin
 
 		if Tok[j].Kind = ADDRESSTOK then
-		 IdentIndex := GetIdent(Tok[j + 1].Name^)
+		 IdentIndex := GetIdent(Tok[j + 1].Name)
 		else
 		 if Tok[j].Kind = IDENTTOK then
-		  IdentIndex := GetIdent(Tok[j].Name^)
+		  IdentIndex := GetIdent(Tok[j].Name)
 		 else
 		  iError(i, CantReadWrite);
 
@@ -13234,7 +13239,7 @@ WHILETOK:
       inc(i, 2);
 
 	  if Tok[i].Kind = IDENTTOK then begin					// first parameter
-	    IdentIndex := GetIdent(Tok[i].Name^);
+	    IdentIndex := GetIdent(Tok[i].Name);
 
 	    CheckAssignment(i, IdentIndex);
 
@@ -13257,7 +13262,7 @@ WHILETOK:
 		if ExpressionType in Pointers then begin			// Alloc Element Type
 		 ExpressionType := WORDTOK;
 
-		 if pos('mw? '+Tok[i].Name^, optyBP2) > 0 then optyBP2 := '';
+		 if pos('mw? '+Tok[i].Name, optyBP2) > 0 then optyBP2 := '';
 		end;
 
 	       end;
@@ -13556,7 +13561,7 @@ WHILETOK:
       Error(i, 'Interrupt Number in [0..4]');
 
     CheckTok(i + 2, IDENTTOK);
-    IdentIndex := GetIdent(Tok[i + 2].Name^);
+    IdentIndex := GetIdent(Tok[i + 2].Name);
 
     if IdentIndex = 0 then
       iError(i + 2, UnknownIdentifier);
@@ -13837,7 +13842,7 @@ var IdentIndex, size: integer;
     emptyLine, yes: Boolean;
     fnam, txt, svar: string;
     varbegin: TString;
-    HeaFile: TextFile;
+    HeaFile: TTextFile2;
 
 // ----------------------------------------------------------------------------
 
@@ -14006,15 +14011,16 @@ begin
 
 	yes := TRUE;
 
-        AssignFile(HeaFile, fnam); FileMode:=0; Reset(HeaFile);
+        HeaFile:=TTextFile2.Create;
+        HeaFile.Assign2(fnam); FileMode:=0; HeaFile.Reset2;
 
-	while not eof(HeaFile) do begin
-	  readln(HeaFile, txt);
+	while not HeaFile.eof2 do begin
+	  HeaFile.readln2(txt);
 
 	  txt:=AnsiUpperCase(txt);
 
 	  if (length(txt) > 255) or (pos(#0, txt) > 0) then begin
-	   CloseFile(HeaFile);
+	   HeaFile.Close2;
 
 	   Error(Ident[IdentIndex].Libraries, 'Error: MADS header file ''' + fnam + ''' has invalid format.');
 	  end;
@@ -14031,7 +14037,8 @@ begin
 	if yes then
 	  iError(Ident[IdentIndex].Libraries, UnknownIdentifier, IdentIndex);
 
-	CloseFile(HeaFile);
+	HeaFile.Close2;
+        HeaFile.Free;
 
         if RCLIBRARY then begin asm65(''); asm65(#9'rmb'); asm65('') end;				// reset bank -> #0
 
@@ -14146,10 +14153,13 @@ procedure SaveToStaticDataSegment(ConstDataSize: integer; ConstVal: Int64; Const
 var ftmp: TFloat;
 begin
 
-	if (ConstDataSize < 0) or (ConstDataSize > $FFFF) then begin writeln('SaveToStaticDataSegment: ', ConstDataSize); halt end;
+	if (ConstDataSize < 0) or (ConstDataSize > $FFFF) then
+        begin writeln('SaveToStaticDataSegment: ' + IntToStr(ConstDataSize));
+              RaiseHaltException(2);
+        end;
 
-ftmp[0]:=0;
-ftmp[1]:=0;
+	ftmp[0]:=0;
+	ftmp[1]:=0;
 
 	 case ConstValType of
 
@@ -14640,7 +14650,7 @@ begin
 	    else
 	      begin
 	      Inc(NumVarOfSameType);
-	      VarOfSameType[NumVarOfSameType].Name := Tok[i + 1].Name^;
+	      VarOfSameType[NumVarOfSameType].Name := Tok[i + 1].Name;
 	      end;
 	    i := i + 2;
 	    until Tok[i].Kind <> COMMATOK;
@@ -14807,9 +14817,9 @@ for TypeIndex := 1 to NumIdent do
   if (Ident[TypeIndex].AllocElementType = FORWARDTYPE) and
      (Ident[TypeIndex].Block = BlockStack[BlockStackTop]) then begin
 
-     Name := Ident[GetIdent(Tok[Ident[TypeIndex].NumAllocElements].Name^)].Name;
+     Name := Ident[GetIdent(Tok[Ident[TypeIndex].NumAllocElements].Name)].Name;
 
-     if Ident[GetIdent(Tok[Ident[TypeIndex].NumAllocElements].Name^)].Kind = TYPETOK then
+     if Ident[GetIdent(Tok[Ident[TypeIndex].NumAllocElements].Name)].Kind = TYPETOK then
 
      for IdentIndex := 1 to NumIdent do
        if (Ident[IdentIndex].Name = Name) and
@@ -14833,7 +14843,7 @@ for TypeIndex := 1 to NumIdent do
       if typ then
         Error(TypeIndex, 'Unresolved forward reference to type ' + Ident[TypeIndex].Name)
       else
-        Error(TypeIndex, 'Identifier not found "' + Ident[GetIdent(Tok[Ident[TypeIndex].NumAllocElements].Name^)].Name + '"');
+        Error(TypeIndex, 'Identifier not found "' + Ident[GetIdent(Tok[Ident[TypeIndex].NumAllocElements].Name)].Name + '"');
 
 end;	//CheckForwardResolutions
 
@@ -15454,8 +15464,8 @@ while Tok[i].Kind in
    CheckTok(i + 1, UNITTOK);
    CheckTok(i + 2, IDENTTOK);
 
-   if Tok[i + 2].Name^ <> UnitName[Tok[i].UnitIndex].Name then
-    Error(i + 2, 'Illegal unit name: ' + Tok[i + 2].Name^);
+   if Tok[i + 2].Name <> UnitName[Tok[i].UnitIndex].Name then
+    Error(i + 2, 'Illegal unit name: ' + Tok[i + 2].Name);
 
    CheckTok(i + 3, SEMICOLONTOK);
 
@@ -15525,7 +15535,7 @@ while Tok[i].Kind in
     CheckTok(i , IDENTTOK);
 
     if Pass = CALLDETERMPASS then begin
-      IdentIndex := GetIdent(Tok[i].Name^);
+      IdentIndex := GetIdent(Tok[i].Name);
 
       if IdentIndex = 0 then
        iError(i, UnknownIdentifier);
@@ -15585,7 +15595,7 @@ while Tok[i].Kind in
 
    CheckTok(i + 1, IDENTTOK);
 
-   LIBRARY_NAME := Tok[i + 1].Name^;
+   LIBRARY_NAME := Tok[i + 1].Name;
 
    if (Tok[i + 2].Kind = COLONTOK) and (Tok[i + 3].Kind = INTNUMBERTOK) then begin
 
@@ -15613,7 +15623,7 @@ while Tok[i].Kind in
 
    CheckTok(i + 1, IDENTTOK);
 
-   PROGRAM_NAME := Tok[i + 1].Name^;
+   PROGRAM_NAME := Tok[i + 1].Name;
 
    inc(i);
 
@@ -15697,11 +15707,11 @@ while Tok[i].Kind in
    CheckTok(i , IDENTTOK);
 
    for j:=0 to High(UnitList)-1 do
-    if UnitList[j] = Tok[i].Name^ then
-     Error(i, 'Duplicate identifier '''+Tok[i].Name^+'''');
+    if UnitList[j] = Tok[i].Name then
+     Error(i, 'Duplicate identifier '''+Tok[i].Name+'''');
 
    j:=High(UnitList);
-   UnitList[j] := Tok[i].Name^;
+   UnitList[j] := Tok[i].Name;
    SetLength(UnitList, j+2);
 
    inc(i);
@@ -15731,7 +15741,7 @@ while Tok[i].Kind in
 
    yes:=true;
    for j := 1 to UnitName[UnitNameIndex].Units do
-    if (UnitName[UnitNameIndex].Allow[j] = Tok[i].Name^) or (Tok[i].Name^ = 'SYSTEM') then yes:=false;
+    if (UnitName[UnitNameIndex].Allow[j] = Tok[i].Name) or (Tok[i].Name = 'SYSTEM') then yes:=false;
 
    if yes then begin
 
@@ -15740,7 +15750,7 @@ while Tok[i].Kind in
     if UnitName[UnitNameIndex].Units > MAXALLOWEDUNITS then
       Error(i, 'Out of resources, MAXALLOWEDUNITS');
 
-    UnitName[UnitNameIndex].Allow[UnitName[UnitNameIndex].Units] := Tok[i].Name^;
+    UnitName[UnitNameIndex].Allow[UnitName[UnitNameIndex].Units] := Tok[i].Name;
 
    end;
 
@@ -15776,7 +15786,7 @@ while Tok[i].Kind in
 
     CheckTok(i , IDENTTOK);
 
-    DefineIdent(i, Tok[i].Name^, LABELTYPE, 0, 0, 0, 0);
+    DefineIdent(i, Tok[i].Name, LABELTYPE, 0, 0, 0, 0);
 
     inc(i);
 
@@ -15805,15 +15815,15 @@ while Tok[i].Kind in
 	  if Tok[j].Kind in StringTypes then begin
 
 	   if Tok[j].StrLength > 255 then
-	     DefineIdent(i + 1, Tok[i + 1].Name^, CONSTANT, POINTERTOK, 0, CHARTOK, ConstVal + CODEORIGIN, PCHARTOK)
+	     DefineIdent(i + 1, Tok[i + 1].Name, CONSTANT, POINTERTOK, 0, CHARTOK, ConstVal + CODEORIGIN, PCHARTOK)
 	   else
-	     DefineIdent(i + 1, Tok[i + 1].Name^, CONSTANT, ConstValType, Tok[j].StrLength, CHARTOK, ConstVal + CODEORIGIN, Tok[j].Kind);
+	     DefineIdent(i + 1, Tok[i + 1].Name, CONSTANT, ConstValType, Tok[j].StrLength, CHARTOK, ConstVal + CODEORIGIN, Tok[j].Kind);
 
 	  end else
    	   if (ConstValType in Pointers) then
 	     iError(j, IllegalExpression)
 	   else
-	     DefineIdent(i + 1, Tok[i + 1].Name^, CONSTANT, ConstValType, 0, 0, ConstVal, Tok[j].Kind);
+	     DefineIdent(i + 1, Tok[i + 1].Name, CONSTANT, ConstValType, 0, 0, ConstVal, Tok[j].Kind);
 
 	  i := j;
 	end else
@@ -15867,15 +15877,15 @@ while Tok[i].Kind in
 	   j := CompileConstExpression(j + 2, ConstVal, ConstValType);
 
 	   if Tok[i + 3].Kind = PCHARTOK then
-	    DefineIdent(i + 1, Tok[i + 1].Name^, CONSTANT, POINTERTOK, 0, CHARTOK, ConstVal + CODEORIGIN + 1, PCHARTOK)
+	    DefineIdent(i + 1, Tok[i + 1].Name, CONSTANT, POINTERTOK, 0, CHARTOK, ConstVal + CODEORIGIN + 1, PCHARTOK)
 	   else
-	    DefineIdent(i + 1, Tok[i + 1].Name^, CONSTANT, ConstValType, Tok[j].StrLength, CHARTOK, ConstVal + CODEORIGIN, Tok[j].Kind);
+	    DefineIdent(i + 1, Tok[i + 1].Name, CONSTANT, ConstValType, Tok[j].StrLength, CHARTOK, ConstVal + CODEORIGIN, Tok[j].Kind);
 
 	  end else
 
 	  if NumAllocElements > 0 then begin
 
-       	    DefineIdent(i + 1, Tok[i + 1].Name^, CONSTANT, VarType, NumAllocElements, AllocElementType, NumStaticStrChars + CODEORIGIN + CODEORIGIN_BASE, IDENTTOK);
+       	    DefineIdent(i + 1, Tok[i + 1].Name, CONSTANT, VarType, NumAllocElements, AllocElementType, NumStaticStrChars + CODEORIGIN + CODEORIGIN_BASE, IDENTTOK);
 
 	   if (Ident[NumIdent].NumAllocElements in [0,1]) and (open_array = false) then
 	    iError(i, IllegalExpression)
@@ -15941,7 +15951,7 @@ while Tok[i].Kind in
 
 	   GetCommonType(i + 1, VarType, ConstValType);
 
-	   DefineIdent(i + 1, Tok[i + 1].Name^, CONSTANT, VarType, 0, 0, ConstVal, Tok[j].Kind);
+	   DefineIdent(i + 1, Tok[i + 1].Name, CONSTANT, VarType, 0, 0, ConstVal, Tok[j].Kind);
 	  end;
 
 	  i := j;
@@ -15973,7 +15983,7 @@ while Tok[i].Kind in
 	   if (Tok[i + 3].Kind = ARRAYTOK) and (Tok[i + 4].Kind <> OBRACKETTOK) then begin
 	    j := CompileType(i + 5, VarType, NumAllocElements, AllocElementType);
 
-	    DefineIdent(i + 1, Tok[i + 1].Name^, USERTYPE, VarType, NumAllocElements, AllocElementType, 0, Tok[i + 3].Kind);
+	    DefineIdent(i + 1, Tok[i + 1].Name, USERTYPE, VarType, NumAllocElements, AllocElementType, 0, Tok[i + 3].Kind);
 	    Ident[NumIdent].Pass := CALLDETERMPASS;
 
 	   end else begin
@@ -15981,7 +15991,7 @@ while Tok[i].Kind in
 
 	    if Tok[i + 3].Kind = ARRAYTOK then j := CompileType(j + 3, NestedDataType, NestedNumAllocElements, NestedAllocElementType);
 
-	    DefineIdent(i + 1, Tok[i + 1].Name^, USERTYPE, VarType, NumAllocElements, AllocElementType, 0, Tok[i + 3].Kind);
+	    DefineIdent(i + 1, Tok[i + 1].Name, USERTYPE, VarType, NumAllocElements, AllocElementType, 0, Tok[i + 3].Kind);
 	    Ident[NumIdent].Pass := CALLDETERMPASS;
 
 	   end;
@@ -16034,7 +16044,7 @@ while Tok[i].Kind in
 	  if NumVarOfSameType > High(VarOfSameType) then
 	    Error(i, 'Too many formal parameters');
 
-	  VarOfSameType[NumVarOfSameType].Name := Tok[i + 1].Name^;
+	  VarOfSameType[NumVarOfSameType].Name := Tok[i + 1].Name;
 	  end;
 	i := i + 2;
       until Tok[i].Kind <> COMMATOK;
@@ -16135,7 +16145,7 @@ while Tok[i].Kind in
 
        if Tok[i + 1].Kind = IDENTTOK then begin
 
-	external_name := Tok[i + 1].Name^;
+	external_name := Tok[i + 1].Name;
 
 	if Tok[i + 2].Kind = STRINGLITERALTOK then begin
 	  external_libr := i + 2;
@@ -16174,10 +16184,10 @@ while Tok[i].Kind in
 
 	varPassMethod := 255;
 
-	if (Tok[i+1].Kind = IDENTTOK) and (Ident[GetIdent(Tok[i+1].Name^)].Kind = VARTOK) then begin
-	 ConstVal := Ident[GetIdent(Tok[i+1].Name^)].Value - DATAORIGIN;
+	if (Tok[i+1].Kind = IDENTTOK) and (Ident[GetIdent(Tok[i+1].Name)].Kind = VARTOK) then begin
+	 ConstVal := Ident[GetIdent(Tok[i+1].Name)].Value - DATAORIGIN;
 
-	 varPassMethod := Ident[GetIdent(Tok[i+1].Name^)].PassMethod;
+	 varPassMethod := Ident[GetIdent(Tok[i+1].Name)].PassMethod;
 
  	 if (ConstVal < 0) or (ConstVal > $FFFFFF) then
 	  Error(i, 'Range check error while evaluating constants ('+IntToStr(ConstVal)+' must be between 0 and '+IntToStr($FFFFFF)+')');
@@ -16204,7 +16214,7 @@ while Tok[i].Kind in
 
 
 
-      if IdType = IDENTTOK then IdType := Ident[GetIdent(Tok[idx].Name^)].IdType;
+      if IdType = IDENTTOK then IdType := Ident[GetIdent(Tok[idx].Name)].IdType;
 
 
 
@@ -16377,7 +16387,7 @@ while Tok[i].Kind in
 	    if Tok[i + 1].Kind <> IDENTTOK then
 	      iError(i + 1, IdentifierExpected)
 	    else begin
-	      IdentIndex := GetIdent(Tok[i + 1].Name^);
+	      IdentIndex := GetIdent(Tok[i + 1].Name);
 
 	      if IdentIndex > 0 then begin
 
@@ -16539,7 +16549,7 @@ while Tok[i].Kind in
       if INTERFACETOK_USE then
        ForwardIdentIndex := 0
       else
-       ForwardIdentIndex := GetIdent(Tok[i + 1].Name^);
+       ForwardIdentIndex := GetIdent(Tok[i + 1].Name);
 
 
       if (ForwardIdentIndex <> 0) and (Ident[ForwardIdentIndex].isOverload) then begin     	// !!! dla forward; overload;
@@ -17249,7 +17259,7 @@ end;	//CompileProgram
 procedure ParseParam;
 var i, err: integer;
     s: string;
-    t, c: string[32];
+    t, c: string;
 begin
 
   t := 'A8';		// target
@@ -17389,7 +17399,7 @@ begin
     if not FileExists(UnitName[1].Name) then begin
      writeln('Error: Can''t open file ''' + UnitName[1].Name + '''');
      FreeTokens;
-     Halt(3);
+     RaiseHaltException(3);
     end;
 
    end;
@@ -17437,6 +17447,21 @@ end;	//ParseParam
 //                                 Main program
 // ----------------------------------------------------------------------------
 
+procedure Main;
+
+{$IFNDEF PAS2JS}
+const PI_VALUE: Int64 = $40490FDB00000324; // does not fit into 53 bits Javascript double  mantissa
+const NAN_VALUE: Int64 =$FFC00000FFC00000;
+const INFINITY_VALUE: Int64 = $7F8000007F800000;
+const NEGINFINITY_VALUE: Int64 = $FF800000FF800000;
+{$ELSE}
+const PI_VALUE: Int64 = 3; // does not fit into 53 bits Javascript double  mantissa
+const NAN_VALUE: Int64 = $11111111;
+const INFINITY_VALUE: Int64 = $22222222;
+const NEGINFINITY_VALUE: Int64 = $33333333;
+{$ENDIF}
+
+var seconds: ValReal;
 begin
 
 {$IFDEF WINDOWS}
@@ -17488,21 +17513,20 @@ begin
 
  {$ENDIF}
 
-
+ OutFile:=TTextFile2.Create;
  if ExtractFileName(outputFile) <> '' then
-  AssignFile(OutFile, outputFile)
+  OutFile.Assign2(outputFile)
  else
-  AssignFile(OutFile, ChangeFileExt(UnitName[1].Name, '.a65') );
+  OutFile.Assign2( ChangeFileExt(UnitName[1].Name, '.a65') );
 
  FileMode:=1;
- rewrite(OutFile);
+ OutFile.Rewrite2;
 
  TextColor(WHITE);
 
- Writeln('Compiling ', UnitName[1].Name);
+ Writeln('Compiling ' + UnitName[1].Name);
 
  start_time:=GetTickCount64;
-
 
 // ----------------------------------------------------------------------------
 // Set defines for first pass;
@@ -17514,8 +17538,8 @@ begin
  UnitName[NumUnits].Name := 'SYSTEM';		// default UNIT 'system.pas'
  UnitName[NumUnits].Path := FindFile('system.pas', 'unit');
 
-
  TokenizeProgram(false);
+
 
 // ----------------------------------------------------------------------------
 
@@ -17539,10 +17563,10 @@ begin
  DefineIdent(1, 'MAXINT',      CONSTANT, INTEGERTOK, 0, 0, MAXINT);
  DefineIdent(1, 'MAXSMALLINT', CONSTANT, INTEGERTOK, 0, 0, MAXSMALLINT);
 
- DefineIdent(1, 'PI',       CONSTANT, REALTOK, 0, 0, $40490FDB00000324);
- DefineIdent(1, 'NAN',      CONSTANT, SINGLETOK, 0, 0, $FFC00000FFC00000);
- DefineIdent(1, 'INFINITY', CONSTANT, SINGLETOK, 0, 0, $7F8000007F800000);
- DefineIdent(1, 'NEGINFINITY', CONSTANT, SINGLETOK, 0, 0, $FF800000FF800000);
+ DefineIdent(1, 'PI',       CONSTANT, REALTOK, 0, 0, PI_VALUE );
+ DefineIdent(1, 'NAN',      CONSTANT, SINGLETOK, 0, 0, NAN_VALUE);
+ DefineIdent(1, 'INFINITY', CONSTANT, SINGLETOK, 0, 0, INFINITY_VALUE);
+ DefineIdent(1, 'NEGINFINITY', CONSTANT, SINGLETOK, 0, 0, NEGINFINITY_VALUE);
 
 // First pass: compile the program and build call graph
  NumPredefIdent := NumIdent;
@@ -17557,7 +17581,7 @@ begin
 // Second pass: compile the program and generate output (IsNotDead fields are preserved since the first pass)
  NumIdent := NumPredefIdent;
 
- fillchar(DataSegment, sizeof(DataSegment), 0);
+ ClearWordMemory(DataSegment);
 
  NumBlocks := 0; BlockStackTop := 0; CodeSize := 0; CodePosStackTop := 0; VarDataSize := 0;
  CaseCnt := 0; IfCnt := 0; ShrShlCnt := 0; NumTypes := 0; run_func := 0; NumProc := 0;
@@ -17588,12 +17612,14 @@ begin
  Pass := CODEGENERATIONPASS;
  CompileProgram;
 
- Flush(OutFile);
- CloseFile(OutFile);
+ OutFile.Flush2;
+ OutFile.Close2;
+ OutFile.Free;
 
 {$IFDEF USEOPTFILE}
 
- CloseFile(OptFile);
+ OptFile.Close2;
+ OptFile.Free;
 
 {$ENDIF}
 
@@ -17605,17 +17631,46 @@ begin
  WritelnMsg;
 
  TextColor(WHITE);
-
- Writeln(Tok[NumTok].Line, ' lines compiled, ', ((GetTickCount64 - start_time + 500)/1000):2:2,' sec, ',
+ seconds := (GetTickCount64 - start_time + 500)/1000;
+{$IFNDEF PAS2JS}
+ Writeln(Tok[NumTok].Line, ' lines compiled, ', seconds:2:2,' sec, ',
 	 NumTok, ' tokens, ',NumIdent, ' idents, ',  NumBlocks, ' blocks, ', NumTypes, ' types');
+{$ELSE}
+ Writeln(IntToStr(Tok[NumTok].Line) + ' lines compiled, ' + FloatToStr(seconds) + ' sec, '
+ 	 + IntToStr(NumTok) + ' tokens, ' + IntToStr(NumIdent) + ' idents, ' 
+	 + IntToStr(NumBlocks) + ' blocks, ' +  IntToStr(NumTypes) + ' types');
+{$ENDIF}
 
  FreeTokens;
 
  TextColor(LIGHTGRAY);
 
- if High(msgWarning) > 0 then Writeln(High(msgWarning), ' warning(s) issued');
- if High(msgNote) > 0 then Writeln(High(msgNote), ' note(s) issued');
+ if High(msgWarning) > 0 then Writeln(IntToStr(High(msgWarning)) + ' warning(s) issued');
+ if High(msgNote) > 0 then Writeln(IntToStr(High(msgNote)) + ' note(s) issued');
 
  NormVideo;
+end;
 
+var exitCode: LongInt;
+begin
+  WriteLn('Starting at '+DateTimeToStr(Now()));
+
+  exitCode :=0;
+  try
+    Main;
+  except on e: THaltException do
+    begin
+    	exitCode := e.GetExitCode();
+    end;
+  end;
+
+  WriteLn('Ending at '+DateTimeToStr(Now()));
+  if (exitCode <> 0) then
+  begin
+  	WriteLn('Program ended with exit code ' + IntToStr(exitCode));
+  end;
+ 
+  {$IFNDEF PAS2JS}
+  Halt(exitCode);
+  {$ENDIF}
 end.
