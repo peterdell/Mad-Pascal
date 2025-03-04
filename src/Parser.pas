@@ -440,8 +440,8 @@ begin
 	      RaiseHaltException(2);
 	end;
 
-ftmp[0]:=0;
-ftmp[1]:=0;
+        ftmp[0]:=0;
+        ftmp[1]:=0;
 
 	 case ConstValType of
 

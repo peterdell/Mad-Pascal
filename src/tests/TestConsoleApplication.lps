@@ -30,7 +30,6 @@
       </Unit>
       <Unit>
         <Filename Value="..\mp.pas"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
         <TopLine Value="283"/>
         <CursorPos X="25" Y="292"/>
@@ -71,9 +70,10 @@
       </Unit>
       <Unit>
         <Filename Value="..\Parser.pas"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="9"/>
         <TopLine Value="404"/>
-        <CursorPos X="42" Y="413"/>
+        <CursorPos X="22" Y="423"/>
         <UsageCount Value="63"/>
         <Loaded Value="True"/>
       </Unit>
