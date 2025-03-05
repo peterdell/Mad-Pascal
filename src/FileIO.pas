@@ -9,12 +9,13 @@ type TFilePath = string;
 type TFilePosition = LongInt;
 
 type IFile = interface
-	procedure Assign(filePath: TFilePath); Virtual; Abstract; 
-	procedure Close; Virtual; Abstract; 
-	procedure Erase(); Virtual; Abstract;
-        function EOF():Boolean; Virtual; Abstract;
-	procedure Reset(); Virtual; Abstract;  // Open for reading
-	procedure Rewrite(); Virtual; Abstract;  // Open for writing
+	procedure Assign(filePath: TFilePath);
+	procedure Close;
+	procedure Erase(); 
+        function EOF():Boolean;
+	procedure Free;
+	procedure Reset(); // Open for reading
+	procedure Rewrite(); // Open for writing
 end;
 
 type IBinaryFile = interface(IFile)
@@ -43,6 +44,15 @@ type ITextFile = interface(IFile)
         procedure WriteLn(s1:string; s2:string; s3: string); overload;
 end;
 
+type TFileSystem = class
+  public
+        class function CreateBinaryFile: IBinaryFile; static;
+        class function CreateTextFile: ITextFile; static;
+end;
+
+implementation
+
+
 
 type TFile = class(TInterfacedObject, IFile)
   protected filePath: TFilePath;
@@ -56,7 +66,7 @@ type TFile = class(TInterfacedObject, IFile)
 	procedure Rewrite(); Virtual; Abstract;  // Open for writing
 end;
 
-type TTextFile = class(TFile)
+type TTextFile = class(TFile, ITextFile)
 {$IFNDEF PAS2JS}
   private
         type TSystemTextFile = System.TextFile;
@@ -77,9 +87,9 @@ type TTextFile = class(TFile)
 	procedure Reset(); override;
 	procedure Rewrite(); override;
 
-        function Write(s:string): TTextFile; overload;
-        function Write(s:string; w: Integer): TTextFile; overload;
-        function Write(i:Integer; w: Integer): TTextFile; overload;
+        function Write(s:string): ITextFile; overload;
+        function Write(s:string; w: Integer): ITextFile; overload;
+        function Write(i:Integer; w: Integer): ITextFile; overload;
 
 	procedure WriteLn; overload;
         procedure WriteLn(s:string); overload;
@@ -87,7 +97,7 @@ type TTextFile = class(TFile)
         procedure WriteLn(s1:string; s2:string; s3: string); overload;
 end;
 
-type TBinaryFile = class(TFile)
+type TBinaryFile = class(TFile, IBinaryFile)
 {$IFNDEF PAS2JS}
   private
         type TSystemBinaryFile = file of char;
@@ -111,8 +121,6 @@ type TBinaryFile = class(TFile)
 	procedure Seek2(Pos: Int64 );
 	
 end;
-
-implementation
 
 {$IFDEF PAS2JS}
 //  {$I 'include\pas2js\FileIO-PAS2JS-Implementation.inc'}
@@ -210,21 +218,21 @@ begin
 
 end;
 
-function TTextFile.Write(s:string): TTextFile;
+function TTextFile.Write(s:string): ITextFile;
 begin
 {$IFNDEF PAS2JS}
   System.Write(f, s);
 {$ENDIF}
 end;
 
-function TTextFile.Write(s:string; w: Integer): TTextFile;
+function TTextFile.Write(s:string; w: Integer): ITextFile;
 begin
 {$IFNDEF PAS2JS}
   System.Write(f, s);
 {$ENDIF}
 end;
 
-function TTextFile.Write(i:Integer; w: Integer): TTextFile;
+function TTextFile.Write(i:Integer; w: Integer): ITextFile;
 begin
 {$IFNDEF PAS2JS}
  System.Write(f, i);
@@ -363,4 +371,16 @@ begin
 {$ENDIF}
 end;
 
+
+class function TFileSystem.CreateBinaryFile: IBinaryFile;
+begin
+  Result:=TBinaryFile.Create;
+end;
+
+class function TFileSystem.CreateTextFile: ITextFile;
+begin
+  Result:=TTextFile.Create;
+end;
+
+        
 end.

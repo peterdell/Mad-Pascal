@@ -19,7 +19,7 @@ uses SysUtils, Common, FileIO;
 
 procedure Diagnostics;
 var i, CharIndex, ChildIndex: Integer;
-    DiagFile: TTextFile;
+    DiagFile: ITextFile;
 begin
 
   DiagFile:=TTextFile.Create;

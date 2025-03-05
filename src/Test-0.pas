@@ -29,11 +29,11 @@ begin
 end;
 
 procedure TestFileIO(filePath: TFilePath);
-var binFile: TBinaryFile;
+var binFile: IBinaryFile;
 var c: Char;
 begin
 
-  binFile:=TBinaryFile.Create;
+  binFile:=TFileSystem.CreateBinaryFile;
   binFile.Assign(filePath);
   try
     binFile.Reset;

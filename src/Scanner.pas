@@ -256,12 +256,12 @@ end;
 
 procedure AddResource(fnam: string);
 var i, j: integer;
-    t: TTextFile;
+    t: ITextFile;
     res: TResource;
     s, tmp: string;
 begin
 
-  t := TTextFile.Create;
+  t := TFileSystem.CreateTextFile;
   t.Assign(fnam); FileMode:=0; t.Reset;
 
   while not t.EOF do begin

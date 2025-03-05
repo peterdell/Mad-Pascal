@@ -13842,7 +13842,7 @@ var IdentIndex, size: integer;
     emptyLine, yes: Boolean;
     fnam, txt, svar: string;
     varbegin: TString;
-    HeaFile: TTextFile;
+    HeaFile: ITextFile;
 
 // ----------------------------------------------------------------------------
 
@@ -14011,7 +14011,7 @@ begin
 
 	yes := TRUE;
 
-        HeaFile:=TTextFile.Create;
+        HeaFile:=TFileSystem.CreateTextFile;
         HeaFile.Assign(fnam); FileMode:=0; HeaFile.Reset;
 
 	while not HeaFile.EOF do begin
