@@ -13,66 +13,66 @@ type TFile = class
   protected filePath: TFilePath;
   public
         constructor Create;
-	procedure Assign2(filePath: TFilePath); Virtual; Abstract; 
-	procedure Close2; Virtual; Abstract; 
-	procedure Erase2(); Virtual; Abstract;
-        function EOF2():Boolean; Virtual; Abstract;
-	procedure Reset2(); Virtual; Abstract;  // Open for reading
-	procedure Rewrite2(); Virtual; Abstract;  // Open for writing
+	procedure Assign(filePath: TFilePath); Virtual; Abstract; 
+	procedure Close; Virtual; Abstract; 
+	procedure Erase(); Virtual; Abstract;
+        function EOF():Boolean; Virtual; Abstract;
+	procedure Reset(); Virtual; Abstract;  // Open for reading
+	procedure Rewrite(); Virtual; Abstract;  // Open for writing
 end;
 
-type TTextFile2 = class(TFile)
+type TTextFile = class(TFile)
 {$IFNDEF PAS2JS}
   private
-        type TTextFile = TextFile;
+        type TSystemTextFile = System.TextFile;
   private
-        f    : TTextFile;
+        f : TSystemTextFile;
 {$ENDIF}
   public
         constructor Create;
-  	procedure Assign2(filePath: TFilePath); override; 
-	procedure Close2; override; 
-	procedure Erase2(); override; 
-        function EOF2():Boolean; override; 
+  	procedure Assign(filePath: TFilePath); override; 
+	procedure Close; override; 
+	procedure Erase(); override; 
+        function EOF():Boolean; override; 
 
 	procedure Flush2;
 	// https://www.freepascal.org/docs-html/rtl/system/read.html
-	procedure Read2( var Args: Char);
-	procedure ReadLn2( var Args: String);
-	procedure Reset2(); override;
-	procedure Rewrite2(); override;
+	procedure Read( var Args: Char);
+	procedure ReadLn( var Args: String);
+	procedure Reset(); override;
+	procedure Rewrite(); override;
 
-        function Write2(s:string): TTextFile2; overload;
-        function Write2(s:string; w: Integer): TTextFile2; overload;
-        function Write2(i:Integer; w: Integer): TTextFile2; overload;
+        function Write(s:string): TTextFile; overload;
+        function Write(s:string; w: Integer): TTextFile; overload;
+        function Write(i:Integer; w: Integer): TTextFile; overload;
 
-	procedure WriteLn2; overload;
-        procedure WriteLn2(s:string); overload;
-        procedure WriteLn2(s1:string; s2:string); overload;
-        procedure WriteLn2(s1:string; s2:string; s3: string); overload;
+	procedure WriteLn; overload;
+        procedure WriteLn(s:string); overload;
+        procedure WriteLn(s1:string; s2:string); overload;
+        procedure WriteLn(s1:string; s2:string; s3: string); overload;
 end;
 
-type TBinaryFile2 = class(TFile)
+type TBinaryFile = class(TFile)
 {$IFNDEF PAS2JS}
   private
-        type TBinaryFile = file of char;
+        type TSystemBinaryFile = file of char;
   private
-        f: TBinaryFile;
+        f : TSystemBinaryFile;
 {$ENDIF}
   public
         constructor Create;
-  	procedure Assign2(filePath: TFilePath); override; 
+  	procedure Assign(filePath: TFilePath); override; 
   	// https://www.freepascal.org/docs-html/rtl/system/blockread.html
-	procedure BlockRead2(var Buf; count: LongInt; var Result: LongInt );
-	procedure Close2; override;
-	procedure Erase2(); override; 
-        function EOF2():Boolean; override;
+	procedure BlockRead(var Buf; count: LongInt; var Result: LongInt );
+	procedure Close; override;
+	procedure Erase(); override; 
+        function EOF():Boolean; override;
 	// https://www.freepascal.org/docs-html/rtl/system/filepos.html
 	function FilePos2( ):Int64;
-        procedure Read2(var Args: Char); 
-	procedure Reset2(); override; overload;
-	procedure Reset2(l: LongInt); overload;
-	procedure Rewrite2(); override;
+        procedure Read(var Args: Char); 
+	procedure Reset(); override; overload;
+	procedure Reset(l: LongInt); overload;
+	procedure Rewrite(); override;
 	procedure Seek2(Pos: Int64 );
 	
 end;
@@ -95,136 +95,136 @@ end;
 //
 // TTextFile
 //
-constructor TTextFile2.Create;
+constructor TTextFile.Create;
 begin
   Inherited;
 end;
         
-procedure TTextFile2.Assign2(filePath: TFilePath); 
+procedure TTextFile.Assign(filePath: TFilePath); 
 begin
   Self.filePath:=filePath;
-  WriteLn('TODO: Assignining TTextFile2 '+filePath);
+  System.WriteLn('TODO: Assignining TTextFile '+filePath);
 {$IFNDEF PAS2JS}
   AssignFile(f, filePath);
 {$ENDIF}
 end;
 
-procedure TTextFile2.Close2(); 
+procedure TTextFile.Close(); 
 begin
-  WriteLn('TODO: Closing TTextFile2 '+filePath);
+  System.WriteLn('TODO: Closing TTextFile '+filePath);
 {$IFNDEF PAS2JS}
   CloseFile(f);
 {$ENDIF}
 
 end;
 
-procedure TTextFile2.Erase2();
+procedure TTextFile.Erase();
 begin
 {$IFNDEF PAS2JS}
-  Erase(f);
+  System.Erase(f);
 {$ENDIF}
 
 end;
 
-function TTextFile2.EOF2():Boolean;
+function TTextFile.EOF():Boolean;
 begin
 {$IFNDEF PAS2JS}
-  Result:=EOF(f);
+  Result:=System.EOF(f);
 {$ENDIF}
 
 end;
 
 
-procedure TTextFile2.Flush2(); 
+procedure TTextFile.Flush2(); 
 begin
 {$IFNDEF PAS2JS}
-  Flush(f);
+  System.Flush(f);
 {$ENDIF}
 
 end;
 
-procedure TTextFile2.Read2(var Args: Char);
+procedure TTextFile.Read(var Args: Char);
 begin
 {$IFNDEF PAS2JS}
-  Read(f, Args);
+  System.Read(f, Args);
 {$ENDIF}
 
 end;
 
-procedure TTextFile2.ReadLn2(var Args: String);
+procedure TTextFile.ReadLn(var Args: String);
 begin
 {$IFNDEF PAS2JS}
-  ReadLn(f, Args);
+  System.ReadLn(f, Args);
 {$ENDIF}
 
 end;
 
-procedure TTextFile2.Reset2();
+procedure TTextFile.Reset();
 begin
 {$IFNDEF PAS2JS}
-  Reset(f);
+  System.Reset(f);
 {$ENDIF}
 
 end;
 
-procedure TTextFile2.Rewrite2();
+procedure TTextFile.Rewrite();
 begin
 {$IFNDEF PAS2JS}
-  Rewrite(f);
+  System.Rewrite(f);
 {$ENDIF}
 
 end;
 
-function TTextFile2.Write2(s:string): TTextFile2;
+function TTextFile.Write(s:string): TTextFile;
 begin
 {$IFNDEF PAS2JS}
-  Write(f, s);
+  System.Write(f, s);
 {$ENDIF}
 end;
 
-function TTextFile2.Write2(s:string; w: Integer): TTextFile2;
+function TTextFile.Write(s:string; w: Integer): TTextFile;
 begin
 {$IFNDEF PAS2JS}
-  Write(f, s);
+  System.Write(f, s);
 {$ENDIF}
 end;
 
-function TTextFile2.Write2(i:Integer; w: Integer): TTextFile2;
+function TTextFile.Write(i:Integer; w: Integer): TTextFile;
 begin
 {$IFNDEF PAS2JS}
-  Write(f, i);
-{$ENDIF}
-
-end;
-
-procedure TTextFile2.WriteLn2();
-begin
-{$IFNDEF PAS2JS}
- WriteLn(f, '');
+ System.Write(f, i);
 {$ENDIF}
 
 end;
 
-procedure TTextFile2.WriteLn2(s:string); overload;
+procedure TTextFile.WriteLn();
 begin
 {$IFNDEF PAS2JS}
- WriteLn(f, s);
+  System.WriteLn(f, '');
 {$ENDIF}
 
 end;
 
-procedure TTextFile2.WriteLn2( s1:string; s2:string); overload;
+procedure TTextFile.WriteLn(s:string); overload;
 begin
 {$IFNDEF PAS2JS}
- WriteLn(f, s1, s2);
+  System.WriteLn(f, s);
 {$ENDIF}
 
 end;
 
-procedure TTextFile2.WriteLn2(s1:string; s2:string; s3: string); overload;
+procedure TTextFile.WriteLn( s1:string; s2:string); overload;
 begin
 {$IFNDEF PAS2JS}
- WriteLn(f, s1, s2, s3);
+  System.WriteLn(f, s1, s2);
+{$ENDIF}
+
+end;
+
+procedure TTextFile.WriteLn(s1:string; s2:string; s3: string); overload;
+begin
+{$IFNDEF PAS2JS}
+  System.WriteLn(f, s1, s2, s3);
 {$ENDIF}
 
 end;
@@ -232,101 +232,99 @@ end;
 //
 // TBinaryFile
 //
-constructor TBinaryFile2.Create;
+constructor TBinaryFile.Create;
 begin
   Inherited;
 end;
 
-procedure TBinaryFile2.Assign2(filePath: TFilePath); 
+procedure TBinaryFile.Assign(filePath: TFilePath); 
 begin
   Self.filePath:=filePath;
 {$IFNDEF PAS2JS}
 
-  // WriteLn('TODO: Assignining TBinaryFile2 '+filePath);
+  // WriteLn('TODO: Assignining TBinaryFile '+filePath);
   AssignFile(f, filePath);
 {$ENDIF}
 end;
 
-procedure TBinaryFile2.BlockRead2(var Buf; Count: LongInt; var Result: LongInt );
+procedure TBinaryFile.BlockRead(var Buf; Count: LongInt; var Result: LongInt );
 begin
 {$IFNDEF PAS2JS}
-  BlockRead( f, Buf, Count,  Result );
+  System.BlockRead( f, Buf, Count,  Result );
 {$ENDIF}
 end;
 
-procedure TBinaryFile2.Close2(); 
+procedure TBinaryFile.Close(); 
 begin
 {$IFNDEF PAS2JS}
 
-  // WriteLn('TODO: Closing TBinaryFile2 '+filePath);
+  // WriteLn('TODO: Closing TBinaryFile '+filePath);
   CloseFile(f);
 {$ENDIF}
 
 end;
 
-function TBinaryFile2.EOF2():Boolean; 
+function TBinaryFile.EOF():Boolean; 
 begin
 {$IFNDEF PAS2JS}
-  Result := EOF(f);
+  Result := System.EOF(f);
 {$ENDIF}
 end;
 
-procedure TBinaryFile2.Erase2(); 
+procedure TBinaryFile.Erase(); 
 begin
 {$IFNDEF PAS2JS}
-  Erase(f);
-{$ENDIF}
-
-end;
-
-function TBinaryFile2.FilePos2( ):Int64;
-begin
-{$IFNDEF PAS2JS}
-  Result :=  FilePos(f);
-{$ENDIF}
-end;
-
-procedure TBinaryFile2.Read2(var Args: Char);
-begin
-{$IFNDEF PAS2JS}
-
-  Read(f, Args);
+  System.Erase(f);
 {$ENDIF}
 
 end;
 
-
-procedure TBinaryFile2.Reset2(); overload;
+function TBinaryFile.FilePos2( ):Int64;
 begin
 {$IFNDEF PAS2JS}
-
-  // WriteLn('TODO: Reset2 TBinaryFile2 '+filePath);
-  Reset(f);
+  Result := System.FilePos(f);
 {$ENDIF}
 end;
 
-procedure TBinaryFile2.Reset2(l: LongInt); overload;
+procedure TBinaryFile.Read(var Args: Char);
 begin
 {$IFNDEF PAS2JS}
 
-  // WriteLn('TODO: Reset2 TBinaryFile2 '+filePath);
-  Reset(f,l);
+  System.Read(f, Args);
+{$ENDIF}
+
+end;
+
+
+procedure TBinaryFile.Reset(); overload;
+begin
+{$IFNDEF PAS2JS}
+  // WriteLn('TODO: Reset TBinaryFile '+filePath);
+  System.Reset(f);
+{$ENDIF}
+end;
+
+procedure TBinaryFile.Reset(l: LongInt); overload;
+begin
+{$IFNDEF PAS2JS}
+  // WriteLn('TODO: Reset TBinaryFile '+filePath);
+  System.Reset(f,l);
 {$ENDIF}
  
 end;
 
-procedure TBinaryFile2.Rewrite2();
+procedure TBinaryFile.Rewrite();
 begin
 {$IFNDEF PAS2JS}
-  Rewrite(f);
+  System.Rewrite(f);
 {$ENDIF}
  
 end;
 
-procedure TBinaryFile2.Seek2(Pos: Int64 );
+procedure TBinaryFile.Seek2(Pos: Int64 );
 begin
 {$IFNDEF PAS2JS}
-  Seek(f, pos);
+  System.Seek(f, pos);
 {$ENDIF}
 end;
 

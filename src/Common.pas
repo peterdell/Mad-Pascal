@@ -597,7 +597,7 @@ var
 
   FastMul: Integer = -1;
 
-  OutFile: TTextFile2;
+  OutFile: TTextFile;
 
   //AsmLabels: array of integer;
 
@@ -632,7 +632,7 @@ var
 
 {$IFDEF USEOPTFILE}
 
-  OptFile: TTextFile2;
+  OptFile: TTextFile;
 
 {$ENDIF}
 

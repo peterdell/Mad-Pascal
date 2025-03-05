@@ -256,17 +256,17 @@ end;
 
 procedure AddResource(fnam: string);
 var i, j: integer;
-    t: TTextFile2;
+    t: TTextFile;
     res: TResource;
     s, tmp: string;
 begin
 
-  t := TTextFile2.Create;
-  t.Assign2(fnam); FileMode:=0; t.Reset2;
+  t := TTextFile.Create;
+  t.Assign(fnam); FileMode:=0; t.Reset;
 
-  while not t.eof2 do begin
+  while not t.EOF do begin
     s := '';
-    t.readln2(s);
+    t.ReadLn(s);
 
     i:=1;
     omin_spacje(i, s);
@@ -332,7 +332,7 @@ begin
 
   end;
 
-  t.Close2;
+  t.Close;
   t.Free;
 
 end;	//AddResource
@@ -410,7 +410,7 @@ var
 
 
   procedure Tokenize(fnam: string; testUnit: Boolean = false);
-  var InFile: TBinaryFile2;
+  var InFile: TBinaryFile;
       _line: integer;
       _uidx: integer;
 
@@ -509,7 +509,7 @@ var
 
    repeat
     c := ' ';
-    InFile.Read2(c);
+    InFile.Read(c);
 
     if c = LF then Inc(Line);
     case i of
@@ -578,7 +578,7 @@ var
 
 
 	procedure bin2csv(fn: string);
-	var bin: TBinaryFile2;
+	var bin: TBinaryFile;
 	    tmp: byte;
 	    NumRead: integer;
 	    yes: Boolean;
@@ -588,11 +588,11 @@ var
 
 	  tmp:=0;
 	  NumRead:=0;
-          bin:=TBinaryFile2.Create;
-	  bin.Assign2(fn); FileMode:=0; bin.Reset2(1);
+          bin:=TBinaryFile.Create;
+	  bin.Assign(fn); FileMode:=0; bin.Reset(1);
 
   	  Repeat
-    		bin.BlockRead2(tmp, 1, NumRead);
+    		bin.BlockRead(tmp, 1, NumRead);
 
 		if NumRead = 1 then begin
 
@@ -605,7 +605,7 @@ var
 
   	  Until (NumRead = 0);
 
-	  bin.Close2();
+	  bin.Close();
 	  bin.Free;
 
 	end;
@@ -1000,7 +1000,7 @@ var
   begin
 
    while (ch <> LF) do
-     InFile.Read2(ch);
+     InFile.Read(ch);
 
   end;
 
@@ -1012,22 +1012,22 @@ var
       _line: integer;
   begin
 
-  InFile.Read2(c);
+  InFile.Read(c);
 
    if c = '(' then begin
     c2:=' ';
-    InFile.Read2(c2);
+    InFile.Read(c2);
 
     if c2='*' then begin				// Skip comments (*   *)
 
      repeat
       c2:=c;
-      InFile.Read2(c);
+      InFile.Read(c);
 
       if c = LF then Inc(Line);
      until (c2 = '*') and (c = ')');
 
-     InFile.Read2(c);
+     InFile.Read(c);
 
     end else
      InFile.Seek2(InFile.FilePos2() - 1);
@@ -1042,7 +1042,7 @@ var
 
     _line := Line;
 
-    InFile.Read2(c2);
+    InFile.Read(c2);
 
     if c2='$' then
      dir:=true
@@ -1050,7 +1050,7 @@ var
      InFile.Seek2(InFile.FilePos2() - 1);
 
     repeat						// Skip comments
-      InFile.Read2(c);
+      InFile.Read(c);
 
       if dir then directive := directive + c;
 
@@ -1062,11 +1062,11 @@ var
 
     if dir then ReadDirective(directive, _line);
 
-    InFile.Read2(c);
+    InFile.Read(c);
 
    end else
     if c = '/' then begin
-     InFile.Read2(c2);
+     InFile.Read(c2);
 
      if c2 = '/' then
       ReadSingleLineComment
@@ -1116,7 +1116,7 @@ var
 
   if not (c in ['''', ' ', '#', '~', '$', TAB, LF, CR, '{', (*'}',*) 'A'..'Z', '_', '0'..'9', '=', '.', ',', ';', '(', ')', '*', '/', '+', '-', ':', '>', '<', '^', '@', '[', ']']) then
     begin
-    // InFile.Close2();
+    // InFile.Close();
     Error(NumTok, 'Unknown character: ' + c);
     end;
   end;
@@ -1242,10 +1242,10 @@ var
 
   begin
 
-  inFile:=TBinaryFile2.Create;
-  InFile.Assign2(fnam);		// UnitIndex = 1 main program
+  inFile:=TBinaryFile.Create;
+  InFile.Assign(fnam);		// UnitIndex = 1 main program
   FileMode:=0;
-  InFile.Reset2();
+  InFile.Reset();
 
   Text := '';
 
@@ -1411,7 +1411,7 @@ var
 	  _line := line;
 
 	  repeat					// pomijaj puste znaki i sprawdz jaki znak zastaniesz
-	   InFile.Read2(ch);
+	   InFile.Read(ch);
 	   if ch = LF then inc(line);
 	  until not(ch in AllowWhiteSpaces);
 
@@ -1424,7 +1424,7 @@ var
 
 	   InFile.Seek2(tmp - 1);
 
-	   InFile.Read2(ch);
+	   InFile.Read(ch);
 
 	   AsmBlock[AsmBlockIndex] := '';
 	   Text:='';
@@ -1434,7 +1434,7 @@ var
 
 	    if ch = LF then inc(line);
 
-	    if ch = CR then InFile.Read2(ch);		// CR LF
+	    if ch = CR then InFile.Read(ch);		// CR LF
 
 	    AsmBlock[AsmBlockIndex] := '';
 	    Text:='';
@@ -1446,7 +1446,7 @@ var
 }
 
 	   while true do begin
-	    InFile.Read2(ch);
+	    InFile.Read(ch);
 
 	    SaveAsmBlock(ch);
 
@@ -1539,7 +1539,7 @@ var
 		 inc(Spaces);
 
 		 repeat
-		  InFile.Read2(ch);
+		  InFile.Read(ch);
 
 		  if ch = LF then	//Inc(Line);
 		   Error(NumTok, 'String exceeds line');
@@ -1548,7 +1548,7 @@ var
 		   Text := Text + ch
 		  else begin
 
-		   InFile.Read2(ch2);
+		   InFile.Read(ch2);
 
 		   if ch2='''' then begin
 		    Text := Text + '''';
@@ -1567,7 +1567,7 @@ var
 		 if ch in [' ',TAB] then begin
 			ch2:=ch;
 			Err:=InFile.FilePos2();
-			while ch2 in [' ',TAB] do InFile.Read2(ch2);
+			while ch2 in [' ',TAB] do InFile.Read(ch2);
 
 			if ch2 in ['*','~','+'] then
 			 ch:=ch2
@@ -1599,7 +1599,7 @@ var
 		 if ch in [' ',TAB] then begin
 			ch2:=ch;
 			Err:=InFile.FilePos2();
-			while ch2 in [' ',TAB] do InFile.Read2(ch2);
+			while ch2 in [' ',TAB] do InFile.Read(ch2);
 
 			if ch2 in ['''','+'] then
 			 ch:=ch2
@@ -1630,7 +1630,7 @@ var
 		 if ch in [' ',TAB] then begin
 			ch2:=ch;
 			Err:=InFile.FilePos2();
-			while ch2 in [' ',TAB] do InFile.Read2(ch2);
+			while ch2 in [' ',TAB] do InFile.Read(ch2);
 
 			if ch2 in ['''','+'] then
 			 ch:=ch2
@@ -1756,7 +1756,7 @@ var
          end;
      end;
   end;// try
-  InFile.Close2;
+  InFile.Close;
   InFile.Free;
 end;
 

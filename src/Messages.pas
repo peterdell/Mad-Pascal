@@ -238,8 +238,8 @@ begin
 
  FreeTokens;
 
- OutFile.Close2;
- OutFile.Erase2;
+ OutFile.Close;
+ OutFile.Erase;
 
  RaiseHaltException(2);
 
@@ -273,8 +273,8 @@ begin
 
  FreeTokens;
 
- OutFile.Close2;
- OutFile.Erase2;
+ OutFile.Close;
+ OutFile.Erase;
 
  RaiseHaltException(2);
 

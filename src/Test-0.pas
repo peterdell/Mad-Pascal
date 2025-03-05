@@ -29,23 +29,23 @@ begin
 end;
 
 procedure TestFileIO(filePath: TFilePath);
-var binFile: TBinaryFile2;
+var binFile: TBinaryFile;
 var c: Char;
 begin
 
-  binFile:=TBinaryFile2.Create;
-  binFile.Assign2(filePath);
+  binFile:=TBinaryFile.Create;
+  binFile.Assign(filePath);
   try
-    binFile.Reset2;
+    binFile.Reset;
     
-    while not binFile.eof2 do
+    while not binFile.EOF do
     begin
-      binFile.Read2(c);
+      binFile.Read(c);
       Write(c);
       // WriteLn(IntToStr(Ord(c)));
     end;
-//      binFile.Read2(c);
-    binFile.Close2;
+//      binFile.Read(c);
+    binFile.Close;
   except
     Writeln('ERROR: TestFileIO failed with Exception.');
   	

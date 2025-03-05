@@ -13842,7 +13842,7 @@ var IdentIndex, size: integer;
     emptyLine, yes: Boolean;
     fnam, txt, svar: string;
     varbegin: TString;
-    HeaFile: TTextFile2;
+    HeaFile: TTextFile;
 
 // ----------------------------------------------------------------------------
 
@@ -14011,16 +14011,16 @@ begin
 
 	yes := TRUE;
 
-        HeaFile:=TTextFile2.Create;
-        HeaFile.Assign2(fnam); FileMode:=0; HeaFile.Reset2;
+        HeaFile:=TTextFile.Create;
+        HeaFile.Assign(fnam); FileMode:=0; HeaFile.Reset;
 
-	while not HeaFile.eof2 do begin
-	  HeaFile.readln2(txt);
+	while not HeaFile.EOF do begin
+	  HeaFile.ReadLn(txt);
 
 	  txt:=AnsiUpperCase(txt);
 
 	  if (length(txt) > 255) or (pos(#0, txt) > 0) then begin
-	   HeaFile.Close2;
+	   HeaFile.Close;
 
 	   Error(Ident[IdentIndex].Libraries, 'Error: MADS header file ''' + fnam + ''' has invalid format.');
 	  end;
@@ -14037,7 +14037,7 @@ begin
 	if yes then
 	  iError(Ident[IdentIndex].Libraries, UnknownIdentifier, IdentIndex);
 
-	HeaFile.Close2;
+	HeaFile.Close;
         HeaFile.Free;
 
         if RCLIBRARY then begin asm65(''); asm65(#9'rmb'); asm65('') end;				// reset bank -> #0
@@ -17513,14 +17513,14 @@ begin
 
  {$ENDIF}
 
- OutFile:=TTextFile2.Create;
+ OutFile:=TTextFile.Create;
  if ExtractFileName(outputFile) <> '' then
-  OutFile.Assign2(outputFile)
+  OutFile.Assign(outputFile)
  else
-  OutFile.Assign2( ChangeFileExt(UnitName[1].Name, '.a65') );
+  OutFile.Assign( ChangeFileExt(UnitName[1].Name, '.a65') );
 
  FileMode:=1;
- OutFile.Rewrite2;
+ OutFile.Rewrite;
 
  TextColor(WHITE);
 
@@ -17613,12 +17613,12 @@ begin
  CompileProgram;
 
  OutFile.Flush2;
- OutFile.Close2;
+ OutFile.Close;
  OutFile.Free;
 
 {$IFDEF USEOPTFILE}
 
- OptFile.Close2;
+ OptFile.Close;
  OptFile.Free;
 
 {$ENDIF}

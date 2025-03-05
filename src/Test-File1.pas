@@ -29,16 +29,16 @@ begin
 end;
 
 procedure TestFileIO(filePath: TFilePath);
-var binFile: TBinaryFile2;
+var binFile: TBinaryFile;
 begin
 
-  binFile:=TBinaryFile2.Create;
-  binFile.Assign2(filePath);
+  binFile:=TBinaryFile.Create;
+  binFile.Assign(filePath);
   try
-    binFile.Reset2;
+    binFile.Reset;
 
   finally
-    binFile.Close2;
+    binFile.Close;
   end;
   binFile.Free;
   Writeln('TestFileIO completed.');
