@@ -35,7 +35,7 @@ type TTextFile = class(TFile)
 	procedure Erase(); override; 
         function EOF():Boolean; override; 
 
-	procedure Flush2;
+	procedure Flush;
 	// https://www.freepascal.org/docs-html/rtl/system/read.html
 	procedure Read( var Args: Char);
 	procedure ReadLn( var Args: String);
@@ -68,7 +68,7 @@ type TBinaryFile = class(TFile)
 	procedure Erase(); override; 
         function EOF():Boolean; override;
 	// https://www.freepascal.org/docs-html/rtl/system/filepos.html
-	function FilePos2( ):Int64;
+	function FilePos( ):Int64;
         procedure Read(var Args: Char); 
 	procedure Reset(); override; overload;
 	procedure Reset(l: LongInt); overload;
@@ -135,7 +135,7 @@ begin
 end;
 
 
-procedure TTextFile.Flush2(); 
+procedure TTextFile.Flush(); 
 begin
 {$IFNDEF PAS2JS}
   System.Flush(f);
@@ -279,7 +279,7 @@ begin
 
 end;
 
-function TBinaryFile.FilePos2( ):Int64;
+function TBinaryFile.FilePos( ):Int64;
 begin
 {$IFNDEF PAS2JS}
   Result := System.FilePos(f);

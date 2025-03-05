@@ -1030,7 +1030,7 @@ var
      InFile.Read(c);
 
     end else
-     InFile.Seek2(InFile.FilePos2() - 1);
+     InFile.Seek2(InFile.FilePos() - 1);
 
    end;
 
@@ -1047,7 +1047,7 @@ var
     if c2='$' then
      dir:=true
     else
-     InFile.Seek2(InFile.FilePos2() - 1);
+     InFile.Seek2(InFile.FilePos() - 1);
 
     repeat						// Skip comments
       InFile.Read(c);
@@ -1071,7 +1071,7 @@ var
      if c2 = '/' then
       ReadSingleLineComment
      else
-      InFile.Seek2(InFile.FilePos2() - 1);
+      InFile.Seek2(InFile.FilePos() - 1);
 
     end;
 
@@ -1276,7 +1276,7 @@ var
 	  begin
 	  SafeReadChar(ch);
 	  if ch = '.' then
-	    InFile.Seek2(InFile.FilePos2() - 1)	// Range ('..') token
+	    InFile.Seek2(InFile.FilePos() - 1)	// Range ('..') token
 	  else
 	    begin				// Fractional part found
 	    Frac := '.';
@@ -1320,7 +1320,7 @@ var
 
 	if Text[length(Text)] = '.' then begin
 	 SetLength(Text, length(Text)-1);
-	 InFile.Seek2(InFile.FilePos2() - 2);
+	 InFile.Seek2(InFile.FilePos() - 2);
 	 dec(err);
 	end;
 
@@ -1336,7 +1336,7 @@ var
 
 	 if (im > 0) and (Defines[im].Macro <> '') then begin
 
-	  tmp:=InFile.FilePos2();
+	  tmp:=InFile.FilePos();
 	  ch2:=ch;
 	  Num:='';			// read parameters, max 255 chars
 
@@ -1406,7 +1406,7 @@ var
 	  Tok[NumTok].Kind := CurToken;
 	  Tok[NumTok].Value:= 0;
 
-	  tmp:=InFile.FilePos2();
+	  tmp:=InFile.FilePos();
 
 	  _line := line;
 
@@ -1469,7 +1469,7 @@ var
 
 	  end else begin
 
-	  InFile.Seek2(InFile.FilePos2() - 1);
+	  InFile.Seek2(InFile.FilePos() - 1);
 
 	  AsmFound:=true;
 
@@ -1554,7 +1554,7 @@ var
 		    Text := Text + '''';
 		    ch:=#0;
 		   end else
-		    InFile.Seek2( InFile.FilePos2() - 1);
+		    InFile.Seek2( InFile.FilePos() - 1);
 
 		  end;
 
@@ -1566,7 +1566,7 @@ var
 
 		 if ch in [' ',TAB] then begin
 			ch2:=ch;
-			Err:=InFile.FilePos2();
+			Err:=InFile.FilePos();
 			while ch2 in [' ',TAB] do InFile.Read(ch2);
 
 			if ch2 in ['*','~','+'] then
@@ -1598,7 +1598,7 @@ var
 
 		 if ch in [' ',TAB] then begin
 			ch2:=ch;
-			Err:=InFile.FilePos2();
+			Err:=InFile.FilePos();
 			while ch2 in [' ',TAB] do InFile.Read(ch2);
 
 			if ch2 in ['''','+'] then
@@ -1629,7 +1629,7 @@ var
 
 		 if ch in [' ',TAB] then begin
 			ch2:=ch;
-			Err:=InFile.FilePos2();
+			Err:=InFile.FilePos();
 			while ch2 in [' ',TAB] do InFile.Read(ch2);
 
 			if ch2 in ['''','+'] then
@@ -1716,11 +1716,11 @@ var
 
 	   Frac := '';
 
-	   InFile.Seek2( InFile.FilePos2() - 1);
+	   InFile.Seek2( InFile.FilePos() - 1);
 
 	 end else
 	  begin
-	  InFile.Seek2( InFile.FilePos2() - 1);
+	  InFile.Seek2( InFile.FilePos() - 1);
 	  Line:=Line2;
 
 	  if ch in [':','>', '<', '.'] then begin				// Single-character token found

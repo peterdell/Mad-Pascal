@@ -17612,7 +17612,7 @@ begin
  Pass := CODEGENERATIONPASS;
  CompileProgram;
 
- OutFile.Flush2;
+ OutFile.Flush;
  OutFile.Close;
  OutFile.Free;
 
