@@ -8,8 +8,43 @@ interface
 type TFilePath = string;
 type TFilePosition = LongInt;
 
+type IFile = interface
+	procedure Assign(filePath: TFilePath); Virtual; Abstract; 
+	procedure Close; Virtual; Abstract; 
+	procedure Erase(); Virtual; Abstract;
+        function EOF():Boolean; Virtual; Abstract;
+	procedure Reset(); Virtual; Abstract;  // Open for reading
+	procedure Rewrite(); Virtual; Abstract;  // Open for writing
+end;
 
-type TFile = class
+type IBinaryFile = interface(IFile)
+  	// https://www.freepascal.org/docs-html/rtl/system/blockread.html
+	procedure BlockRead(var Buf; count: LongInt; var Result: LongInt );
+	// https://www.freepascal.org/docs-html/rtl/system/filepos.html
+	function FilePos( ):Int64;
+        procedure Read(var Args: Char); 
+	procedure Reset(l: LongInt); overload;
+	procedure Seek2(Pos: Int64 );
+end;
+
+type ITextFile = interface(IFile)
+	procedure Flush;
+	// https://www.freepascal.org/docs-html/rtl/system/read.html
+	procedure Read( var Args: Char);
+	procedure ReadLn( var Args: String);
+
+        function Write(s:string): ITextFile; overload;
+        function Write(s:string; w: Integer): ITextFile; overload;
+        function Write(i:Integer; w: Integer): ITextFile; overload;
+
+	procedure WriteLn; overload;
+        procedure WriteLn(s:string); overload;
+        procedure WriteLn(s1:string; s2:string); overload;
+        procedure WriteLn(s1:string; s2:string; s3: string); overload;
+end;
+
+
+type TFile = class(TInterfacedObject, IFile)
   protected filePath: TFilePath;
   public
         constructor Create;
