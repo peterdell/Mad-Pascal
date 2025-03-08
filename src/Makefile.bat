@@ -1,11 +1,16 @@
 @echo off
 setlocal
-set PATH=%WUDSN_TOOLS_FOLDER%\PAS\FPC.jac;%PATH%
+set PATH=%WUDSN_TOOLS_FOLDER%\PAS\FPC.jac;%WUDSN_TOOLS_FOLDER%\ASM\MADS\bin\windows_x86_64;%PATH%
 set MP_FOLDER=%~dp0..
 set MP_SRC_FOLDER=%MP_FOLDER%\src
 
 set TEST_EXE=%MP_SRC_FOLDER%\Test-0.exe
 set MP_EXE=%MP_SRC_FOLDER%\mp.exe
+
+set TEST_MP=Test-MP
+set TEST_MP_PAS=%TEST_MP%.pas
+set TEST_MP_ASM=%TEST_MP%.a65
+set TEST_MP_XEX=%TEST_MP%.xex
 
 cd /d %MP_SRC_FOLDER%
 
@@ -25,6 +30,15 @@ if not "%MP_EXE%"=="" (
   if errorlevel 1 goto :eof
   if exist "%MP_EXE%" (
     echo Starting test program "%MP_EXE%".
-    if exist %MP_EXE%  %MP_EXE% -ipath:%MP_FOLDER%\lib Test-MP.pas
+    if exist %TEST_MP_ASM% del %TEST_MP_ASM%
+    if exist %MP_EXE%  %MP_EXE% -ipath:%MP_FOLDER%\lib %TEST_MP_PAS%
+    if exist %TEST_MP_ASM% (
+       if exist %TEST_MP_XEX% del %TEST_MP_XEX%
+       mads %TEST_MP_ASM% -x -i:%MP_FOLDER%\base -o:%TEST_MP_XEX%
+       if exist %TEST_MP_XEX% (
+          echo Starting test program "%TEST_MP_XEX%".
+          %TEST_MP_XEX%
+       ) 
+    )
   )
 )

@@ -19,3 +19,4 @@ test/lib
 test/mp
 test/wlibs
 test/test_temp/
+*.xex
