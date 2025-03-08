@@ -9105,7 +9105,7 @@ case Tok[i].Kind of
 
 	    if (ValType in IntegerTypes) and (VarType in [SINGLETOK, HALFSINGLETOK]) then Int2Float(ConstVal);
 
-	    move(ConstVal, ftmp, sizeof(ftmp));
+	    MoveTFloat(ConstVal, ftmp);
 
 	    if (VarType = HALFSINGLETOK) {or (ValType = HALFSINGLETOK)} then begin
 	      ConstVal := CardToHalf( ftmp );
@@ -9143,7 +9143,7 @@ case Tok[i].Kind of
 
 	    if ValType in IntegerTypes then Int2Float(ConstVal);
 
-	    move(ConstVal, ftmp, sizeof(ftmp));
+	    MoveTFloat(ConstVal, ftmp);
 
 	    if (VarType = HALFSINGLETOK) or (ValType = HALFSINGLETOK) then begin
 	      ConstVal := CardToHalf( ftmp );
@@ -9185,7 +9185,7 @@ case Tok[i].Kind of
      Int2Float(ConstVal);
 
 
-     move(ConstVal, ftmp, sizeof(ftmp));
+     MoveTFloat(ConstVal, ftmp);
 
      if VarType = HALFSINGLETOK then
       ConstVal := CardToHalf( ftmp )
@@ -9211,7 +9211,7 @@ case Tok[i].Kind of
 
     ftmp:=FromSingle(fl);
 
-    move(ftmp, ConstVal, sizeof(ftmp));
+    MoveTFloat(ftmp, ConstVal);
 
     ValType := REALTOK;
 
@@ -9483,7 +9483,7 @@ case Tok[i].Kind of
 
 	  if not(ValType in RealTypes) then Int2Float(ConstVal);
 
-	  move(ConstVal, ftmp, sizeof(ftmp));
+	  MoveTFloat(ConstVal, ftmp);
 	  ConstVal := ftmp[1];
 
 	  ValType := SINGLETOK;
@@ -9990,14 +9990,14 @@ if SafeCompileConstExpression(j, ConstVal, ValType, VarType) then begin
  if Tok[i].Kind = MINUSTOK then
    if ValType in RealTypes then begin		// Unary minus (RealTypes)
 
-     move(ConstVal, ftmp, sizeof(ftmp));
+     MoveTFloat(ConstVal, ftmp);
      move(ftmp[1], fl, sizeof(fl));
 
      fl := -fl;
 
      ftmp:=FromSingle(fl);
 
-     move(ftmp, ConstVal, sizeof(ftmp));
+     MoveTFloat(ftmp, ConstVal);
 
    end else begin
      ConstVal := -ConstVal;     		// Unary minus (IntegerTypes)
@@ -10009,12 +10009,12 @@ if SafeCompileConstExpression(j, ConstVal, ValType, VarType) then begin
 
 
  if ValType = SINGLETOK then begin
-  move(ConstVal, ftmp, sizeof(ftmp));
+  MoveTFloat(ConstVal, ftmp);
   ConstVal := ftmp[1];
  end;
 
  if ValType = HALFSINGLETOK then begin
-  move(ConstVal, ftmp, sizeof(ftmp));
+  MoveTFloat(ConstVal, ftmp);
   ConstVal := CardToHalf( ftmp );
  end;
 
@@ -10128,14 +10128,14 @@ begin
 
 
    if (ValType = HALFSINGLETOK) {or ((VarType = HALFSINGLETOK) and (ValType in RealTypes))} then begin
-     move(ConstVal, ftmp, sizeof(ftmp));
+     MoveTFloat(ConstVal, ftmp);
      ConstVal := CardToHalf( ftmp );
      ValType := HALFSINGLETOK;
      VarType := HALFSINGLETOK;
    end;
 
    if (ValType = SINGLETOK) {or ((VarType = SINGLETOK) and (ValType in RealTypes))} then begin
-     move(ConstVal, ftmp, sizeof(ftmp));
+     MoveTFloat(ConstVal, ftmp);
      ConstVal := ftmp[1];
      ValType := SINGLETOK;
      VarType := SINGLETOK;
@@ -13852,7 +13852,7 @@ var IdentIndex, size: integer;
 
     ftmp:=Zero;
 
-    move(Ident[IdentIndex].Value, ftmp, sizeof(ftmp));
+    MoveTFloat(Ident[IdentIndex].Value, ftmp);
 
     case Ident[IdentIndex].DataType of
      SHORTREALTOK, REALTOK: v := ftmp[0];
@@ -14190,8 +14190,7 @@ begin
 		       end;
 
 	    SINGLETOK: begin
-			move(ConstVal, ftmp, sizeof(ftmp));
-
+			MoveTFloat(ConstVal, ftmp);
 			ConstVal := ftmp[1];
 
 			StaticStringData[ConstDataSize]   := byte(ConstVal);
@@ -14201,7 +14200,7 @@ begin
 		       end;
 
 	HALFSINGLETOK: begin
-			move(ConstVal, ftmp, sizeof(ftmp));
+			MoveTFloat(ConstVal, ftmp);
 			ConstVal := CardToHalf( ftmp );
 
 			StaticStringData[ConstDataSize]   := byte(ConstVal);

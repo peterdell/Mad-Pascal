@@ -338,7 +338,7 @@ begin
 		       end;
 
 	    SINGLETOK: begin
-			move(ConstVal, ftmp, sizeof(ftmp));
+			MoveTFloat(ConstVal, ftmp);
 
 			ConstVal := ftmp[1];
 
@@ -349,7 +349,7 @@ begin
 		       end;
 
 	HALFSINGLETOK: begin
-			move(ConstVal, ftmp, sizeof(ftmp));
+			MoveTFloat(ConstVal, ftmp);
 			ConstVal := CardToHalf( ftmp );
 
 			DataSegment[ConstDataSize]   := byte(ConstVal);
@@ -683,7 +683,7 @@ case Tok[i].Kind of
 
       if ConstValType in [HALFSINGLETOK, SINGLETOK] then begin
 
-    	move(ConstVal, ftmp, sizeof(ftmp));
+    	MoveTFloat(ConstVal, ftmp);
 	move(ftmp[1], fl, sizeof(fl));
 
 	case Kind of
@@ -1258,7 +1258,7 @@ while Tok[j + 1].Kind in [MULTOK, DIVTOK, MODTOK, IDIVTOK, SHLTOK, SHRTOK, ANDTO
   case Tok[j + 1].Kind of
 
     MULTOK:  if ConstValType in RealTypes then begin
-    		move(ConstVal, ftmp, sizeof(ftmp));
+    		MoveTFloat(ConstVal, ftmp);
     		move(RightConstVal, ftmp_, sizeof(ftmp_));
 
 		move(ftmp[1], fl, sizeof(fl));
@@ -1273,7 +1273,7 @@ while Tok[j + 1].Kind in [MULTOK, DIVTOK, MODTOK, IDIVTOK, SHLTOK, SHRTOK, ANDTO
     		ConstVal := ConstVal * RightConstVal;
 
     DIVTOK:  begin
-    		move(ConstVal, ftmp, sizeof(ftmp));
+    		MoveTFloat(ConstVal, ftmp);
     		move(RightConstVal, ftmp_, sizeof(ftmp_));
 
 		move(ftmp[1], fl, sizeof(fl));
@@ -1344,7 +1344,7 @@ if Tok[i].Kind = MINUSTOK then begin
 
  if ConstValType in RealTypes then begin	// Unary minus (RealTypes)
 
-  move(ConstVal, ftmp, sizeof(ftmp));
+  MoveTFloat(ConstVal, ftmp);
   move(ftmp[1], fl, sizeof(fl));
 
   fl := -fl;
@@ -1393,7 +1393,7 @@ end;
 
   case Tok[j + 1].Kind of
     PLUSTOK:  if ConstValType in RealTypes then begin
-    		move(ConstVal, ftmp, sizeof(ftmp));
+    		MoveTFloat(ConstVal, ftmp);
     		move(RightConstVal, ftmp_, sizeof(ftmp_));
 
 		move(ftmp[1], fl, sizeof(fl));
@@ -1408,7 +1408,7 @@ end;
     		ConstVal := ConstVal + RightConstVal;
 
     MINUSTOK: if ConstValType in RealTypes then begin
-    		move(ConstVal, ftmp, sizeof(ftmp));
+    		MoveTFloat(ConstVal, ftmp);
     		move(RightConstVal, ftmp_, sizeof(ftmp_));
 
 		move(ftmp[1], fl, sizeof(fl));
@@ -1418,7 +1418,7 @@ end;
 
 		ftmp:=FromSingle(fl);
 
-		move(ftmp, ConstVal, sizeof(ftmp));
+		MoveTFloat(ftmp, ConstVal);
 
     	      end else
     		ConstVal := ConstVal - RightConstVal;

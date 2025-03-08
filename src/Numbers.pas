@@ -43,7 +43,7 @@ begin
 
   ftmp := FromSingle(fl);
 
-  move(ftmp, ConstVal, sizeof(ftmp));
+  MoveTFloat(ftmp, ConstVal);
 
 end;
 
