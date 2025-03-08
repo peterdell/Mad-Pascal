@@ -9,12 +9,20 @@
         <Filename Value="LanguageTests.lpr"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <CursorPos X="40" Y="10"/>
+        <TopLine Value="27"/>
+        <CursorPos X="3" Y="38"/>
         <UsageCount Value="20"/>
         <Loaded Value="True"/>
       </Unit>
+      <Unit>
+        <Filename Value="mp.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="51"/>
+        <CursorPos X="15" Y="55"/>
+        <UsageCount Value="10"/>
+      </Unit>
     </Units>
-    <JumpHistory HistoryIndex="5">
+    <JumpHistory HistoryIndex="14">
       <Position>
         <Filename Value="LanguageTests.lpr"/>
         <Caret Line="15" Column="15"/>
@@ -39,6 +47,42 @@
         <Filename Value="LanguageTests.lpr"/>
         <Caret Line="13" Column="24"/>
       </Position>
+      <Position>
+        <Filename Value="LanguageTests.lpr"/>
+        <Caret Line="24" Column="3"/>
+      </Position>
+      <Position>
+        <Filename Value="LanguageTests.lpr"/>
+        <Caret Line="22" TopLine="11"/>
+      </Position>
+      <Position>
+        <Filename Value="LanguageTests.lpr"/>
+        <Caret Line="23" Column="7" TopLine="11"/>
+      </Position>
+      <Position>
+        <Filename Value="LanguageTests.lpr"/>
+        <Caret Line="69" Column="16" TopLine="50"/>
+      </Position>
+      <Position>
+        <Filename Value="LanguageTests.lpr"/>
+        <Caret Line="6"/>
+      </Position>
+      <Position>
+        <Filename Value="LanguageTests.lpr"/>
+        <Caret Line="8" Column="49"/>
+      </Position>
+      <Position>
+        <Filename Value="LanguageTests.lpr"/>
+        <Caret Line="35" Column="24" TopLine="33"/>
+      </Position>
+      <Position>
+        <Filename Value="LanguageTests.lpr"/>
+        <Caret Line="27" Column="52" TopLine="16"/>
+      </Position>
+      <Position>
+        <Filename Value="LanguageTests.lpr"/>
+        <Caret Line="38" Column="12" TopLine="27"/>
+      </Position>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
@@ -51,12 +95,10 @@
       </Modes>
     </RunParams>
     <HistoryLists>
-      <List Name="WorkingDirectory" Type="File" Count="1"/>
       <List Name="LaunchingApplication" Type="File" Count="2">
         <Item1 Value="C:\Windows\system32\cmd.exe /k ${TargetCmdLine}"/>
         <Item2 Value="C:\Windows\system32\cmd.exe /C ${TargetCmdLine}"/>
       </List>
-      <List Name="CommandLineParameters" Count="1"/>
     </HistoryLists>
   </ProjectSession>
 </CONFIG>
