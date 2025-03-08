@@ -4,9 +4,9 @@
 
 {$DEFINE OPTIMIZECODE}
 
-// Form not accepted by PAS2JS
-// {$I+}
-
-
-//
-{$IOCHECKS ON}
+// The Delphi form is not accepted by PAS2JS
+{$IFNDEF PAS2JS}
+  {$I+}
+{$ELSE}
+  {$IOCHECKS ON}
+{$ENDIF}
