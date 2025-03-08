@@ -28,12 +28,23 @@ procedure NormVideo;
 
 implementation
 
-procedure TextColor(Color: Byte);
+{$IFNDEF PAS2JS}
+uses Crt;
+{$ENDIF}
+
+
+procedure TextColor(color: Byte);
 begin
+ {$IFNDEF PAS2JS}
+ Crt.TextColor(color);
+ {$ENDIF}
 end;
 
 procedure NormVideo();
 begin
+ {$IFNDEF PAS2JS}
+ Crt.Normvideo;
+ {$ENDIF}
 end;
 
 

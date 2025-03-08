@@ -21,7 +21,6 @@ implementation
 uses math, common, parser, scanner, messages;
 
 type
-//  sop=string[10];
   sop=string;
 
 var

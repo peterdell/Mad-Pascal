@@ -1509,7 +1509,6 @@ var
 	   end
 	   else begin				// Identifier found
 	     Tok[NumTok].Kind := IDENTTOK;
-//	     New(Tok[NumTok].Name);
 	     Tok[NumTok].Name := Text;
 	   end;
 
