@@ -17203,7 +17203,9 @@ end;	//CompileProgram
 
 
 procedure ParseParam;
-var i, err: integer;
+var i: Integer;
+    parameter, parameterUpperCase: string;
+    err: integer;
     s: string;
     t, c: string;
 begin
@@ -17213,125 +17215,126 @@ begin
 
  i:=1;
  while i <= ParamCount do begin
-
+  parameter:=ParamStr(i);
+  parameterUpperCase:=AnsiUpperCase(parameter);
   if ParamStr(i)[1] = '-' then begin
 
-   if AnsiUpperCase(ParamStr(i)) = '-O' then begin
+   if parameterUpperCase = '-O' then begin
 
-     outputFile := ParamStr(i+1);
      inc(i);
+     outputFile := ParamStr(i);
      if outputFile = '' then Syntax(3);
 
    end else
-   if pos('-O:', AnsiUpperCase(ParamStr(i))) = 1 then begin
+   if pos('-O:',parameterUpperCase) = 1 then
+   begin
 
-     outputFile := copy(ParamStr(i), 4, 255);
-
+     outputFile := copy(parameter, 4, 255);
      if outputFile = '' then Syntax(3);
 
    end else
-   if AnsiUpperCase(ParamStr(i)) = '-DIAG' then
+   if parameterUpperCase = '-DIAG' then
     DiagMode := TRUE
    else
 
-   if (AnsiUpperCase(ParamStr(i)) = '-IPATH') or (AnsiUpperCase(ParamStr(i)) = '-I') then begin
-
-     AddPath(ParamStr(i+1));
-     inc(i);
+   if (parameterUpperCase = '-IPATH') or (parameterUpperCase = '-I') then
+   begin
+       inc(i);
+        AddPath(TEnvironment.GetParameterString(i));
 
    end else
-   if pos('-IPATH:', AnsiUpperCase(ParamStr(i))) = 1 then begin
+   if pos('-IPATH:',parameterUpperCase) = 1 then begin
 
-     s:=copy(ParamStr(i), 8, 255);
+     s:=copy(parameter, 8, 255);
      AddPath(s);
 
    end else
-   if (AnsiUpperCase(ParamStr(i)) = '-CPU') then begin
+   if (parameterUpperCase = '-CPU') then begin
 
-     c := AnsiUpperCase(ParamStr(i+1));
      inc(i);
+     c := TEnvironment.GetParameterStringUpperCase(i);
 
    end else
-   if pos('-CPU:', AnsiUpperCase(ParamStr(i))) = 1 then begin
+   if pos('-CPU:',parameterUpperCase) = 1 then begin
 
-     c := copy(ParamStr(i), 6, 255);
+     c := copy(parameter, 6, 255);
 
    end else
-   if (AnsiUpperCase(ParamStr(i)) = '-DEFINE') or (AnsiUpperCase(ParamStr(i)) = '-DEF') then begin
+   if (parameterUpperCase = '-DEFINE') or (parameterUpperCase = '-DEF') then begin
 
-     AddDefine(AnsiUpperCase(ParamStr(i+1)));
      inc(i);
+     AddDefine(TEnvironment.GetParameterStringUpperCase(i));
      AddDefines := NumDefines;
 
    end else
-   if pos('-DEFINE:', AnsiUpperCase(ParamStr(i))) = 1 then begin
+   if pos('-DEFINE:',parameterUpperCase) = 1 then begin
 
-     s:=copy(ParamStr(i), 9, 255);
+     s:=copy(parameter, 9, 255);
      AddDefine(AnsiUpperCase(s));
      AddDefines := NumDefines;
 
    end else
-   if (AnsiUpperCase(ParamStr(i)) = '-CODE') or (AnsiUpperCase(ParamStr(i)) = '-C') then begin
+   if (parameterUpperCase = '-CODE') or (parameterUpperCase = '-C') then begin
 
-     val('$'+ParamStr(i+1), CODEORIGIN_BASE, err);
      inc(i);
+     val('$'+TEnvironment.GetParameterString(i), CODEORIGIN_BASE, err);
      if err <> 0 then Syntax(3);
 
    end else
-   if pos('-CODE:', AnsiUpperCase(ParamStr(i))) = 1 then begin
+   if pos('-CODE:',parameterUpperCase) = 1 then begin
 
-     val('$'+copy(ParamStr(i), 7, 255), CODEORIGIN_BASE, err);
+     val('$'+copy(parameter, 7, 255), CODEORIGIN_BASE, err);
      if err <> 0 then Syntax(3);
 
    end else
-   if (AnsiUpperCase(ParamStr(i)) = '-DATA') or (AnsiUpperCase(ParamStr(i)) = '-D') then begin
+   if (parameterUpperCase = '-DATA') or (parameterUpperCase = '-D') then begin
 
-     val('$'+ParamStr(i+1), DATA_BASE, err);
      inc(i);
+     val('$'+TEnvironment.GetParameterString(i), DATA_BASE, err);
      if err<>0 then Syntax(3);
 
    end else
-   if pos('-DATA:', AnsiUpperCase(ParamStr(i))) = 1 then begin
+   if pos('-DATA:',parameterUpperCase) = 1 then begin
 
-     val('$'+copy(ParamStr(i), 7, 255), DATA_BASE, err);
+     val('$'+copy(parameter, 7, 255), DATA_BASE, err);
      if err<>0 then Syntax(3);
 
    end else
-   if (AnsiUpperCase(ParamStr(i)) = '-STACK') or (AnsiUpperCase(ParamStr(i)) = '-S') then begin
+   if (parameterUpperCase = '-STACK') or (parameterUpperCase = '-S') then begin
 
-     val('$'+ParamStr(i+1), STACK_BASE, err);
      inc(i);
+     val('$'+TEnvironment.GetParameterString(i), STACK_BASE, err);
      if err<>0 then Syntax(3);
 
    end else
-   if pos('-STACK:', AnsiUpperCase(ParamStr(i))) = 1 then begin
+   if pos('-STACK:',parameterUpperCase) = 1 then begin
 
-     val('$'+copy(ParamStr(i), 8, 255), STACK_BASE, err);
+     val('$'+copy(parameter, 8, 255), STACK_BASE, err);
      if err<>0 then Syntax(3);
 
    end else
-   if (AnsiUpperCase(ParamStr(i)) = '-ZPAGE') or (AnsiUpperCase(ParamStr(i)) = '-Z') then begin
+   if (parameterUpperCase = '-ZPAGE') or (parameterUpperCase = '-Z') then begin
 
-     val('$'+ParamStr(i+1), ZPAGE_BASE, err);
      inc(i);
+     val('$'+TEnvironment.GetParameterString(i), ZPAGE_BASE, err);
      if err<>0 then Syntax(3);
 
    end else
-   if pos('-ZPAGE:', AnsiUpperCase(ParamStr(i))) = 1 then begin
+   if pos('-ZPAGE:',parameterUpperCase) = 1 then begin
 
-     val('$'+copy(ParamStr(i), 8, 255), ZPAGE_BASE, err);
+     val('$'+copy(parameter, 8, 255), ZPAGE_BASE, err);
      if err<>0 then Syntax(3);
 
    end else
-   if (AnsiUpperCase(ParamStr(i)) = '-TARGET') or (AnsiUpperCase(ParamStr(i)) = '-T') then begin
+   if (parameterUpperCase = '-TARGET') or (parameterUpperCase = '-T') then begin
 
-     t:=AnsiUpperCase(ParamStr(i+1));
      inc(i);
+     t:=TEnvironment.GetParameterStringUpperCase(i);
 
    end else
-   if pos('-TARGET:', AnsiUpperCase(ParamStr(i))) = 1 then begin
+   if pos('-TARGET:',parameterUpperCase) = 1 then begin
 
-     t:=AnsiUpperCase(copy(ParamStr(i), 9, 255));
+     t:=AnsiUpperCase(copy(parameter, 9, 255));
 
    end else
      Syntax(3);
@@ -17339,7 +17342,7 @@ begin
   end else
 
    begin
-    UnitName[1].Name := ParamStr(i);	//ChangeFileExt(ParamStr(i), '.pas');
+    UnitName[1].Name := parameter;	//ChangeFileExt(parameter, '.pas');
     UnitName[1].Path := UnitName[1].Name;
 
     if not TFileSystem.FileExists_(UnitName[1].Name) then begin

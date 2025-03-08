@@ -5,6 +5,13 @@ interface
 {$i define.inc}
 {$i Types.inc}
 
+type TEnvironment = class
+
+     class function GetParameterCount(): Longint;
+     class function GetParameterString(const i: Longint): String;
+     class function GetParameterStringUpperCase(const i: Longint): String;
+end;
+
 type
   THaltException = class
   type TExitCode = Longint;
@@ -22,7 +29,7 @@ type
     exitCode: Longint;
 
   public
-    constructor Create(exitCode: Longint);
+     constructor Create(exitCode: Longint);
     function GetExitCode: Longint;
   end;
 
@@ -32,10 +39,29 @@ procedure RaiseHaltException(errnum: Longint = 0);
 {$IFDEF PAS2JS}
   {$I 'include\pas2js\Utilities-PAS2JS-Interface.inc'}
 {$ELSE}
-procedure MoveSingle(i: Integer; s: Single);
+
 {$ENDIF}
 
 implementation
+
+uses SysUtils;
+
+class function TEnvironment.GetParameterCount(): Longint;
+begin
+   Result:=ParamCount;
+end;
+
+class function TEnvironment.GetParameterString(const i:Longint): String;
+begin
+   Result:=ParamStr(i);
+end;
+
+class function TEnvironment.GetParameterStringUpperCase(const i:Longint): String;
+begin
+   Result:=AnsiUpperCase(GetParameterString(i));
+end;
+
+// ----------------------------------------------------------------------------
 
 constructor THaltException.Create(exitCode: Longint);
 begin
@@ -61,10 +87,7 @@ end;
   {$I 'include\pas2js\Utilities-PAS2JS-Implementation.inc'}
 {$ELSE}
 
-procedure MoveSingle(i: Integer; s: Single);
-begin
-end;
-
 {$ENDIF}
+
 
 end.
