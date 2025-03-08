@@ -13,7 +13,7 @@ const
 
   title = '1.7.2';
 
-  TAB = ^I;		// Char f or a TAB
+  TAB = ^I;		// Char for a TAB
   CR  = ^M;		// Char for a CR
   LF  = ^J;		// Char for a LF
 

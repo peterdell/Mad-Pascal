@@ -17197,15 +17197,13 @@ end;	//CompileProgram
 
 {$i include/syntax.inc}
 
-
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
 
 procedure ParseParam;
 var i: Integer;
-    parameter, parameterUpperCase: string;
-    err: integer;
+    parameter, parameterUpperCase,parameterValue: string;
     s: string;
     t, c: string;
 begin
@@ -17222,15 +17220,15 @@ begin
    if parameterUpperCase = '-O' then begin
 
      inc(i);
-     outputFile := ParamStr(i);
-     if outputFile = '' then Syntax(3);
+     outputFile := parameter;
+     if outputFile = '' then ParameterError(i, 'Output file path is empty');
 
    end else
    if pos('-O:',parameterUpperCase) = 1 then
    begin
 
      outputFile := copy(parameter, 4, 255);
-     if outputFile = '' then Syntax(3);
+     if outputFile = '' then ParameterError(i, 'Output file path is empty');
 
    end else
    if parameterUpperCase = '-DIAG' then
@@ -17240,7 +17238,7 @@ begin
    if (parameterUpperCase = '-IPATH') or (parameterUpperCase = '-I') then
    begin
        inc(i);
-        AddPath(TEnvironment.GetParameterString(i));
+       AddPath(TEnvironment.GetParameterString(i));
 
    end else
    if pos('-IPATH:',parameterUpperCase) = 1 then begin
@@ -17277,53 +17275,50 @@ begin
    if (parameterUpperCase = '-CODE') or (parameterUpperCase = '-C') then begin
 
      inc(i);
-     val('$'+TEnvironment.GetParameterString(i), CODEORIGIN_BASE, err);
-     if err <> 0 then Syntax(3);
+     parameterValue:=TEnvironment.GetParameterString(i);
+     CODEORIGIN_BASE:=ParseHexParameter( i,  parameterValue);
 
    end else
    if pos('-CODE:',parameterUpperCase) = 1 then begin
-
-     val('$'+copy(parameter, 7, 255), CODEORIGIN_BASE, err);
-     if err <> 0 then Syntax(3);
+      parameterValue:=copy(parameter, 7, 255);
+      CODEORIGIN_BASE:=ParseHexParameter( i,  parameterValue)
 
    end else
    if (parameterUpperCase = '-DATA') or (parameterUpperCase = '-D') then begin
 
      inc(i);
-     val('$'+TEnvironment.GetParameterString(i), DATA_BASE, err);
-     if err<>0 then Syntax(3);
+     parameterValue:=TEnvironment.GetParameterString(i);
+     DATA_BASE:=ParseHexParameter( i,  parameterValue);
 
    end else
    if pos('-DATA:',parameterUpperCase) = 1 then begin
-
-     val('$'+copy(parameter, 7, 255), DATA_BASE, err);
-     if err<>0 then Syntax(3);
+     parameterValue:=copy(parameter, 7, 255);
+     DATA_BASE:=ParseHexParameter( i,  parameterValue);
 
    end else
    if (parameterUpperCase = '-STACK') or (parameterUpperCase = '-S') then begin
 
      inc(i);
-     val('$'+TEnvironment.GetParameterString(i), STACK_BASE, err);
-     if err<>0 then Syntax(3);
+     parameterValue:=TEnvironment.GetParameterString(i);
+     STACK_BASE:=ParseHexParameter( i,  parameterValue);
 
    end else
-   if pos('-STACK:',parameterUpperCase) = 1 then begin
-
-     val('$'+copy(parameter, 8, 255), STACK_BASE, err);
-     if err<>0 then Syntax(3);
+   if pos('-STACK:',parameterUpperCase) = 1 then
+   begin
+     parameterValue:= copy(parameter, 8, 255);
+     STACK_BASE:=ParseHexParameter( i,  parameterValue);
 
    end else
    if (parameterUpperCase = '-ZPAGE') or (parameterUpperCase = '-Z') then begin
 
      inc(i);
-     val('$'+TEnvironment.GetParameterString(i), ZPAGE_BASE, err);
-     if err<>0 then Syntax(3);
+     parameterValue:=TEnvironment.GetParameterString(i);
+     ZPAGE_BASE:=ParseHexParameter( i,  parameterValue);
 
    end else
    if pos('-ZPAGE:',parameterUpperCase) = 1 then begin
-
-     val('$'+copy(parameter, 8, 255), ZPAGE_BASE, err);
-     if err<>0 then Syntax(3);
+     parameterValue:= copy(parameter, 8, 255);
+     ZPAGE_BASE:=ParseHexParameter( i,  parameterValue);
 
    end else
    if (parameterUpperCase = '-TARGET') or (parameterUpperCase = '-T') then begin
@@ -17337,7 +17332,7 @@ begin
      t:=AnsiUpperCase(copy(parameter, 9, 255));
 
    end else
-     Syntax(3);
+     ParameterError(i, 'Unkown option '''+parameter+'''.');
 
   end else
 
