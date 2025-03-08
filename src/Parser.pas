@@ -1685,6 +1685,7 @@ else
 
   Inc(NumIdent);
 
+  // Writeln('NumIdent='+IntToStr(NumIdent)+' ErrTokenIndex='+IntToStr(ErrTokenIndex)+' Name='+name+' Kind='+IntToStr( Kind)+' DataType='+IntToStr( DataType)+' NumAllocElements='+IntToStr( NumAllocElements)+' AllocElementType='+IntToStr( AllocElementType));
   if NumIdent > High(Ident) then
     Error(NumTok, 'Out of resources, IDENT');
 
@@ -1762,7 +1763,10 @@ else
         if (Ident[NumIdent].idType = ARRAYTOK) and (Ident[NumIdent].isAbsolute = false) and (Elements(NumIdent) = 1) then	// [0..0] ; [0..0, 0..0]
 
 	else
- 	  VarDataSize := VarDataSize + integer(Elements(NumIdent) * DataSize[AllocElementType]);
+          if ( Low(DataSize) <= AllocElementType ) and  ( AllocElementType <= High(DataSize) ) then
+          begin
+ 	    VarDataSize := VarDataSize + integer(Elements(NumIdent) * DataSize[AllocElementType]);
+          end;
 
        end;
 

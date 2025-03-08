@@ -1,4 +1,7 @@
-{$ASSERTIONS ON} 
+{$ASSERTIONS ON}
+
+// TODO: Should be ON but there some parts in the parser that stilly relay on array access with invalid indexes.
+{$RANGECHECKS OFF}
 
 //{$DEFINE WHILEDO}
 
