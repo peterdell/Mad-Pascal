@@ -1,5 +1,4 @@
 unit FileIO;
-
 // Interfaced objects are implicitly reference counted and freed.
 // Therefore there are no explicit Free method on the files.  
 
@@ -8,8 +7,25 @@ interface
 {$i define.inc}
 {$i Types.inc}
 
+
+uses SysUtils;
+
 type
   TFilePath = String;
+
+
+  TPathList = class
+  public
+    constructor Create;
+    procedure AddFolder(folderPath: TFilePath);
+    function FindFile(filePath: TFilePath): TFilePath;
+    function GetSize: Integer;
+    function ToString: String; override;
+  private
+  var
+    paths: array of TFilePath;
+  end;
+
 
 type
   TFilePosition = Longint;
@@ -30,7 +46,7 @@ type
     procedure BlockRead(var Buf; Count: Longint; var Result: Longint);
     // https://www.freepascal.org/docs-html/rtl/system/filepos.html
     function FilePos(): Int64;
-    procedure Read(var Args: Char);
+    procedure Read(var c: Char);
     procedure Reset(l: Longint); overload;
     procedure Seek2(Pos: Int64);
   end;
@@ -39,8 +55,8 @@ type
   ITextFile = interface(IFile)
     procedure Flush;
     // https://www.freepascal.org/docs-html/rtl/system/read.html
-    procedure Read(var Args: Char);
-    procedure ReadLn(var Args: String);
+    procedure Read(var c: Char);
+    procedure ReadLn(var s: String);
 
     function Write(s: String): ITextFile; overload;
     function Write(s: String; w: Integer): ITextFile; overload;
@@ -55,9 +71,11 @@ type
 type
   TFileSystem = class
   public
+  const
+    PathDelim = DirectorySeparator;
     class function CreateBinaryFile: IBinaryFile; static;
     class function CreateTextFile: ITextFile; static;
-    class function FileExists(filePath: TFilePath): Boolean;
+    class function FileExists_(filePath: TFilePath): Boolean;
     class function NormalizePath(filePath: TFilePath): String;
   end;
 
@@ -95,8 +113,8 @@ type
 
     procedure Flush;
     // https://www.freepascal.org/docs-html/rtl/system/read.html
-    procedure Read(var Args: Char);
-    procedure ReadLn(var Args: String);
+    procedure Read(var c: Char);
+    procedure ReadLn(var s: String);
     procedure Reset(); override;
     procedure Rewrite(); override;
 
@@ -128,7 +146,7 @@ type
     function EOF(): Boolean; override;
     // https://www.freepascal.org/docs-html/rtl/system/filepos.html
     function FilePos(): Int64;
-    procedure Read(var Args: Char);
+    procedure Read(var c: Char);
     procedure Reset(); override; overload;
     procedure Reset(l: Longint); overload;
     procedure Rewrite(); override;
@@ -140,6 +158,59 @@ type
 //  {$I 'include\pas2js\FileIO-PAS2JS-Implementation.inc'}
 {$ENDIF}
 
+
+constructor TPathList.Create;
+begin
+  paths := nil;
+  SetLength(paths, 0);
+end;
+
+procedure TPathList.AddFolder(folderPath: TFilePath);
+var
+  size: Integer;
+begin
+  size := GetSize;
+  Inc(size);
+  SetLength(paths, size);
+  paths[size - 1] := IncludeTrailingPathDelimiter(folderPath);
+end;
+
+function TPathList.FindFile(filePath: TFilePath): TFilePath;
+var
+  i: Integer;
+begin
+  Result := TFileSystem.NormalizePath(filePath);
+  if TFileSystem.FileExists_(Result) then Exit;
+
+  for i := Low(paths) to High(paths) do
+  begin
+    Result := paths[i] + filePath;
+    if TFileSystem.FileExists_(Result) then Exit;
+  end;
+  Result := '';
+
+end;
+
+function TPathList.GetSize: Integer;
+begin
+  // If the argument is an array type or an array type variable then High returns
+  // the highest possible value of it's index. For dynamic arrays, it returns the
+  // ame as Length -1, meaning that it reports -1 for empty arrays.
+  Result := High(paths) + 1;
+end;
+
+function TPathList.ToString: String;
+var
+  i: Integer;
+begin
+  Result := '';
+  for i := Low(paths) to High(paths) do
+  begin
+    if Result = '' then Result := paths[i]
+    else
+      Result := Result + ';' + paths[i];
+  end;
+end;
 
 // TFile
 
@@ -201,7 +272,7 @@ end;
 procedure TTextFile.Read(var c: Char);
 begin
 {$IFNDEF PAS2JS}
-  System.Read(f, Args);
+  System.Read(f, c);
 {$ENDIF}
 
 end;
@@ -340,11 +411,11 @@ begin
 {$ENDIF}
 end;
 
-procedure TBinaryFile.Read(var Args: Char);
+procedure TBinaryFile.Read(var c: Char);
 begin
 {$IFNDEF PAS2JS}
 
-  System.Read(f, Args);
+  System.Read(f, c);
 {$ENDIF}
 
 end;
@@ -389,6 +460,11 @@ end;
 class function TFileSystem.CreateTextFile: ITextFile;
 begin
   Result := TTextFile.Create;
+end;
+
+class function TFileSystem.FileExists_(filePath: TFilePath): Boolean;
+begin
+  Result := False; // TODO FileExists(filePathUnicode);
 end;
 
 class function TFileSystem.NormalizePath(filePath: TFilePath): TFilePath;

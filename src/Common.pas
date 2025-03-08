@@ -607,6 +607,7 @@ var
   optyFOR0, optyFOR1, optyFOR2, optyFOR3, outTmp, outputFile: TString;
 
   msgWarning, msgNote, msgUser, UnitPath, OptimizeBuf, LinkObj: TArrayString;
+  unitPathList: TPathList;
 
 
   optimize : record
@@ -662,8 +663,6 @@ var
 
 	function FindFile(Name: string; ftyp: TString): string; overload;
 
-	function FindFile(Name: string): Boolean; overload;
-
 	procedure FreeTokens;
 
 	function GetCommonConstType(ErrTokenIndex: Integer; DstType, SrcType: Byte; err: Boolean = true): Boolean;
@@ -699,97 +698,17 @@ implementation
 uses SysUtils, Messages, Utilities;
 
 // ----------------------------------------------------------------------------
-
-
-function NormalizePath(var Name: string): string;
-begin
-
-   Result := Name;
-
-  {$IFDEF UNIX}
-   if Pos('\', Name) > 0 then
-    Result := LowerCase(StringReplace(Name, '\', '/', [rfReplaceAll]));
-  {$ENDIF}
-
-  {$IFDEF LINUX}
-    Result := LowerCase(Name);
-  {$ENDIF}
-
-end;
-
-
-// ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
 
 function FindFile(Name: string; ftyp: TString): string; overload;
-var i: integer;
 begin
-
-  Name := NormalizePath(Name);
-
-  i:=0;
-
-  repeat
-
-   Result :=  Name;
-
-   if not FileExists( Result ) then begin
-    Result := UnitPath[i] + Name;
-
-     if not FileExists( Result ) and (i > 0) then begin
-      Result := FilePath + UnitPath[i] + Name;
-     end;
-
-   end;
-
-   inc(i);
-
-  until (i > High(UnitPath)) or FileExists( Result );
-
-  if not FileExists( Result ) then
+  if unitPathList.FindFile( name) = '' then
    if ftyp = 'unit' then
-    Error(NumTok, 'Can''t find unit '+ChangeFileExt(Name,'')+' used by '+PROGRAM_NAME)
+    Error(NumTok, 'Can''t find unit '''+ChangeFileExt(Name,'')+''' used by program '''+PROGRAM_NAME+'" in unit path '''+unitPathList.ToString+'''.')
    else
     Error(NumTok, 'Can''t open '+ftyp+' file '''+Result+'''');
-
 end;
-
-
-// ----------------------------------------------------------------------------
-// ----------------------------------------------------------------------------
-
-
-function FindFile(Name: string): Boolean; overload;
-var i: integer;
-    fnm: string;
-begin
-
-  Name := NormalizePath(Name);
-
-  i:=0;
-
-  repeat
-
-   fnm :=  Name;
-
-   if not FileExists( fnm ) then begin
-    fnm := UnitPath[i] + Name;
-
-     if not FileExists( fnm ) and (i > 0) then begin
-      fnm := FilePath + UnitPath[i] + Name;
-     end;
-
-   end;
-
-   inc(i);
-
-  until (i > High(UnitPath)) or FileExists( fnm );
-
-  Result := FileExists( fnm );
-
-end;
-
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
@@ -845,6 +764,7 @@ begin
   UnitPath[k] := IncludeTrailingPathDelimiter ( s );
 
   SetLength(UnitPath, k + 2);
+  unitPathList.AddFolder(s);
 end;
 
 
@@ -941,6 +861,7 @@ begin
  SetLength(Tok, 0);
  SetLength(IFTmpPosStack, 0);
  SetLength(UnitPath, 0);
+ unitPathList.Free;
 end;
 
 
