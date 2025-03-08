@@ -17399,7 +17399,7 @@ begin
     UnitName[1].Name := ParamStr(i);	//ChangeFileExt(ParamStr(i), '.pas');
     UnitName[1].Path := UnitName[1].Name;
 
-    if not TFileSystem.FileExists(UnitName[1].Name) then begin
+    if not TFileSystem.FileExists_(UnitName[1].Name) then begin
      writeln('Error: Can''t open file ''' + UnitName[1].Name + '''');
      FreeTokens;
      RaiseHaltException(3);

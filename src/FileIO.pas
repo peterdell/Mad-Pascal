@@ -72,7 +72,11 @@ type
   TFileSystem = class
   public
   const
+  {$IFNDEF PAS2JS}
     PathDelim = DirectorySeparator;
+  {$ELSE}
+    PathDelim = '/';
+  {$ENDIF}
     class function CreateBinaryFile: IBinaryFile; static;
     class function CreateTextFile: ITextFile; static;
     class function FileExists_(filePath: TFilePath): Boolean;
@@ -170,10 +174,10 @@ var
   i, size: Integer;
 begin
 
-  folderPath:=IncludeTrailingPathDelimiter(folderPath);
+  folderPath := IncludeTrailingPathDelimiter(folderPath);
 
   // Do not add duplicates.
-  for i:=Low(paths) to High(paths) do
+  for i := Low(paths) to High(paths) do
   begin
     if paths[i] = folderPath then exit;
   end;
@@ -321,7 +325,7 @@ end;
 
 function TTextFile.Write(s: String; w: Integer): ITextFile;
 begin
-// TODO: Implemente width padding using w
+  // TODO: Implemente width padding using w
 {$IFNDEF PAS2JS}
   System.Write(f, s);
 {$ENDIF}
@@ -330,7 +334,7 @@ end;
 
 function TTextFile.Write(i: Integer; w: Integer): ITextFile;
 begin
-// TODO: Implemente width padding using w
+  // TODO: Implemente width padding using w
 {$IFNDEF PAS2JS}
   System.Write(f, i);
 {$ENDIF}
@@ -475,7 +479,11 @@ end;
 
 class function TFileSystem.FileExists_(filePath: TFilePath): Boolean;
 begin
+  {$IFNDEF PAS2JS}
   Result := FileExists(filePath);
+  {$ELSE}
+  Result :=false;
+  {$ENDIF}
 end;
 
 class function TFileSystem.NormalizePath(filePath: TFilePath): TFilePath;
