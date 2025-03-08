@@ -386,8 +386,6 @@ type
     i, i_: integer;
    end;
 
-  TFloat = array [0..1] of integer; // 2*32 bits
-
   TParamList = array [1..MAXPARAMS] of TParam;
 
   TVariableList = array [1..MAXVARS] of TParam;
@@ -635,8 +633,6 @@ var
 // ----------------------------------------------------------------------------
 
 	procedure ClearWordMemory(anArray: TWordMemory);
-	procedure MoveTFloat(ConstVal: Int64; ftmp: TFloat); overload;
-	procedure MoveTFloat(ftmp: TFloat; ConstVal: Int64); overload;
 
 	procedure AddDefine(X: string);
 
@@ -1311,20 +1307,5 @@ begin
   end;
 end;
 
- 
-procedure MoveTFloat(ConstVal: Int64; ftmp: TFloat); overload;
-begin
-{$IFNDEF PAS2JS}
-     move(ConstVal, ftmp, sizeof(ftmp));
-{$ENDIF}
-end;
-
-procedure MoveTFloat(ftmp: TFloat; ConstVal: Int64); overload;
-begin
-{$IFNDEF PAS2JS}
-     move(ftmp, ConstVal, sizeof(ftmp));
-{$ENDIF}
-
-end;
 
 end.

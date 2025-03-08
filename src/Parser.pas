@@ -296,15 +296,12 @@ end;
 
 
 procedure SaveToDataSegment(ConstDataSize: integer; ConstVal: Int64; ConstValType: Byte);
-var ftmp: TFloat;
 begin
 
 	if (ConstDataSize < 0) or (ConstDataSize > $FFFF) then
 	begin writeln('SaveToDataSegment: ', ConstDataSize);
-	      RaiseHaltException(2);
+	      RaiseHaltException(THaltException.COMPILING_ABORTED);
 	end;
-
-        ftmp:=Zero;
 
 	 case ConstValType of
 
@@ -338,9 +335,7 @@ begin
 		       end;
 
 	    SINGLETOK: begin
-			MoveTFloat(ConstVal, ftmp);
-
-			ConstVal := ftmp[1];
+			ConstVal:=CastToSingle(ConstVal);
 
 			DataSegment[ConstDataSize]   := byte(ConstVal);
 			DataSegment[ConstDataSize+1] := byte(ConstVal shr 8);
@@ -349,8 +344,7 @@ begin
 		       end;
 
 	HALFSINGLETOK: begin
-			MoveTFloat(ConstVal, ftmp);
-			ConstVal := CardToHalf( ftmp );
+			ConstVal:=CastToHalfSingle(ConstVal);
 
 			DataSegment[ConstDataSize]   := byte(ConstVal);
 			DataSegment[ConstDataSize+1] := byte(ConstVal shr 8);
@@ -429,7 +423,6 @@ var IdentIndex, j: Integer;
     Kind, ArrayIndexType: Byte;
     ArrayIndex: Int64;
     ftmp: TFloat;
-    fl: single;
 
     function GetStaticValue(x: byte): Int64;
     begin
@@ -447,7 +440,6 @@ begin
 
  ftmp:=Zero;
 
- fl:=0;
  j:=0;
 
 // WRITELN(tok[i].line, ',', tok[i].kind);
@@ -681,33 +673,10 @@ case Tok[i].Kind of
 
       CheckTok(i + 1, CPARTOK);
 
-      if ConstValType in [HALFSINGLETOK, SINGLETOK] then begin
-
-    	MoveTFloat(ConstVal, ftmp);
-	move(ftmp[1], fl, sizeof(fl));
-
-	case Kind of
-	  INTTOK: fl:=int(fl);
-	 FRACTOK: fl:=frac(fl);
+      	case Kind of
+	  INTTOK: ConstVal:=Trunc(ConstValType, ConstVal);
+	 FRACTOK: ConstVal:=Frac(ConstValType, ConstVal);
 	end;
-
-	ftmp:=FromSingle(fl);
-
-	move(ftmp, ConstVal, sizeof(ftmp));
-
-      end else
-
-      case Kind of
-	INTTOK: if ConstVal < 0 then
-		  ConstVal := -(abs(ConstVal) and $ffffffffffffff00)
-		else
-		  ConstVal := ConstVal and $ffffffffffffff00;
-
-       FRACTOK: if ConstVal < 0 then
-		  ConstVal := -(abs(ConstVal) and $ff)
-		else
-		  ConstVal := ConstVal and $ff;
-      end;
 
  //     ConstValType := REALTOK;
       Result:=i + 1;
@@ -1072,8 +1041,7 @@ case Tok[i].Kind of
     begin
      ftmp:=FromSingle(Tok[i].FracValue);
 
-     move(ftmp, ConstVal, sizeof(ftmp));
-
+     MoveTFloat(ftmp,ConstVal);
      ConstValType := REALTOK;
 
      Result := i;
@@ -1202,8 +1170,6 @@ var
   j, k: Integer;
   RightConstVal: Int64;
   RightConstValType: Byte;
-  ftmp, ftmp_: TFloat;
-  fl, fl_: single;
 begin
 
 Result:=i;
@@ -1211,12 +1177,6 @@ Result:=i;
 j := CompileConstFactor(i, ConstVal, ConstValType);
 
 if isError then Exit;
-
-ftmp:=Zero;
-ftmp_:=zero;
-
-fl:=0;
-fl_:=0;
 
 while Tok[j + 1].Kind in [MULTOK, DIVTOK, MODTOK, IDIVTOK, SHLTOK, SHRTOK, ANDTOK] do
   begin
@@ -1257,40 +1217,19 @@ while Tok[j + 1].Kind in [MULTOK, DIVTOK, MODTOK, IDIVTOK, SHLTOK, SHRTOK, ANDTO
 
   case Tok[j + 1].Kind of
 
-    MULTOK:  if ConstValType in RealTypes then begin
-    		MoveTFloat(ConstVal, ftmp);
-    		move(RightConstVal, ftmp_, sizeof(ftmp_));
-
-		move(ftmp[1], fl, sizeof(fl));
-		move(ftmp_[1], fl_, sizeof(fl_));
-
-		fl := fl * fl_;
-
-		ftmp:=FromSingle(fl);
-
-		move(ftmp, ConstVal, sizeof(ftmp));
-    	      end else
-    		ConstVal := ConstVal * RightConstVal;
+    MULTOK:  ConstVal:=Multiply(ConstValType, ConstVal,RightConstVal);
 
     DIVTOK:  begin
-    		MoveTFloat(ConstVal, ftmp);
-    		move(RightConstVal, ftmp_, sizeof(ftmp_));
-
-		move(ftmp[1], fl, sizeof(fl));
-		move(ftmp_[1], fl_, sizeof(fl_));
-
-		if fl_ = 0 then begin
-		  isError := false;
-		  isConst := false;
-		  Error(i, 'Division by zero');
-		end;
-
-		fl := fl / fl_;
-
-		ftmp:=FromSingle(fl);
-
-		move(ftmp, ConstVal, sizeof(ftmp));
-    	     end;
+               try
+                 ConstVal:=Divide(ConstValType, ConstVal,RightConstVal);
+               except On EDivByZero do
+                 begin
+                   isError := false;
+		   isConst := false;
+		   Error(i, 'Division by zero');
+                 end;
+               end;
+             end;
 
     MODTOK:  ConstVal := ConstVal mod RightConstVal;
    IDIVTOK:  ConstVal := ConstVal div RightConstVal;
@@ -1322,8 +1261,6 @@ var
   j, k: Integer;
   RightConstVal: Int64;
   RightConstValType: Byte;
-  ftmp, ftmp_: TFloat;
-  fl, fl_: single;
 
 begin
 
@@ -1334,32 +1271,10 @@ j := CompileConstTerm(j, ConstVal, ConstValType);
 
 if isError then exit;
 
-ftmp:=Zero;
-ftmp_:=Zero;
-
-fl:=0;
-fl_:=0;
 
 if Tok[i].Kind = MINUSTOK then begin
 
- if ConstValType in RealTypes then begin	// Unary minus (RealTypes)
-
-  MoveTFloat(ConstVal, ftmp);
-  move(ftmp[1], fl, sizeof(fl));
-
-  fl := -fl;
-
-  ftmp:=FromSingle(fl);
-
-  move(ftmp, ConstVal, sizeof(ftmp));
-
- end else begin
-  ConstVal := -ConstVal;     			// Unary minus (IntegerTypes)
-
-  if ConstValType in IntegerTypes then
-    ConstValType := GetValueType(ConstVal);
-
- end;
+ ConstVal:=Negate(ConstValType, ConstVal);
 
 end;
 
@@ -1392,36 +1307,9 @@ end;
 
 
   case Tok[j + 1].Kind of
-    PLUSTOK:  if ConstValType in RealTypes then begin
-    		MoveTFloat(ConstVal, ftmp);
-    		move(RightConstVal, ftmp_, sizeof(ftmp_));
+    PLUSTOK:  ConstVal := Add( ConstValType, ConstVal, RightConstVal);
 
-		move(ftmp[1], fl, sizeof(fl));
-		move(ftmp_[1], fl_, sizeof(fl_));
-
-		fl := fl + fl_;
-
-		ftmp:=FromSingle(fl);
-
-		move(ftmp, ConstVal, sizeof(ftmp));
-    	      end else
-    		ConstVal := ConstVal + RightConstVal;
-
-    MINUSTOK: if ConstValType in RealTypes then begin
-    		MoveTFloat(ConstVal, ftmp);
-    		move(RightConstVal, ftmp_, sizeof(ftmp_));
-
-		move(ftmp[1], fl, sizeof(fl));
-		move(ftmp_[1], fl_, sizeof(fl_));
-
-		fl := fl - fl_;
-
-		ftmp:=FromSingle(fl);
-
-		MoveTFloat(ftmp, ConstVal);
-
-    	      end else
-    		ConstVal := ConstVal - RightConstVal;
+    MINUSTOK: ConstVal := Subtract( ConstValType, ConstVal, RightConstVal);
 
     ORTOK:    ConstVal := ConstVal or RightConstVal;
     XORTOK:   ConstVal := ConstVal xor RightConstVal;

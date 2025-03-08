@@ -15,7 +15,7 @@ type
   const
     COMPILING_ABORTED: TExitCode = 2;     // Errors occurred, and compiling was aborted
   const
-    COMPOLING_NOT_STARTED: TExitCode = 3;
+    COMPILING_NOT_STARTED: TExitCode = 3;
     // Wrong parameters were specified, and compiling was not started
 
   private

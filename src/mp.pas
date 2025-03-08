@@ -9105,15 +9105,13 @@ case Tok[i].Kind of
 
 	    if (ValType in IntegerTypes) and (VarType in [SINGLETOK, HALFSINGLETOK]) then Int2Float(ConstVal);
 
-	    MoveTFloat(ConstVal, ftmp);
-
 	    if (VarType = HALFSINGLETOK) {or (ValType = HALFSINGLETOK)} then begin
-	      ConstVal := CardToHalf( ftmp );
+	      ConstVal:=CastToHalfSingle(ConstVal);
 	      //ValType := HALFSINGLETOK;
 	    end;
 
 	    if (VarType = SINGLETOK) then begin
-	      ConstVal := ftmp[1];
+	      ConstVal:=CastToSingle(ConstVal);
 	      //ValType := SINGLETOK;
 	    end;
 
@@ -9143,13 +9141,11 @@ case Tok[i].Kind of
 
 	    if ValType in IntegerTypes then Int2Float(ConstVal);
 
-	    MoveTFloat(ConstVal, ftmp);
-
 	    if (VarType = HALFSINGLETOK) or (ValType = HALFSINGLETOK) then begin
-	      ConstVal := CardToHalf( ftmp );
+	      ConstVal := CastToHalfSingle(ConstVal);
 	      ValType := HALFSINGLETOK;
 	    end else begin
-	      ConstVal := ftmp[1];
+	      ConstVal := CastToSingle(ConstVal);
 	      ValType := SINGLETOK;
 	    end;
 
@@ -9184,14 +9180,11 @@ case Tok[i].Kind of
     if VarType in RealTypes then begin
      Int2Float(ConstVal);
 
-
-     MoveTFloat(ConstVal, ftmp);
-
      if VarType = HALFSINGLETOK then
-      ConstVal := CardToHalf( ftmp )
+      ConstVal := CastToHalfSingle(ConstVal)
      else
      if VarType = SINGLETOK then
-      ConstVal := ftmp[1];
+      ConstVal := CastToSingle(ConstVal);
 
      ValType := VarType;
     end;
@@ -9218,8 +9211,8 @@ case Tok[i].Kind of
     if VarType in RealTypes then begin
 
      case VarType of
-   	    SINGLETOK: ConstVal := ftmp[1];
-	HALFSINGLETOK: ConstVal := CardToHalf( ftmp );
+   	    SINGLETOK: ConstVal := CastToSingle(ConstVal);
+	HALFSINGLETOK: ConstVal := CastToHalfSingle(ConstVal);
      else
        ConstVal := ftmp[0]
      end;
@@ -9483,9 +9476,7 @@ case Tok[i].Kind of
 
 	  if not(ValType in RealTypes) then Int2Float(ConstVal);
 
-	  MoveTFloat(ConstVal, ftmp);
-	  ConstVal := ftmp[1];
-
+	  ConstVal:=CastToSingle(ConstVal);
 	  ValType := SINGLETOK;
 
 	  Push(ConstVal, ASVALUE, DataSize[ValType]);
@@ -9971,12 +9962,10 @@ var
   j, k: Integer;
   ConstVal: Int64;
   RightValType: Byte;
-  ftmp: TFloat;
-  fl: single;
+
+
 begin
 
-ftmp:=Zero;
-fl:=0;
 
 if Tok[i].Kind in [PLUSTOK, MINUSTOK] then j := i + 1 else j := i;
 
@@ -9988,34 +9977,14 @@ if SafeCompileConstExpression(j, ConstVal, ValType, VarType) then begin
 
 
  if Tok[i].Kind = MINUSTOK then
-   if ValType in RealTypes then begin		// Unary minus (RealTypes)
-
-     MoveTFloat(ConstVal, ftmp);
-     move(ftmp[1], fl, sizeof(fl));
-
-     fl := -fl;
-
-     ftmp:=FromSingle(fl);
-
-     MoveTFloat(ftmp, ConstVal);
-
-   end else begin
-     ConstVal := -ConstVal;     		// Unary minus (IntegerTypes)
-
-     if ValType in IntegerTypes then
-       ValType := GetValueType(ConstVal);
-
-   end;
-
+   ConstVal:=Negate( ValType, ConstVal);
 
  if ValType = SINGLETOK then begin
-  MoveTFloat(ConstVal, ftmp);
-  ConstVal := ftmp[1];
+  ConstVal := CastToSingle(ConstVal);
  end;
 
  if ValType = HALFSINGLETOK then begin
-  MoveTFloat(ConstVal, ftmp);
-  ConstVal := CardToHalf( ftmp );
+  ConstVal := CastToHalfSingle(ConstVal);
  end;
 
 
@@ -10109,6 +10078,7 @@ var
   sLeft, sRight, cRight, yes: Boolean;
   ConstVal, ConstValRight: Int64;
   ftmp: TFloat;
+
 begin
 
  ConstVal:=0;
@@ -10128,17 +10098,14 @@ begin
 
 
    if (ValType = HALFSINGLETOK) {or ((VarType = HALFSINGLETOK) and (ValType in RealTypes))} then begin
-     MoveTFloat(ConstVal, ftmp);
      ConstVal := CardToHalf( ftmp );
-     ValType := HALFSINGLETOK;
-     VarType := HALFSINGLETOK;
+     ValType := HALFSINGLETOK;  // Currently redundant
    end;
 
    if (ValType = SINGLETOK) {or ((VarType = SINGLETOK) and (ValType in RealTypes))} then begin
-     MoveTFloat(ConstVal, ftmp);
-     ConstVal := ftmp[1];
-     ValType := SINGLETOK;
-     VarType := SINGLETOK;
+     ConstVal:=CastToSingle(ConstVal);
+
+     ValType := SINGLETOK; // Currently redundant
    end;
 
    Push(ConstVal, ASVALUE, DataSize[ValType]);
@@ -13846,18 +13813,15 @@ var IdentIndex, size: integer;
 
    function Value(dorig: Boolean = false; brackets: Boolean = false): string;
    const reg: array [1..3] of string = (':EDX', ':ECX', ':EAX');			// !!! kolejnosc edx, ecx, eax !!! korzysta z tego memmove, memset !!!
-   var ftmp: TFloat;
-       v: Int64;
+   var v: Int64;
    begin
 
-    ftmp:=Zero;
-
-    MoveTFloat(Ident[IdentIndex].Value, ftmp);
+    v:=Ident[IdentIndex].Value;
 
     case Ident[IdentIndex].DataType of
-     SHORTREALTOK, REALTOK: v := ftmp[0];
-                 SINGLETOK: v := ftmp[1];
-             HALFSINGLETOK: v := CardToHalf( ftmp );
+     SHORTREALTOK, REALTOK: v := CastToReal(v);
+                 SINGLETOK: v := CastToSingle(v);
+             HALFSINGLETOK: v := CastToHalfSingle(v);
     else
       v := Ident[IdentIndex].Value;
     end;
@@ -14148,15 +14112,12 @@ end;	//GenerateProcFuncAsmLabels
 
 
 procedure SaveToStaticDataSegment(ConstDataSize: integer; ConstVal: Int64; ConstValType: Byte);
-var ftmp: TFloat;
 begin
 
 	if (ConstDataSize < 0) or (ConstDataSize > $FFFF) then
         begin writeln('SaveToStaticDataSegment: ' + IntToStr(ConstDataSize));
-              RaiseHaltException(2);
+              RaiseHaltException(THaltException.COMPILING_ABORTED);
         end;
-
-	ftmp:=Zero;
 
 	 case ConstValType of
 
@@ -14190,8 +14151,7 @@ begin
 		       end;
 
 	    SINGLETOK: begin
-			MoveTFloat(ConstVal, ftmp);
-			ConstVal := ftmp[1];
+			ConstVal:=CastToSingle(ConstVal);
 
 			StaticStringData[ConstDataSize]   := byte(ConstVal);
 			StaticStringData[ConstDataSize+1] := byte(ConstVal shr 8);
@@ -14200,8 +14160,7 @@ begin
 		       end;
 
 	HALFSINGLETOK: begin
-			MoveTFloat(ConstVal, ftmp);
-			ConstVal := CardToHalf( ftmp );
+			ConstVal:=CastToHalfSingle(ConstVal);
 
 			StaticStringData[ConstDataSize]   := byte(ConstVal);
 			StaticStringData[ConstDataSize+1] := byte(ConstVal shr 8);
@@ -17396,7 +17355,7 @@ begin
     if not TFileSystem.FileExists_(UnitName[1].Name) then begin
      writeln('Error: Can''t open file ''' + UnitName[1].Name + '''');
      FreeTokens;
-     RaiseHaltException(3);
+     RaiseHaltException(THaltException.COMPILING_NOT_STARTED);
     end;
 
    end;
@@ -17463,7 +17422,7 @@ begin
 
 {$IFDEF WINDOWS}
  if Windows.GetFileType(Windows.GetStdHandle(STD_OUTPUT_HANDLE)) = Windows.FILE_TYPE_PIPE then begin
-  Assign(Output, ''); FileMode:=1; Rewrite(Output);
+  System.Assign(Output, ''); FileMode:=1; System.Rewrite(Output);
  end;
 {$ENDIF}
 

@@ -1489,7 +1489,7 @@ var
 
 	  if AsmBlockIndex > High(AsmBlock) then begin
 	   Error(NumTok, 'Out of resources, ASMBLOCK');
-	   RaiseHaltException(2);
+	   RaiseHaltException(THaltException.COMPILING_ABORTED);
 	  end;
 
 	 end else begin
