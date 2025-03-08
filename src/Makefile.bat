@@ -34,7 +34,7 @@ if not "%MP_EXE%"=="" (
   if exist "%MP_EXE%" del "%MP_EXE%"
   call fpc.bat %MP_SRC_FOLDER%\mp.pas
   if errorlevel 1 goto :eof
-  if exist "%MP_EXE%" (
+  if exist "%MP_EXE	%" (
     call :run_mp "%MP_EXE%"
   )
 )

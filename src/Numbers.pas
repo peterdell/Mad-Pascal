@@ -5,91 +5,72 @@ interface
 {$i define.inc}
 {$i Types.inc}
 
+type
+  TNumber = Int64;
+
+// High Level
+function FromInt64(const i: Int64): TNumber;
+function FromSingle(const s: Single): TNumber; overload;
+function CastToReal(const a: TNumber): TNumber;
+function CastToSingle(const a: TNumber): TNumber;
+function CastToHalfSingle(const a: TNumber): TNumber;
+
+function Assign(const valType: Byte; const s: Single): TNumber;
+function Negate(var valType: Byte; const a: TNumber): TNumber;  // valType not const!
+function Add(const valType: Byte; const a: TNumber; const b: TNumber): TNumber;
+function Subtract(const valType: Byte; const a: TNumber; const b: TNumber): TNumber;
+function Multiply(const valType: Byte; const a: TNumber; const b: TNumber): TNumber;
+function Divide(const valType: Byte; const a: TNumber; const b: TNumber): TNumber;
+
+
+// High Level - Only for RealNumbers
+function Frac(const valType: Byte; const a: TNumber): TNumber;
+function Trunc(const valType: Byte; const a: TNumber): TNumber;
+
+
+
+implementation
+
+uses Common, SysUtils; // TODO Remove Common and have only Tokens
+
+
+// Low-Level TFloat representation
+const
+  TWOPOWERFRACBITS = 256;  // Factor for 8-bit fractional part
 
 // Fixed-point 32-bit real number storage
 type
   TFloat = array [0..1] of Integer; // 2*32 bits
 
 function Zero: TFloat;
-
-procedure Int2Float(var ConstVal: Int64);
-
-// Very Low-Level
-procedure MoveTFloat(const ConstVal: Int64; var ftmp: TFloat); overload;
-procedure MoveTFloat(const ftmp: TFloat; var ConstVal: Int64); overload;
-
-// Low-Level
-function FromSingle(const s: Single): TFloat;
-function ToSingle(const ftmp: TFloat): Single;
-function CardToHalf(const ftmp: TFloat): Word; overload;
-
-// High Level
-function CastToReal(const a: Int64): Int64;
-function CastToSingle(const a: Int64): Int64;
-function CastToHalfSingle(const a: Int64): Int64;
-
-
-function Assign(const valType: Byte; const s: Single): Int64;
-function Negate(var valType: Byte; const a: Int64): Int64;  // valType not const!
-function Add(const valType: Byte; const a: Int64; const b: Int64): Int64;
-function Subtract(const valType: Byte; const a: Int64; const b: Int64): Int64;
-function Multiply(const valType: Byte; const a: Int64; const b: Int64): Int64;
-function Divide(const valType: Byte; const a: Int64; const b: Int64): Int64;
-
-
-// High Level - Only for ReadNumbers
-function Frac(const valType: Byte; const a: Int64): Int64;
-function Trunc(const valType: Byte; const a: Int64): Int64;
-
-
-
-implementation
-
-uses Common, SysUtils; // TODO Remove Common
-
-const
-  TWOPOWERFRACBITS = 256;  // Faktor for 8-bit fractional part
-
-function Zero: TFloat;
 begin
   Result := Default(TFloat);
 end;
 
-procedure Int2Float(var ConstVal: Int64);
-var
-  fl: Single;
-  ftmp: TFloat;
-
-begin
-
-  fl := Integer(ConstVal);
-
-  ftmp := FromSingle(fl);
-
-  MoveTFloat(ftmp, ConstVal);
-
-end;
-
-function FromSingle(const s: Single): TFloat;
+function ToTFloat(const s: Single): TFloat; overload;
 begin
   Result[0] := round(s * TWOPOWERFRACBITS);
+  {$IFNDEF PAS2JS}
   Result[1] := Integer(s);
+  {$ENDIF}
 end;
 
 function ToSingle(const ftmp: TFloat): Single;
 begin
   Result := 0;
+  {$IFNDEF PAS2JS}
   move(ftmp[1], Result, sizeof(Result));
+  {$ENDIF}
 end;
 
-procedure MoveTFloat(const ConstVal: Int64; var ftmp: TFloat); overload;
+procedure MoveTFloat(const ConstVal: TNumber; var ftmp: TFloat); overload;
 begin
 {$IFNDEF PAS2JS}
   move(ConstVal, ftmp, sizeof(ftmp));
 {$ENDIF}
 end;
 
-procedure MoveTFloat(const ftmp: TFloat; var ConstVal: Int64); overload;
+procedure MoveTFloat(const ftmp: TFloat; var ConstVal: TNumber); overload;
 begin
 {$IFNDEF PAS2JS}
   move(ftmp, ConstVal, sizeof(ftmp));
@@ -98,200 +79,23 @@ begin
 end;
 
 
-function CastToReal(const a: Int64): Int64;
-var
-  ftmp: TFloat;
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+
+// https://www.freepascal.org/docs-html/rtl/system/sarlongint.html
+function SarLongint(const Value: Longint; const Shift: Byte = 1): Longint;
 begin
-  ftmp := Zero;
-  MoveTFloat(a, ftmp);
-  Result := ftmp[0];
-end;
 
-
-function CastToSingle(const a: Int64): Int64;
-var
-  ftmp: TFloat;
-begin
-  ftmp := Zero;
-  MoveTFloat(a, ftmp);
-  Result := ftmp[1];
-end;
-
-function CastToHalfSingle(const a: Int64): Int64;
-var
-  ftmp: TFloat;
-begin
-  ftmp := Zero;
-
-  MoveTFloat(a, ftmp);
-  Result := CardToHalf(ftmp);
-
-end;
-
-function Assign(const valType: Byte; const s: Single): Int64;
-var
-  ftmp: TFloat;
-begin
-  if valType in RealTypes then
+  if Value > 0 then
   begin
-    ftmp := FromSingle(s);
+    Result := Value shr Shift;
   end
   else
   begin
-    ftmp[0] := round(s);
-    ftmp[1] := 0;
-  end;
-
-  Result := 0;
-  MoveTFloat(ftmp, Result);
-end;
-
-function Negate(var valType: Byte; const a: Int64): Int64;
-var
-  ftmp: TFloat;
-  fl: Single;
-begin
-  if valType in RealTypes then
-  begin  // Unary minus (RealTypes)
-
-    ftmp := Zero;
-    Result := 0;
-
-    MoveTFloat(a, ftmp);
-    fl := ToSingle(ftmp);
-
-    fl := -fl;
-
-    ftmp := FromSingle(fl);
-    MoveTFloat(ftmp, Result);
-
-  end
-  else
-  begin
-    Result := -a;           // Unary minus (IntegerTypes)
-
-    if valType in IntegerTypes then
-      valType := GetValueType(Result);
-
+    Result := -(-Value shr Shift);
   end;
 end;
 
-function Add(const valType: Byte; const a: Int64; const b: Int64): Int64;
-var
-  ftmp, ftmp_: TFloat;
-  fl, fl_: Single;
-begin
-
-  if valType in RealTypes then
-  begin
-    ftmp := Zero;
-    ftmp_ := Zero;
-
-    MoveTFloat(a, ftmp);
-    MoveTFloat(b, ftmp_);
-
-    fl := ToSingle(ftmp);
-    fl_ := ToSingle(ftmp_);
-
-    fl := fl + fl_;
-
-    ftmp := FromSingle(fl);
-
-    Result := 0;
-    MoveTFloat(ftmp, Result);
-  end
-  else
-  begin
-    Result := a + b;
-  end;
-
-end;
-
-function Subtract(const valType: Byte; const a: Int64; const b: Int64): Int64;
-var
-  ftmp, ftmp_: TFloat;
-  fl, fl_: Single;
-begin
-
-  if valType in RealTypes then
-  begin
-    ftmp := Zero;
-    ftmp_ := Zero;
-
-    MoveTFloat(a, ftmp);
-    MoveTFloat(b, ftmp_);
-
-    fl := ToSingle(ftmp);
-    fl_ := ToSingle(ftmp_);
-
-    fl := fl + fl_;
-
-    ftmp := FromSingle(fl);
-
-    Result := 0;
-    MoveTFloat(ftmp, Result);
-  end
-  else
-  begin
-    Result := a - b;
-  end;
-
-end;
-
-function Multiply(const valType: Byte; const a: Int64; const b: Int64): Int64;
-var
-  ftmp, ftmp_: TFloat;
-  fl, fl_: Single;
-begin
-  if valtype in RealTypes then
-  begin
-    ftmp := Zero;
-    ftmp_ := Zero;
-
-    MoveTFloat(a, ftmp);
-    MoveTFloat(b, ftmp_);
-
-    fl := ToSingle(ftmp);
-    fl_ := ToSingle(ftmp_);
-
-    fl := fl * fl_;
-
-    ftmp := FromSingle(fl);
-
-    Result := 0;
-    MoveTFloat(ftmp, Result);
-  end
-  else
-  begin
-    Result := a * b;
-  end;
-end;
-
-function Divide(const valType: Byte; const a: Int64; const b: Int64): Int64;
-var
-  ftmp, ftmp_: TFloat;
-  fl, fl_: Single;
-begin
-  ftmp := Zero;
-  ftmp_ := Zero;
-
-
-  MoveTFloat(a, ftmp);
-  MoveTFloat(b, ftmp_);
-
-  fl := ToSingle(ftmp);
-  fl_ := ToSingle(ftmp_);
-
-
-  if fl_ = 0 then raise EDivByZero.Create('Division by Zero');
-
-  fl := fl / fl_;
-
-  ftmp := FromSingle(fl);
-
-  Result := 0;
-  MoveTFloat(ftmp, Result);
-end;
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
@@ -421,36 +225,229 @@ begin
   Result := CardToHalf32(Value);
 end;
 
-function Frac(const valType: Byte; const a: Int64): Int64;
+// ----------------------------------------------------------------------------
+// High-Level
+// ----------------------------------------------------------------------------
 
+function FromInt64(const i: Int64): TNumber;
+var
+  fl: Single;
+  ftmp: TFloat;
+
+begin
+
+  fl := Integer(i);
+  ftmp := ToTFloat(fl);
+  Result := 0;
+  MoveTFloat(ftmp, Result);
+
+end;
+
+function FromSingle(const s: Single): TNumber; overload;
+var
+  ftmp: TFloat;
+begin
+  ftmp := ToTFloat(s);
+  Result := 0;
+  MoveTFloat(ftmp, Result);
+end;
+
+function CastToReal(const a: TNumber): TNumber;
+var
+  ftmp: TFloat;
+begin
+  ftmp := Zero;
+  MoveTFloat(a, ftmp);
+  Result := ftmp[0];
+end;
+
+
+function CastToSingle(const a: TNumber): TNumber;
+var
+  ftmp: TFloat;
+begin
+  ftmp := Zero;
+  MoveTFloat(a, ftmp);
+  Result := ftmp[1];
+end;
+
+function CastToHalfSingle(const a: TNumber): TNumber;
+var
+  ftmp: TFloat;
+begin
+  ftmp := Zero;
+
+  MoveTFloat(a, ftmp);
+  Result := CardToHalf(ftmp);
+
+end;
+
+function Assign(const valType: Byte; const s: Single): TNumber;
+var
+  ftmp: TFloat;
+begin
+  if valType in RealTypes then
+  begin
+    ftmp := ToTFloat(s);
+  end
+  else
+  begin
+    ftmp[0] := round(s);
+    ftmp[1] := 0;
+  end;
+
+  Result := 0;
+  MoveTFloat(ftmp, Result);
+end;
+
+function Negate(var valType: Byte; const a: TNumber): TNumber;
 var
   ftmp: TFloat;
   fl: Single;
 begin
-  Assert(valType in RealTypes);
-  if valType in [HALFSINGLETOK, SINGLETOK] then
+  if valType in RealTypes then
+  begin  // (RealTypes)
+
+    ftmp := Zero;
+    Result := 0;
+
+    MoveTFloat(a, ftmp);
+    fl := ToSingle(ftmp);
+
+    fl := -fl;
+
+    ftmp := ToTFloat(fl);
+    MoveTFloat(ftmp, Result);
+
+  end
+  else
+  begin // IntegerTypes
+    Result := -a;
+
+    if valType in IntegerTypes then
+      valType := GetValueType(Result);
+
+  end;
+end;
+
+function Add(const valType: Byte; const a: TNumber; const b: TNumber): TNumber;
+var
+  ftmp, ftmp_: TFloat;
+  fl, fl_: Single;
+begin
+
+  if valType in RealTypes then
   begin
     ftmp := Zero;
-    fl := 0;
+    ftmp_ := Zero;
+
     MoveTFloat(a, ftmp);
-    move(ftmp[1], fl, sizeof(fl));
+    MoveTFloat(b, ftmp_);
 
-    fl := System.frac(fl);
+    fl := ToSingle(ftmp);
+    fl_ := ToSingle(ftmp_);
 
-    ftmp := FromSingle(fl);
+    fl := fl + fl_;
+
+    ftmp := ToTFloat(fl);
+
     Result := 0;
     MoveTFloat(ftmp, Result);
   end
   else
   begin
-    if a < 0 then
-      Result := -(abs(a) and $ff)
-    else
-      Result := a and $ff;
+    Result := a + b;
+  end;
+
+end;
+
+function Subtract(const valType: Byte; const a: TNumber; const b: TNumber): TNumber;
+var
+  ftmp, ftmp_: TFloat;
+  fl, fl_: Single;
+begin
+
+  if valType in RealTypes then
+  begin
+    ftmp := Zero;
+    ftmp_ := Zero;
+
+    MoveTFloat(a, ftmp);
+    MoveTFloat(b, ftmp_);
+
+    fl := ToSingle(ftmp);
+    fl_ := ToSingle(ftmp_);
+
+    fl := fl + fl_;
+
+    ftmp := ToTFloat(fl);
+
+    Result := 0;
+    MoveTFloat(ftmp, Result);
+  end
+  else
+  begin
+    Result := a - b;
+  end;
+
+end;
+
+function Multiply(const valType: Byte; const a: TNumber; const b: TNumber): TNumber;
+var
+  ftmp, ftmp_: TFloat;
+  fl, fl_: Single;
+begin
+  if valtype in RealTypes then
+  begin
+    ftmp := Zero;
+    ftmp_ := Zero;
+
+    MoveTFloat(a, ftmp);
+    MoveTFloat(b, ftmp_);
+
+    fl := ToSingle(ftmp);
+    fl_ := ToSingle(ftmp_);
+
+    fl := fl * fl_;
+
+    ftmp := ToTFloat(fl);
+
+    Result := 0;
+    MoveTFloat(ftmp, Result);
+  end
+  else
+  begin
+    Result := a * b;
   end;
 end;
 
-function Trunc(const valType: Byte; const a: Int64): Int64;
+function Divide(const valType: Byte; const a: TNumber; const b: TNumber): TNumber;
+var
+  ftmp, ftmp_: TFloat;
+  fl, fl_: Single;
+begin
+  ftmp := Zero;
+  ftmp_ := Zero;
+
+
+  MoveTFloat(a, ftmp);
+  MoveTFloat(b, ftmp_);
+
+  fl := ToSingle(ftmp);
+  fl_ := ToSingle(ftmp_);
+
+
+  if fl_ = 0 then raise EDivByZero.Create('Division by Zero');
+
+  fl := fl / fl_;
+
+  ftmp := ToTFloat(fl);
+
+  Result := 0;
+  MoveTFloat(ftmp, Result);
+end;
+
+function Trunc(const valType: Byte; const a: TNumber): TNumber;
 
 var
   ftmp: TFloat;
@@ -467,7 +464,7 @@ begin
 
     fl := int(fl);
 
-    ftmp := FromSingle(fl);
+    ftmp := ToTFloat(fl);
     Result := 0;
     MoveTFloat(ftmp, Result);
   end
@@ -477,6 +474,36 @@ begin
       Result := -(abs(a) and $ffffffffffffff00)
     else
       Result := a and $ffffffffffffff00;
+  end;
+end;
+
+
+function Frac(const valType: Byte; const a: TNumber): TNumber;
+
+var
+  ftmp: TFloat;
+  fl: Single;
+begin
+  Assert(valType in RealTypes);
+  if valType in [HALFSINGLETOK, SINGLETOK] then
+  begin
+    ftmp := Zero;
+    fl := 0;
+    MoveTFloat(a, ftmp);
+    move(ftmp[1], fl, sizeof(fl));
+
+    fl := System.frac(fl);
+
+    ftmp := ToTFloat(fl);
+    Result := 0;
+    MoveTFloat(ftmp, Result);
+  end
+  else
+  begin
+    if a < 0 then
+      Result := -(abs(a) and $ff)
+    else
+      Result := a and $ff;
   end;
 end;
 

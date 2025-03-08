@@ -7436,8 +7436,6 @@ var IdentTemp, IdentIndex, oldCodeSize, j: Integer;
     Value, ConstVal: Int64;
     svar, lab: string;
     Param: TParamList;
-    ftmp: TFloat;
-    fl: single;
 begin
 
  isZero:=false;
@@ -7447,9 +7445,6 @@ begin
  ValType := 0;
  ConstVal := 0;
  IdentIndex := 0;
-
- ftmp:=Zero;
- fl:=0;
 
 // WRITELN(tok[i].line, ',', tok[i].kind);
 
@@ -9103,7 +9098,7 @@ case Tok[i].Kind of
 	   ConstVal := Ident[IdentIndex].Value;
 
 
-	    if (ValType in IntegerTypes) and (VarType in [SINGLETOK, HALFSINGLETOK]) then Int2Float(ConstVal);
+	    if (ValType in IntegerTypes) and (VarType in [SINGLETOK, HALFSINGLETOK]) then ConstVal:=FromInt64(ConstVal);
 
 	    if (VarType = HALFSINGLETOK) {or (ValType = HALFSINGLETOK)} then begin
 	      ConstVal:=CastToHalfSingle(ConstVal);
@@ -9139,7 +9134,7 @@ case Tok[i].Kind of
 
 	   if (ValType in [SINGLETOK, HALFSINGLETOK]) or (VarType in [SINGLETOK, HALFSINGLETOK]) then begin	// constants
 
-	    if ValType in IntegerTypes then Int2Float(ConstVal);
+	    if ValType in IntegerTypes then ConstVal:=FromInt64(ConstVal);
 
 	    if (VarType = HALFSINGLETOK) or (ValType = HALFSINGLETOK) then begin
 	      ConstVal := CastToHalfSingle(ConstVal);
@@ -9178,7 +9173,7 @@ case Tok[i].Kind of
     ValType := GetValueType(ConstVal);
 
     if VarType in RealTypes then begin
-     Int2Float(ConstVal);
+     ConstVal:=FromInt64(ConstVal);
 
      if VarType = HALFSINGLETOK then
       ConstVal := CastToHalfSingle(ConstVal)
@@ -9200,11 +9195,7 @@ case Tok[i].Kind of
   FRACNUMBERTOK:
     begin
 
-    fl := Tok[i].FracValue;
-
-    ftmp:=FromSingle(fl);
-
-    MoveTFloat(ftmp, ConstVal);
+    constVal:=FromSingle(Tok[i].FracValue);
 
     ValType := REALTOK;
 
@@ -9474,7 +9465,7 @@ case Tok[i].Kind of
 
 	if SafeCompileConstExpression(j, ConstVal, ValType, SINGLETOK) then begin
 
-	  if not(ValType in RealTypes) then Int2Float(ConstVal);
+	  if not(ValType in RealTypes) then ConstVal:=FromInt64(ConstVal);
 
 	  ConstVal:=CastToSingle(ConstVal);
 	  ValType := SINGLETOK;
@@ -9971,7 +9962,10 @@ if Tok[i].Kind in [PLUSTOK, MINUSTOK] then j := i + 1 else j := i;
 
 if SafeCompileConstExpression(j, ConstVal, ValType, VarType) then begin
 
- if (ValType in IntegerTypes) and (VarType in RealTypes) then begin Int2Float(ConstVal); ValType := VarType end;
+ if (ValType in IntegerTypes) and (VarType in RealTypes) then
+   begin ConstVal:=FromInt64(ConstVal);
+         ValType := VarType
+   end;
 
  if VarType in RealTypes then ValType := VarType;
 
@@ -10088,7 +10082,7 @@ begin
 
  if SafeCompileConstExpression(i, ConstVal, ValType, VarType, False) then begin
 
-   if (ValType in IntegerTypes) and (VarType in RealTypes) then begin Int2Float(ConstVal); ValType := VarType end;
+   if (ValType in IntegerTypes) and (VarType in RealTypes) then begin ConstVal:=FromInt64(ConstVal); ValType := VarType end;
 
    if VarType in RealTypes then ValType := VarType;
 
@@ -14230,7 +14224,7 @@ begin
    ActualParamType := ConstValType;
 
   if (ConstValType in RealTypes) and (ActualParamType in IntegerTypes) then begin
-   Int2Float(ConstVal);
+   ConstVal:=FromInt64(ConstVal);
    ActualParamType := ConstValType;
   end;
 
@@ -14419,7 +14413,7 @@ begin
    ActualParamType := ConstValType;
 
   if (ConstValType in RealTypes) and (ActualParamType in IntegerTypes) then begin
-   Int2Float(ConstVal);
+   ConstVal:=FromInt64(ConstVal);
    ActualParamType := ConstValType;
   end;
 
@@ -15897,7 +15891,7 @@ while Tok[i].Kind in
 
 
 	   if (VarType in RealTypes) and (ConstValType in IntegerTypes) then begin
-	     Int2Float(ConstVal);
+	     ConstVal:=FromInt64(ConstVal);
 	     ConstValType := VarType;
 	   end;
 

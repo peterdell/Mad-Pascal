@@ -267,30 +267,6 @@ begin
 
 end;
 
-
-// ----------------------------------------------------------------------------
-// ----------------------------------------------------------------------------
-
-// https://www.freepascal.org/docs-html/rtl/system/sarlongint.html
-function SarLongint(
-  const AValue: LongInt;
-  const Shift: Byte = 1
-):LongInt;
-begin
-
-  if AValue>0 then
-  begin
-     Result := AValue Shr Shift;
-  end
-  else
-  begin
-     Result := -(-AValue shr Shift);
-  end;
-end;
-
-
-
-
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
@@ -422,7 +398,6 @@ function CompileConstFactor(i: Integer; out ConstVal: Int64; out ConstValType: B
 var IdentIndex, j: Integer;
     Kind, ArrayIndexType: Byte;
     ArrayIndex: Int64;
-    ftmp: TFloat;
 
     function GetStaticValue(x: byte): Int64;
     begin
@@ -437,8 +412,6 @@ begin
 
  ConstVal:=0;
  ConstValType:=0;
-
- ftmp:=Zero;
 
  j:=0;
 
@@ -1039,9 +1012,7 @@ case Tok[i].Kind of
 
   FRACNUMBERTOK:
     begin
-     ftmp:=FromSingle(Tok[i].FracValue);
-
-     MoveTFloat(ftmp,ConstVal);
+     ConstVal := FromSingle(Tok[i].FracValue);
      ConstValType := REALTOK;
 
      Result := i;
@@ -1104,7 +1075,7 @@ case Tok[i].Kind of
 
     if isError then exit;
 
-    if not(ConstValType in RealTypes) then Int2Float(ConstVal);
+    if not(ConstValType in RealTypes) then ConstVal:=FromInt64(ConstVal);
 
     CheckTok(j + 1, CPARTOK);
 
@@ -1187,23 +1158,23 @@ while Tok[j + 1].Kind in [MULTOK, DIVTOK, MODTOK, IDIVTOK, SHLTOK, SHRTOK, ANDTO
 
 
   if (ConstValType in RealTypes) and (RightConstValType in IntegerTypes) then begin
-   Int2Float(RightConstVal);
+  RightConstVal:=FromInt64(RightConstVal);
    RightConstValType := ConstValType;
   end;
 
   if (ConstValType in IntegerTypes) and (RightConstValType in RealTypes) then begin
-   Int2Float(ConstVal);
+   ConstVal:=FromInt64(ConstVal);
    ConstValType := RightConstValType;
   end;
 
 
   if (Tok[j + 1].Kind = DIVTOK) and (ConstValType in IntegerTypes) then begin
-   Int2Float(ConstVal);
+   ConstVal:=FromInt64(ConstVal);
    ConstValType := REALTOK;
   end;
 
   if (Tok[j + 1].Kind = DIVTOK) and (RightConstValType in IntegerTypes) then begin
-   Int2Float(RightConstVal);
+   RightConstVal:=FromInt64(RightConstVal);
    RightConstValType := REALTOK;
   end;
 
@@ -1290,12 +1261,12 @@ end;
 
 
   if (ConstValType in RealTypes) and (RightConstValType in IntegerTypes) then begin
-   Int2Float(RightConstVal);
+   RightConstVal:=FromInt64(RightConstVal);
    RightConstValType := ConstValType;
   end;
 
   if (ConstValType in IntegerTypes) and (RightConstValType in RealTypes) then begin
-   Int2Float(ConstVal);
+   ConstVal:=FromInt64(ConstVal);
    ConstValType := RightConstValType;
   end;
 
