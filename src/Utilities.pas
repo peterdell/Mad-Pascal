@@ -5,37 +5,49 @@ interface
 {$i define.inc}
 {$i Types.inc}
 
-type THaltException = class
+type
+  THaltException = class
+  type TExitCode = Longint;
+
+  const
+    OK: TExitCode = 0;
+    // No errors occurred, the output files were created correctly
+  const
+    COMPILING_ABORTED: TExitCode = 2;     // Errors occurred, and compiling was aborted
+  const
+    COMPOLING_NOT_STARTED: TExitCode = 3;
+    // Wrong parameters were specified, and compiling was not started
+
   private
-    exitCode: LongInt;
+    exitCode: Longint;
 
   public
-    constructor Create(exitCode: LongInt);
-    function GetExitCode: LongInt;    
-end;
+    constructor Create(exitCode: Longint);
+    function GetExitCode: Longint;
+  end;
 
 // Replaces https://www.freepascal.org/docs-html/rtl/system/halt.html
-procedure RaiseHaltException( errnum: LongInt = 0 );
+procedure RaiseHaltException(errnum: Longint = 0);
 
 {$IFDEF PAS2JS}
   {$I 'include\pas2js\Utilities-PAS2JS-Interface.inc'}
 {$ELSE}
-  procedure MoveSingle(i: Integer; s: Single);
+procedure MoveSingle(i: Integer; s: Single);
 {$ENDIF}
 
 implementation
 
-constructor THaltException.Create(exitCode: LongInt);
+constructor THaltException.Create(exitCode: Longint);
 begin
   Self.exitCode := exitCode;
 end;
 
-function THaltException.GetExitCode: LongInt;
+function THaltException.GetExitCode: Longint;
 begin
   Result := exitCode;
 end;
 
-procedure RaiseHaltException( errnum: LongInt );
+procedure RaiseHaltException(errnum: Longint);
 begin
 {$IFDEF PAS2JS}
   raise THaltException.Create(errnum);
@@ -52,7 +64,7 @@ end;
 procedure MoveSingle(i: Integer; s: Single);
 begin
 end;
- 
+
 {$ENDIF}
 
 end.
