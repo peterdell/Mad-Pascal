@@ -173,6 +173,8 @@ begin
    for j := 1 to Types[i].NumFields do begin
 
     FieldType := Types[i].Field[j].DataType;
+    
+    // TODO: The two variables below are unused.
     NumAllocElements := Types[i].Field[j].NumAllocElements;
     AllocElementType := Types[i].Field[j].AllocElementType;
 

@@ -293,11 +293,9 @@ begin
 
 Result := 0;
 
+best := nil;
 SetLength(best, 1);
-
-best[0].IdentIndex := 0;
-best[0].b := 0;
-best[0].hit := 0;
+best[0] := Default(TBest);
 
 for BlockStackIndex := BlockStackTop downto 0 do	// search all nesting levels from the current one to the most outer one
   begin
@@ -553,7 +551,9 @@ end;
 
 begin
 
+ov:=nil;
 SetLength(ov, 1);
+l:=nil;
 SetLength(l, 1);
 
 for BlockStackIndex := BlockStackTop downto 0 do       // search all nesting levels from the current one to the most outer one
@@ -10512,6 +10512,7 @@ var
   forLoop: TForLoop;
   Name, EnumName, svar, par1, par2: string;
   forBPL: byte;
+
 begin
 
 Result:=i;
@@ -11723,6 +11724,7 @@ case Tok[i].Kind of
 
     inc(i, 2);
 
+    CaseLabelArray:=nil;
     SetLength(CaseLabelArray, 1);
 
     repeat	// Loop over all cases
@@ -14012,8 +14014,9 @@ begin
 	yes := TRUE;
 
         HeaFile:=TFileSystem.CreateTextFile;
-        HeaFile.Assign(fnam); FileMode:=0; HeaFile.Reset;
+        HeaFile.Assign(fnam); HeaFile.Reset;
 
+        txt:='';
 	while not HeaFile.EOF do begin
 	  HeaFile.ReadLn(txt);
 
@@ -14038,7 +14041,6 @@ begin
 	  iError(Ident[IdentIndex].Libraries, UnknownIdentifier, IdentIndex);
 
 	HeaFile.Close;
-        HeaFile.Free;
 
         if RCLIBRARY then begin asm65(''); asm65(#9'rmb'); asm65('') end;				// reset bank -> #0
 
@@ -15700,7 +15702,8 @@ while Tok[i].Kind in
 
   idx:=i;
 
-  SetLength(UnitList, 1);		// wstepny odczyt USES, sprawdzamy czy nie powtarzaja sie wpisy
+  UnitList:=nil;
+  SetLength(UnitList, 1);		// preliminary USES reading, we check if there are any duplicate entries
 
   repeat
 
@@ -17465,7 +17468,7 @@ var seconds: ValReal;
 begin
 
 {$IFDEF WINDOWS}
- if GetFileType(GetStdHandle(STD_OUTPUT_HANDLE)) = 3 then begin
+ if Windows.GetFileType(Windows.GetStdHandle(STD_OUTPUT_HANDLE)) = Windows.FILE_TYPE_PIPE then begin
   Assign(Output, ''); FileMode:=1; Rewrite(Output);
  end;
 {$ENDIF}
@@ -17509,17 +17512,16 @@ begin
 
  {$IFDEF USEOPTFILE}
 
- AssignFile(OptFile, ChangeFileExt(UnitName[1].Name, '.opt') ); FileMode:=1; rewrite(OptFile);
+ OptFile.AssignFile(ChangeFileExt(UnitName[1].Name, '.opt') ); OptFile.Rewrite();
 
  {$ENDIF}
 
- OutFile:=TTextFile.Create;
+ OutFile:=TFileSystem.CreateTextFile;
  if ExtractFileName(outputFile) <> '' then
   OutFile.Assign(outputFile)
  else
   OutFile.Assign( ChangeFileExt(UnitName[1].Name, '.a65') );
 
- FileMode:=1;
  OutFile.Rewrite;
 
  TextColor(WHITE);
@@ -17614,7 +17616,6 @@ begin
 
  OutFile.Flush;
  OutFile.Close;
- OutFile.Free;
 
 {$IFDEF USEOPTFILE}
 
