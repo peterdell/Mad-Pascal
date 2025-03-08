@@ -22,15 +22,10 @@ type
 // ----------------------------------------------------------------------------
 
 	procedure Error(ErrTokenIndex: Integer; Msg: string);
-
-	function ErrorMessage(ErrTokenIndex: Integer; err: ErrorCode; IdentIndex: Integer = 0; SrcType: Int64 = 0; DstType: Int64 = 0): string;
-
+	// TODO:: Use overload and rename to Error, like for Note
 	procedure iError(ErrTokenIndex: Integer; err: ErrorCode; IdentIndex: Integer = 0; SrcType: Int64 = 0; DstType: Int64 = 0);
 
-	procedure newMsg(var msg: TArrayString; var a: string);
-
 	procedure Note(NoteTokenIndex: Integer; IdentIndex: Integer); overload;
-
 	procedure Note(NoteTokenIndex: Integer; Msg: string); overload;
 
 	procedure Warning(WarnTokenIndex: Integer; err: ErrorCode; IdentIndex: Integer = 0; SrcType: Int64 = 0; DstType: Int64 = 0);
@@ -220,33 +215,10 @@ procedure iError(ErrTokenIndex: Integer; err: ErrorCode; IdentIndex: Integer = 0
 var Msg: string;
 begin
 
- if not isConst then begin
-
- //Tok[NumTok-1].Column := Tok[NumTok].Column + Tok[NumTok-1].Column;
-
- WritelnMsg;
-
- Msg:=ErrorMessage(ErrTokenIndex, err, IdentIndex, SrcType, DstType);
-
- if ErrTokenIndex > NumTok then ErrTokenIndex := NumTok;
-
- TextColor(LIGHTRED);
-
- WriteLn(UnitName[Tok[ErrTokenIndex].UnitIndex].Path + ' (' + IntToStr(Tok[ErrTokenIndex].Line) + ',' + IntToStr(Succ(Tok[ErrTokenIndex - 1].Column)) + ')'  + ' Error: ' + Msg);
-
- NormVideo;
-
- FreeTokens;
-
- OutFile.Close;
- OutFile.Erase;
-
- RaiseHaltException(2);
-
- end;
-
- isError := true;
-
+  if not isConst then begin
+    Msg:=ErrorMessage(ErrTokenIndex, err, IdentIndex, SrcType, DstType);
+    Error(ErrTokenIndex,msg);
+  end;
 end;
 
 
@@ -255,7 +227,10 @@ end;
 
 
 procedure Error(ErrTokenIndex: Integer; Msg: string);
+var token, previousToken: TToken;
 begin
+
+ Assert(NumTok>0, 'No token in token list');
 
  if not isConst then begin
 
@@ -266,15 +241,27 @@ begin
  if ErrTokenIndex > NumTok then ErrTokenIndex := NumTok;
 
  TextColor(LIGHTRED);
+ token:=Tok[ErrTokenIndex];
+ if (ErrTokenIndex>1) then
+ begin
+   previousToken:=Tok[ErrTokenIndex - 1];
+   WriteLn(UnitName[token.UnitIndex].Path + ' (' + IntToStr(token.Line) + ',' + IntToStr(Succ(previousToken.Column)) + ')'  + ' Error: ' + Msg);
+ end
+ else
+ begin
+   WriteLn(UnitName[token.UnitIndex].Path + ' (' + IntToStr(token.Line) + ')'  + ' Error: ' + Msg);
+ end;
 
- WriteLn(UnitName[Tok[ErrTokenIndex].UnitIndex].Path + ' (' + IntToStr(Tok[ErrTokenIndex].Line) + ',' + IntToStr(Succ(Tok[ErrTokenIndex - 1].Column)) + ')'  + ' Error: ' + Msg);
 
  NormVideo;
 
  FreeTokens;
 
- OutFile.Close;
- OutFile.Erase;
+ if Outfile<>nil then
+ begin
+   OutFile.Close;
+   OutFile.Erase;
+ end;
 
  RaiseHaltException(2);
 
