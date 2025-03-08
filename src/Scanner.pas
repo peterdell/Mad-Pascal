@@ -1245,7 +1245,7 @@ var
 
   inFile:=TFileSystem.CreateBinaryFile;
   inFile.Assign(fnam);		// UnitIndex = 1 main program
-  inFile.Reset();
+  inFile.Reset(1);
 
   Text := '';
 
