@@ -265,7 +265,7 @@ var i, j: integer;
 begin
 
   t := TFileSystem.CreateTextFile;
-  t.Assign(fnam); FileMode:=0; t.Reset;
+  t.Assign(fnam); t.Reset;
 
   while not t.EOF do begin
     s := '';
@@ -591,7 +591,7 @@ var
 	  tmp:=0;
 	  NumRead:=0;
           bin:=TFileSystem.CreateBinaryFile;
-	  bin.Assign(fn); FileMode:=0; bin.Reset(1);
+	  bin.Assign(fn); bin.Reset(1);
 
   	  Repeat
     		bin.BlockRead(tmp, 1, NumRead);
@@ -1245,7 +1245,6 @@ var
 
   inFile:=TFileSystem.CreateBinaryFile;
   inFile.Assign(fnam);		// UnitIndex = 1 main program
-  FileMode:=0;
   inFile.Reset();
 
   Text := '';
@@ -1509,6 +1508,7 @@ var
 	   end
 	   else begin				// Identifier found
 	     Tok[NumTok].Kind := IDENTTOK;
+//	     New(Tok[NumTok].Name);
 	     Tok[NumTok].Name := Text;
 	   end;
 

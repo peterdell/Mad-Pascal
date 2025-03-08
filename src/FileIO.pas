@@ -439,6 +439,7 @@ end;
 procedure TBinaryFile.Reset(); overload;
 begin
 {$IFNDEF PAS2JS}
+  System.FileMode := 0;
   System.Reset(f);
 {$ENDIF}
 end;
