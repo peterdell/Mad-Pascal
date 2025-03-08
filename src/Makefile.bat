@@ -27,14 +27,21 @@ if not "%TEST_EXE%"=="" (
 )
 
 if not "%MP_EXE%"=="" (
+  echo.
   echo INFO: Compiling with WUDSN version.
+  echo ===================================
+  echo.
   call :run_mp %WUDSN_MP_EXE%
    
+  echo.
+  echo.
   echo INFO: Comiling with new version.
+  echo ================================
+  echo.
   if exist "%MP_EXE%" del "%MP_EXE%"
   call fpc.bat %MP_SRC_FOLDER%\mp.pas
   if errorlevel 1 goto :eof
-  if exist "%MP_EXE	%" (
+  if exist "%MP_EXE%" (
     call :run_mp "%MP_EXE%"
   )
 )
