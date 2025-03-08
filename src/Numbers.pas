@@ -429,13 +429,11 @@ begin
   ftmp := Zero;
   ftmp_ := Zero;
 
-
   MoveTFloat(a, ftmp);
   MoveTFloat(b, ftmp_);
 
   fl := ToSingle(ftmp);
   fl_ := ToSingle(ftmp_);
-
 
   if fl_ = 0 then raise EDivByZero.Create('Division by Zero');
 
@@ -457,10 +455,10 @@ begin
   if valType in [HALFSINGLETOK, SINGLETOK] then
   begin
     ftmp := Zero;
-    fl := 0;
-    MoveTFloat(a, ftmp);
-    move(ftmp[1], fl, sizeof(fl));
 
+    MoveTFloat(a, ftmp);
+
+    fl:=ToSingle(ftmp);
 
     fl := int(fl);
 
@@ -488,9 +486,10 @@ begin
   if valType in [HALFSINGLETOK, SINGLETOK] then
   begin
     ftmp := Zero;
-    fl := 0;
+
     MoveTFloat(a, ftmp);
-    move(ftmp[1], fl, sizeof(fl));
+
+    fl:=ToSingle(ftmp);
 
     fl := System.frac(fl);
 
