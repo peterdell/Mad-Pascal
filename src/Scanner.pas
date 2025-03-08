@@ -333,7 +333,6 @@ begin
   end;
 
   t.Close;
-  t.Free;
 
 end;	//AddResource
 
@@ -410,7 +409,7 @@ var
 
 
   procedure Tokenize(fnam: string; testUnit: Boolean = false);
-  var InFile: TBinaryFile;
+  var InFile: IBinaryFile;
       _line: integer;
       _uidx: integer;
 
@@ -578,7 +577,7 @@ var
 
 
 	procedure bin2csv(fn: string);
-	var bin: TBinaryFile;
+	var bin: IBinaryFile;
 	    tmp: byte;
 	    NumRead: integer;
 	    yes: Boolean;
@@ -588,7 +587,7 @@ var
 
 	  tmp:=0;
 	  NumRead:=0;
-          bin:=TBinaryFile.Create;
+          bin:=TFileSystem.CreateBinaryFile;
 	  bin.Assign(fn); FileMode:=0; bin.Reset(1);
 
   	  Repeat
@@ -606,7 +605,6 @@ var
   	  Until (NumRead = 0);
 
 	  bin.Close();
-	  bin.Free;
 
 	end;
 
@@ -1242,10 +1240,10 @@ var
 
   begin
 
-  inFile:=TBinaryFile.Create;
-  InFile.Assign(fnam);		// UnitIndex = 1 main program
+  inFile:=TFileSystem.CreateBinaryFile;
+  inFile.Assign(fnam);		// UnitIndex = 1 main program
   FileMode:=0;
-  InFile.Reset();
+  inFile.Reset();
 
   Text := '';
 
@@ -1757,7 +1755,6 @@ var
      end;
   end;// try
   InFile.Close;
-  InFile.Free;
 end;
 
 

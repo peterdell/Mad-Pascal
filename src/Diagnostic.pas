@@ -22,7 +22,7 @@ var i, CharIndex, ChildIndex: Integer;
     DiagFile: ITextFile;
 begin
 
-  DiagFile:=TTextFile.Create;
+  DiagFile:=TFileSystem.CreateTextFile;
   DiagFile.Assign(ChangeFileExt( UnitName[1].Name, '.txt') );
   DiagFile.Rewrite;
 
@@ -88,7 +88,6 @@ begin
 
   DiagFile.WriteLn;
   DiagFile.Close;
-  DiagFile.Free;
 
 end;
 

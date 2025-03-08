@@ -1,5 +1,8 @@
 unit FileIO;
 
+// Interfaced objects are implicitly reference counted and freed.
+// Therefore there are no explicit Free method on the files.  
+
 interface
 
 {$i define.inc}
@@ -7,13 +10,12 @@ interface
 
 type TFilePath = string;
 type TFilePosition = LongInt;
-
+// https://www.freepascal.org/docs-html/rtl/system/filemode.html
 type IFile = interface
 	procedure Assign(filePath: TFilePath);
 	procedure Close;
 	procedure Erase(); 
         function EOF():Boolean;
-	procedure Free;
 	procedure Reset(); // Open for reading
 	procedure Rewrite(); // Open for writing
 end;
@@ -146,7 +148,6 @@ end;
 procedure TTextFile.Assign(filePath: TFilePath); 
 begin
   Self.filePath:=filePath;
-  System.WriteLn('TODO: Assignining TTextFile '+filePath);
 {$IFNDEF PAS2JS}
   AssignFile(f, filePath);
 {$ENDIF}
@@ -154,7 +155,6 @@ end;
 
 procedure TTextFile.Close(); 
 begin
-  System.WriteLn('TODO: Closing TTextFile '+filePath);
 {$IFNDEF PAS2JS}
   CloseFile(f);
 {$ENDIF}
@@ -205,6 +205,7 @@ end;
 procedure TTextFile.Reset();
 begin
 {$IFNDEF PAS2JS}
+  System.FileMode:=0;
   System.Reset(f);
 {$ENDIF}
 
@@ -213,9 +214,9 @@ end;
 procedure TTextFile.Rewrite();
 begin
 {$IFNDEF PAS2JS}
+  System.FileMode:=1;
   System.Rewrite(f);
 {$ENDIF}
-
 end;
 
 function TTextFile.Write(s:string): ITextFile;
@@ -223,6 +224,7 @@ begin
 {$IFNDEF PAS2JS}
   System.Write(f, s);
 {$ENDIF}
+Result:=Self;
 end;
 
 function TTextFile.Write(s:string; w: Integer): ITextFile;
@@ -230,6 +232,7 @@ begin
 {$IFNDEF PAS2JS}
   System.Write(f, s);
 {$ENDIF}
+Result:=Self;
 end;
 
 function TTextFile.Write(i:Integer; w: Integer): ITextFile;
@@ -237,7 +240,7 @@ begin
 {$IFNDEF PAS2JS}
  System.Write(f, i);
 {$ENDIF}
-
+Result:=Self;	
 end;
 
 procedure TTextFile.WriteLn();
@@ -284,8 +287,6 @@ procedure TBinaryFile.Assign(filePath: TFilePath);
 begin
   Self.filePath:=filePath;
 {$IFNDEF PAS2JS}
-
-  // WriteLn('TODO: Assignining TBinaryFile '+filePath);
   AssignFile(f, filePath);
 {$ENDIF}
 end;
@@ -300,8 +301,6 @@ end;
 procedure TBinaryFile.Close(); 
 begin
 {$IFNDEF PAS2JS}
-
-  // WriteLn('TODO: Closing TBinaryFile '+filePath);
   CloseFile(f);
 {$ENDIF}
 
@@ -342,7 +341,6 @@ end;
 procedure TBinaryFile.Reset(); overload;
 begin
 {$IFNDEF PAS2JS}
-  // WriteLn('TODO: Reset TBinaryFile '+filePath);
   System.Reset(f);
 {$ENDIF}
 end;
@@ -350,7 +348,6 @@ end;
 procedure TBinaryFile.Reset(l: LongInt); overload;
 begin
 {$IFNDEF PAS2JS}
-  // WriteLn('TODO: Reset TBinaryFile '+filePath);
   System.Reset(f,l);
 {$ENDIF}
  
