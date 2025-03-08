@@ -187,7 +187,7 @@ uses
 {$IFDEF PAS2JS}
          browserconsole,
 {$ENDIF}
-	Common, Console, Messages, Scanner, Parser, Optimize, Diagnostic, MathEvaluate, FileIO, Utilities;
+	Common, Console, Messages, Numbers, Scanner, Parser, Optimize, Diagnostic, MathEvaluate, FileIO, Utilities;
 
 
 // ----------------------------------------------------------------------------
@@ -7448,9 +7448,7 @@ begin
  ConstVal := 0;
  IdentIndex := 0;
 
- ftmp[0]:=0;
- ftmp[1]:=0;
-
+ ftmp:=Zero;
  fl:=0;
 
 // WRITELN(tok[i].line, ',', tok[i].kind);
@@ -9978,7 +9976,7 @@ var
   fl: single;
 begin
 
-ftmp:=Default(TFloat);
+ftmp:=Zero;
 fl:=0;
 
 if Tok[i].Kind in [PLUSTOK, MINUSTOK] then j := i + 1 else j := i;
@@ -13854,7 +13852,7 @@ var IdentIndex, size: integer;
        v: Int64;
    begin
 
-    ftmp:=Default(TFloat);
+    ftmp:=Zero;
 
     move(Ident[IdentIndex].Value, ftmp, sizeof(ftmp));
 
@@ -14160,8 +14158,7 @@ begin
               RaiseHaltException(2);
         end;
 
-	ftmp[0]:=0;
-	ftmp[1]:=0;
+	ftmp:=Zero;
 
 	 case ConstValType of
 

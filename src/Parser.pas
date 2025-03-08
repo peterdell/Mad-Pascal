@@ -2,7 +2,7 @@ unit Parser;
 
 interface
 
-uses Common;
+uses Common, Numbers;
 
 {$i define.inc}
 {$i Types.inc}
@@ -26,8 +26,6 @@ uses Common;
 	function GetIdent(S: TString): Integer;
 
 	function GetSizeof(i: integer; ValType: byte): Int64;
-
-	procedure Int2Float(var ConstVal: Int64);
 
 	function ObjectRecordSize(i: cardinal): integer;
 
@@ -414,25 +412,6 @@ end;	//CardToHalf
 // ----------------------------------------------------------------------------
 
 
-procedure Int2Float(var ConstVal: Int64);
-var ftmp: TFloat;
-    fl: single;
-begin
-
-   fl := integer(ConstVal);
-
-   ftmp[0] := round(fl * TWOPOWERFRACBITS);
-   ftmp[1] := integer(fl);
-
-   move(ftmp, ConstVal, sizeof(ftmp));
-
-end;
-
-
-// ----------------------------------------------------------------------------
-// ----------------------------------------------------------------------------
-
-
 procedure SaveToDataSegment(ConstDataSize: integer; ConstVal: Int64; ConstValType: Byte);
 var ftmp: TFloat;
 begin
@@ -442,8 +421,7 @@ begin
 	      RaiseHaltException(2);
 	end;
 
-        ftmp[0]:=0;
-        ftmp[1]:=0;
+        ftmp:=Zero;
 
 	 case ConstValType of
 
@@ -584,8 +562,7 @@ begin
  ConstVal:=0;
  ConstValType:=0;
 
- ftmp[0]:=0;
- ftmp[1]:=0;
+ ftmp:=Zero;
 
  fl:=0;
  j:=0;
@@ -1354,11 +1331,8 @@ j := CompileConstFactor(i, ConstVal, ConstValType);
 
 if isError then Exit;
 
-ftmp[0]:=0;
-ftmp[1]:=0;
-
-ftmp_[0]:=0;
-ftmp_[1]:=0;
+ftmp:=Zero;
+ftmp_:=zero;
 
 fl:=0;
 fl_:=0;
@@ -1481,11 +1455,8 @@ j := CompileConstTerm(j, ConstVal, ConstValType);
 
 if isError then exit;
 
-ftmp[0]:=0;
-ftmp[1]:=0;
-
-ftmp_[0]:=0;
-ftmp_[1]:=0;
+ftmp:=Zero;
+ftmp_:=Zero;
 
 fl:=0;
 fl_:=0;
@@ -1769,7 +1740,6 @@ else
           end;
 
        end;
-
 
        if NumAllocElements > 0 then dec(VarDataSize, DataSize[DataType]);
 

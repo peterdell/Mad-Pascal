@@ -290,11 +290,6 @@ const
   OBJECTVARIABLE	= 1;
   RECORDVARIABLE	= 2;
 
-  // Fixed-point 32-bit real number storage
-
-  FRACBITS		= 8;	// Float Fixed Point
-  TWOPOWERFRACBITS	= 256;
-
   // Parameter passing
 
   VALPASSING		= 1;
