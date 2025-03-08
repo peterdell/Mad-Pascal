@@ -10,7 +10,7 @@
         <MainUnitHasScaledStatement Value="False"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <Title Value="UnitTests"/>
+      <Title Value="TestLanguage"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>
@@ -26,9 +26,8 @@
     </RunParams>
     <Units>
       <Unit>
-        <Filename Value="UnitTests.lpr"/>
+        <Filename Value="TestLanguage.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="test"/>
       </Unit>
     </Units>
   </ProjectOptions>
@@ -36,7 +35,7 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="UnitTests"/>
+      <Filename Value="TestLanguage"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>

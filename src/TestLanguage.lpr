@@ -1,4 +1,4 @@
-program LanguageTests;
+program TestLanguage;
 
 uses SysUtils;
 

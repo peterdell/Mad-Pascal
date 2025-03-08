@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="12"/>
+    <BuildModes Active="Default"/>
+    <Units>
+      <Unit>
+        <Filename Value="TestUnits.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
+        <CursorPos X="29" Y="99"/>
+        <UsageCount Value="21"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit>
+      <Unit>
+        <Filename Value="mp.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="121"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit>
+      <Unit>
+        <Filename Value="FileIO.pas"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="219"/>
+        <CursorPos Y="311"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Messages.pas"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="11"/>
+        <CursorPos X="49" Y="24"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Common.pas"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="736"/>
+        <CursorPos Y="751"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Console.pas"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="8"/>
+        <CursorPos Y="37"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit>
+    </Units>
+    <JumpHistory HistoryIndex="18">
+      <Position>
+        <Filename Value="Console.pas"/>
+        <Caret Line="32" TopLine="5"/>
+      </Position>
+      <Position>
+        <Filename Value="Console.pas"/>
+        <Caret Line="33" TopLine="6"/>
+      </Position>
+      <Position>
+        <Filename Value="Messages.pas"/>
+        <Caret Line="50" TopLine="30"/>
+      </Position>
+      <Position>
+        <Filename Value="Messages.pas"/>
+        <Caret Line="52" TopLine="30"/>
+      </Position>
+      <Position>
+        <Filename Value="Console.pas"/>
+        <Caret Line="32" TopLine="6"/>
+      </Position>
+      <Position>
+        <Filename Value="Console.pas"/>
+        <Caret Line="33" TopLine="6"/>
+      </Position>
+      <Position>
+        <Filename Value="Messages.pas"/>
+        <Caret Line="54" TopLine="30"/>
+      </Position>
+      <Position>
+        <Filename Value="Messages.pas"/>
+        <Caret Line="56" TopLine="30"/>
+      </Position>
+      <Position>
+        <Filename Value="Console.pas"/>
+        <Caret Line="36" TopLine="8"/>
+      </Position>
+      <Position>
+        <Filename Value="Console.pas"/>
+        <Caret Line="37" TopLine="8"/>
+      </Position>
+      <Position>
+        <Filename Value="Messages.pas"/>
+        <Caret Line="58" TopLine="31"/>
+      </Position>
+      <Position>
+        <Filename Value="Messages.pas"/>
+        <Caret Line="241" TopLine="225"/>
+      </Position>
+      <Position>
+        <Filename Value="Messages.pas"/>
+        <Caret Line="243" TopLine="225"/>
+      </Position>
+      <Position>
+        <Filename Value="Messages.pas"/>
+        <Caret Line="244" TopLine="225"/>
+      </Position>
+      <Position>
+        <Filename Value="Messages.pas"/>
+        <Caret Line="245" TopLine="225"/>
+      </Position>
+      <Position>
+        <Filename Value="Messages.pas"/>
+        <Caret Line="252" TopLine="225"/>
+      </Position>
+      <Position>
+        <Filename Value="Messages.pas"/>
+        <Caret Line="256" TopLine="229"/>
+      </Position>
+      <Position>
+        <Filename Value="Common.pas"/>
+        <Caret Line="750" TopLine="736"/>
+      </Position>
+      <Position>
+        <Filename Value="Common.pas"/>
+        <Caret Line="751" TopLine="736"/>
+      </Position>
+    </JumpHistory>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes ActiveMode="default">
+        <Mode Name="default">
+          <local>
+            <LaunchingApplication Use="True" PathPlusParams="C:\Windows\system32\cmd.exe /k ${TargetCmdLine}"/>
+          </local>
+        </Mode>
+      </Modes>
+    </RunParams>
+    <HistoryLists>
+      <List Name="LaunchingApplication" Type="File" Count="2">
+        <Item1 Value="C:\Windows\system32\cmd.exe /k ${TargetCmdLine}"/>
+        <Item2 Value="C:\Windows\system32\cmd.exe /C ${TargetCmdLine}"/>
+      </List>
+      <List Name="WorkingDirectory" Type="File" Count="1"/>
+      <List Name="CommandLineParameters" Count="1"/>
+    </HistoryLists>
+  </ProjectSession>
+  <Debugging>
+    <BreakPoints>
+      <Item>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="UnitTests.lpr"/>
+        <Line Value="1"/>
+      </Item>
+    </BreakPoints>
+    <Watches>
+      <Item>
+        <Expression Value="binFile"/>
+        <DisplayStyle Value="wdfPointer"/>
+      </Item>
+      <Item>
+        <Expression Value="NumTok"/>
+      </Item>
+      <Item>
+        <Expression Value="ErrTokenIndex"/>
+      </Item>
+    </Watches>
+  </Debugging>
+</CONFIG>

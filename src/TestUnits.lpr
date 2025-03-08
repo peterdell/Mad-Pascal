@@ -1,8 +1,8 @@
-program test;
+program TestUnits;
 
 {$i define.inc}
 
-uses Console, Common, FileIO
+uses Console, Common, FileIO, Scanner, Utilities
 {$IFDEF PAS2JS}
      ,browserconsole
 {$ENDIF}
@@ -12,6 +12,12 @@ procedure StartTest(name: string);
 begin
   WriteLn('Unit Test '+name+' started.');
 end;
+
+procedure FailTest(msg: string);
+begin
+  WriteLn('ERROR: '+msg);
+end;
+
 
 procedure EndTest(name: string);
 begin
@@ -60,7 +66,7 @@ begin
 //      binFile.Read(c);
     binFile.Close;
   except
-    Writeln('ERROR: TestFileIO failed with Exception.');
+    FailTest('Failed with Exception.');
 
   end;
   EndTest('TestFileIO');
@@ -76,14 +82,30 @@ begin
 end;
 
 procedure TestUnitCommon;
+var filePath: String;
 begin;
   StartTest('TestUnitCommon');
+
+  // Unit Scanner
+  Program_NAME:='TestProgram';
+  NumTok:=0;
+  // Kind, UnitIndex, Line, Column, Value
+  AddToken(PROGRAMTOK, 1,1,1,0);
 
   // Unit Common
   UnitPath:=nil;
   SetLength(UnitPath,1);
   UnitPath[0]:='lib';
-  FindFile('TestUnit', 'unit');
+  filePath:='';
+  try
+  filePath:=FindFile('TestUnit', 'unit');
+  except on  ex: THaltException do
+    begin
+       Assert(ex.GetExitCode = THaltException.COMPILING_ABORTED);
+    end;
+  end;
+  Assert(filePath<>'', 'Non-existing TestUnit found');
+
   EndTest('TestUnitCommon');
 end;
 

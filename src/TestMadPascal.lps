@@ -8,20 +8,21 @@
       <Unit>
         <Filename Value="mp.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="3"/>
-        <TopLine Value="17605"/>
-        <CursorPos X="17" Y="17614"/>
-        <UsageCount Value="43"/>
+        <TopLine Value="17523"/>
+        <CursorPos Y="17541"/>
+        <UsageCount Value="21"/>
         <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="Common.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <WindowIndex Value="-1"/>
-        <TopLine Value="-1"/>
-        <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="43"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="739"/>
+        <CursorPos X="16" Y="754"/>
+        <UsageCount Value="45"/>
+        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
@@ -31,25 +32,25 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="43"/>
+        <UsageCount Value="45"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="Diagnostic.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="2"/>
-        <TopLine Value="76"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="63"/>
         <CursorPos X="18" Y="90"/>
-        <UsageCount Value="43"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="45"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="FileIO.pas"/>
         <IsPartOfProject Value="True"/>
-        <TopLine Value="323"/>
+        <EditorIndex Value="-1"/>
         <CursorPos Y="335"/>
-        <UsageCount Value="43"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="45"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="MathEvaluate.pas"/>
@@ -58,7 +59,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="43"/>
+        <UsageCount Value="45"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
@@ -68,7 +69,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="43"/>
+        <UsageCount Value="45"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
@@ -78,18 +79,15 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="43"/>
+        <UsageCount Value="45"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="Scanner.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="1"/>
-        <TopLine Value="330"/>
-        <CursorPos Y="347"/>
-        <UsageCount Value="43"/>
-        <Loaded Value="True"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="45"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="SplitString.pas"/>
@@ -98,7 +96,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="43"/>
+        <UsageCount Value="45"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
@@ -108,17 +106,23 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="43"/>
+        <UsageCount Value="45"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="Utilities.pas"/>
         <IsPartOfProject Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="22"/>
+        <CursorPos Y="49"/>
+        <UsageCount Value="45"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit>
+      <Unit>
+        <Filename Value="TestMadPascal.pas"/>
         <EditorIndex Value="-1"/>
-        <WindowIndex Value="-1"/>
-        <TopLine Value="-1"/>
-        <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="43"/>
+        <UsageCount Value="44"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
@@ -131,123 +135,124 @@
     </Units>
     <JumpHistory HistoryIndex="29">
       <Position>
-        <Filename Value="Scanner.pas"/>
-        <Caret Line="1758" TopLine="1747"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="735" TopLine="732"/>
       </Position>
       <Position>
-        <Filename Value="Scanner.pas"/>
-        <Caret Line="1241" TopLine="1230"/>
+        <Filename Value="Utilities.pas"/>
+        <Caret Line="49" TopLine="22"/>
       </Position>
       <Position>
-        <Filename Value="Scanner.pas"/>
-        <Caret Line="1758" TopLine="1747"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="737" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="Scanner.pas"/>
-        <Caret Line="708" TopLine="697"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="739" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="FileIO.pas"/>
-        <Caret Line="335" TopLine="323"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="740" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="Scanner.pas"/>
-        <Caret Line="1077" TopLine="1066"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="741" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="Scanner.pas"/>
-        <Caret Line="1011" TopLine="999"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="743" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="Scanner.pas"/>
-        <Caret Line="1744" TopLine="1733"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="745" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="Scanner.pas"/>
-        <Caret Line="1250" TopLine="1239"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="751" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="FileIO.pas"/>
-        <Caret Line="335" TopLine="323"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="753" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="Scanner.pas"/>
-        <Caret Line="1077" TopLine="1066"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="737" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="Scanner.pas"/>
-        <Caret Line="1011" TopLine="999"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="739" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="Scanner.pas"/>
-        <Caret Line="1744" Column="13" TopLine="1733"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="740" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="Scanner.pas"/>
-        <Caret Line="1250" TopLine="1239"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="743" Column="24" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="Scanner.pas"/>
-        <Caret Line="1757" TopLine="1746"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="737" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="FileIO.pas"/>
-        <Caret Line="302" TopLine="290"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="739" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="FileIO.pas"/>
-        <Caret Line="304" TopLine="290"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="753" Column="28" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="FileIO.pas"/>
-        <Caret Line="307" TopLine="290"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="737" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="mp.pas"/>
-        <Caret Line="17614" Column="17" TopLine="17605"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="739" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="FileIO.pas"/>
-        <Caret Line="335" TopLine="323"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="740" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="Scanner.pas"/>
-        <Caret Line="1776" TopLine="1765"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="741" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="Scanner.pas"/>
-        <Caret Line="1063" TopLine="1052"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="743" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="Scanner.pas"/>
-        <Caret Line="1058" Column="27" TopLine="1052"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="745" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="Scanner.pas"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="751" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="Scanner.pas"/>
-        <Caret Line="55" Column="8" TopLine="28"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="753" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="Scanner.pas"/>
-        <Caret Line="47" Column="61" TopLine="28"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="737" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="Scanner.pas"/>
-        <Caret Line="55" Column="8" TopLine="28"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="739" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="Scanner.pas"/>
-        <Caret Line="301" Column="21" TopLine="275"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="754" Column="9" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="Scanner.pas"/>
-        <Caret Line="305" Column="20" TopLine="279"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="738" TopLine="731"/>
       </Position>
       <Position>
-        <Filename Value="Scanner.pas"/>
-        <Caret Line="324" Column="20" TopLine="298"/>
+        <Filename Value="Common.pas"/>
+        <Caret Line="754" Column="14" TopLine="717"/>
       </Position>
     </JumpHistory>
     <RunParams>
@@ -255,7 +260,7 @@
       <Modes ActiveMode="default">
         <Mode Name="default">
           <local>
-            <CommandLineParams Value="Test-0.pas"/>
+            <CommandLineParams Value="Test-MP.pas"/>
             <LaunchingApplication PathPlusParams="C:\Windows\system32\cmd.exe /k ${TargetCmdLine}"/>
           </local>
         </Mode>
@@ -266,10 +271,12 @@
         <Item1 Value="C:\Windows\system32\cmd.exe /k ${TargetCmdLine}"/>
         <Item2 Value="C:\Windows\system32\cmd.exe /C ${TargetCmdLine}"/>
       </List>
-      <List Name="CommandLineParameters" Count="2">
-        <Item1 Value="Test-0.pas"/>
-        <Item2 Value="-mDelphi Test-0.pas"/>
+      <List Name="CommandLineParameters" Count="3">
+        <Item1 Value="Test-MP.pas"/>
+        <Item2 Value="Test-0.pas"/>
+        <Item3 Value="-mDelphi Test-0.pas"/>
       </List>
+      <List Name="WorkingDirectory" Type="File" Count="1"/>
     </HistoryLists>
   </ProjectSession>
   <Debugging>
@@ -278,8 +285,15 @@
         <Kind Value="bpkSource"/>
         <WatchScope Value="wpsLocal"/>
         <WatchKind Value="wpkWrite"/>
-        <Source Value="Scanner.pas"/>
-        <Line Value="347"/>
+        <Source Value="Utilities.pas"/>
+        <Line Value="49"/>
+      </Item>
+      <Item>
+        <Kind Value="bpkSource"/>
+        <WatchScope Value="wpsLocal"/>
+        <WatchKind Value="wpkWrite"/>
+        <Source Value="Common.pas"/>
+        <Line Value="738"/>
       </Item>
     </BreakPoints>
     <Watches>
@@ -288,6 +302,21 @@
       </Item>
       <Item>
         <Expression Value="Text"/>
+      </Item>
+      <Item>
+        <Expression Value="UnitIndex"/>
+      </Item>
+      <Item>
+        <Expression Value="UnitPath"/>
+      </Item>
+      <Item>
+        <Expression Value="PROGRAM_NAME"/>
+      </Item>
+      <Item>
+        <Expression Value="=UnitPath[i]"/>
+      </Item>
+      <Item>
+        <Expression Value="High(UnitPath)"/>
       </Item>
     </Watches>
   </Debugging>
