@@ -9108,7 +9108,7 @@ case Tok[i].Kind of
 	    move(ConstVal, ftmp, sizeof(ftmp));
 
 	    if (VarType = HALFSINGLETOK) {or (ValType = HALFSINGLETOK)} then begin
-	      ConstVal := CardToHalf( ftmp[1] );
+	      ConstVal := CardToHalf( ftmp );
 	      //ValType := HALFSINGLETOK;
 	    end;
 
@@ -9146,7 +9146,7 @@ case Tok[i].Kind of
 	    move(ConstVal, ftmp, sizeof(ftmp));
 
 	    if (VarType = HALFSINGLETOK) or (ValType = HALFSINGLETOK) then begin
-	      ConstVal := CardToHalf( ftmp[1] );
+	      ConstVal := CardToHalf( ftmp );
 	      ValType := HALFSINGLETOK;
 	    end else begin
 	      ConstVal := ftmp[1];
@@ -9188,7 +9188,7 @@ case Tok[i].Kind of
      move(ConstVal, ftmp, sizeof(ftmp));
 
      if VarType = HALFSINGLETOK then
-      ConstVal := CardToHalf( ftmp[1] )
+      ConstVal := CardToHalf( ftmp )
      else
      if VarType = SINGLETOK then
       ConstVal := ftmp[1];
@@ -9219,7 +9219,7 @@ case Tok[i].Kind of
 
      case VarType of
    	    SINGLETOK: ConstVal := ftmp[1];
-	HALFSINGLETOK: ConstVal := CardToHalf( ftmp[1] );
+	HALFSINGLETOK: ConstVal := CardToHalf( ftmp );
      else
        ConstVal := ftmp[0]
      end;
@@ -10015,7 +10015,7 @@ if SafeCompileConstExpression(j, ConstVal, ValType, VarType) then begin
 
  if ValType = HALFSINGLETOK then begin
   move(ConstVal, ftmp, sizeof(ftmp));
-  ConstVal := CardToHalf( ftmp[1] );
+  ConstVal := CardToHalf( ftmp );
  end;
 
 
@@ -10129,7 +10129,7 @@ begin
 
    if (ValType = HALFSINGLETOK) {or ((VarType = HALFSINGLETOK) and (ValType in RealTypes))} then begin
      move(ConstVal, ftmp, sizeof(ftmp));
-     ConstVal := CardToHalf( ftmp[1] );
+     ConstVal := CardToHalf( ftmp );
      ValType := HALFSINGLETOK;
      VarType := HALFSINGLETOK;
    end;
@@ -13857,7 +13857,7 @@ var IdentIndex, size: integer;
     case Ident[IdentIndex].DataType of
      SHORTREALTOK, REALTOK: v := ftmp[0];
                  SINGLETOK: v := ftmp[1];
-             HALFSINGLETOK: v := CardToHalf( ftmp[1] );
+             HALFSINGLETOK: v := CardToHalf( ftmp );
     else
       v := Ident[IdentIndex].Value;
     end;
@@ -14202,7 +14202,7 @@ begin
 
 	HALFSINGLETOK: begin
 			move(ConstVal, ftmp, sizeof(ftmp));
-			ConstVal := CardToHalf( ftmp[1] );
+			ConstVal := CardToHalf( ftmp );
 
 			StaticStringData[ConstDataSize]   := byte(ConstVal);
 			StaticStringData[ConstDataSize+1] := byte(ConstVal shr 8);

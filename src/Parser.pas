@@ -9,8 +9,6 @@ uses Common, Numbers;
 
 // -----------------------------------------------------------------------------
 
-	function CardToHalf(Src: uint32): word;
-
 	function CompileType(i: Integer; out DataType: Byte; out NumAllocElements: cardinal; out AllocElementType: Byte): Integer;
 
 	function CompileConstExpression(i: Integer; out ConstVal: Int64; out ConstValType: Byte; VarType: Byte = INTEGERTOK; Err: Boolean = false; War: Boolean = true): Integer;
@@ -291,121 +289,6 @@ begin
 end;
 
 
-function CardToHalf(Src: uint32): word;
-var
-  Sign, Exp, Mantissa: LongInt;
-  s: single;
-
-
-function f32Tof16(fltInt32: uint32): word;
-//https://stackoverflow.com/questions/3026441/float32-to-float16/3026505
-var
-//	fltInt32: uint32;
-	fltInt16, tmp: uint16;
-
-begin
-//	fltInt32 := PLongWord(@Float)^;
-	fltInt16 := (fltInt32 shr 31) shl 5;
-	tmp := (fltInt32 shr 23) and $ff;
-	tmp := (tmp - $70) and (LongWord(SarLongint(($70 - tmp), 4)) shr 27);
-	fltInt16 := (fltInt16 or tmp) shl 10;
-	result := fltInt16 or ((fltInt32 shr 13) and $3ff) + 1;
-end;
-
-
-begin
-
-{$IFNDEF PAS2JS} // TODO
-
-  s := PSingle(@Src)^;
-
-  if (frac(s) <> 0) and (abs(s) >= 0.000060975552) then
-
-   Result := f32Tof16(Src)
-
-  else begin
-
-  // Extract sign, exponent, and mantissa from Single number
-  Sign := Src shr 31;
-  Exp := LongInt((Src and $7F800000) shr 23) - 127 + 15;
-  Mantissa := Src and $007FFFFF;
-
-  if (Exp > 0) and (Exp < 30) then
-  begin
-    // Simple case - round the significand and combine it with the sign and exponent
-    Result := (Sign shl 15) or (Exp shl 10) or ((Mantissa + $00001000) shr 13);
-  end
-  else if Src = 0 then
-  begin
-    // Input float is zero - return zero
-    Result := 0;
-  end
-  else
-  begin
-    // Difficult case - lengthy conversion
-    if Exp <= 0 then
-    begin
-      if Exp < -10 then
-      begin
-        // Input float's value is less than HalfMin, return zero
-         Result := 0;
-      end
-      else
-      begin
-        // Float is a normalized Single whose magnitude is less than HalfNormMin.
-        // We convert it to denormalized half.
-        Mantissa := (Mantissa or $00800000) shr (1 - Exp);
-        // Round to nearest
-        if (Mantissa and $00001000) > 0 then
-          Mantissa := Mantissa + $00002000;
-        // Assemble Sign and Mantissa (Exp is zero to get denormalized number)
-        Result := (Sign shl 15) or (Mantissa shr 13);
-      end;
-    end
-    else if Exp = 255 - 127 + 15 then
-    begin
-      if Mantissa = 0 then
-      begin
-        // Input float is infinity, create infinity half with original sign
-        Result := (Sign shl 15) or $7C00;
-      end
-      else
-      begin
-        // Input float is NaN, create half NaN with original sign and mantissa
-        Result := (Sign shl 15) or $7C00 or (Mantissa shr 13);
-      end;
-    end
-    else
-    begin
-      // Exp is > 0 so input float is normalized Single
-
-      // Round to nearest
-      if (Mantissa and $00001000) > 0 then
-      begin
-        Mantissa := Mantissa + $00002000;
-        if (Mantissa and $00800000) > 0 then
-        begin
-          Mantissa := 0;
-          Exp := Exp + 1;
-        end;
-      end;
-
-      if Exp > 30 then
-      begin
-        // Exponent overflow - return infinity half
-        Result := (Sign shl 15) or $7C00;
-      end
-      else
-        // Assemble normalized half
-        Result := (Sign shl 15) or (Exp shl 10) or (Mantissa shr 13);
-    end;
-  end;
-
-  end;
-
-{$ENDIF}
-
-end;	//CardToHalf
 
 
 // ----------------------------------------------------------------------------
@@ -467,7 +350,7 @@ begin
 
 	HALFSINGLETOK: begin
 			move(ConstVal, ftmp, sizeof(ftmp));
-			ConstVal := CardToHalf( ftmp[1] );
+			ConstVal := CardToHalf( ftmp );
 
 			DataSegment[ConstDataSize]   := byte(ConstVal);
 			DataSegment[ConstDataSize+1] := byte(ConstVal shr 8);
