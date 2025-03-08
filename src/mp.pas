@@ -15736,7 +15736,7 @@ while Tok[i].Kind in
 
   i:=idx;
 
-  SetLength(UnitList, 0);		//  wlasciwy odczyt USES
+  SetLength(UnitList, 0);		//  proper reading USES
 
   repeat
 
@@ -17483,12 +17483,10 @@ begin
  Tok[NumTok].Line := 0;
  UnitName[1].Name := '';
 
+ unitPathList:=TPathList.Create;
  MainPath := ExtractFilePath(ParamStr(0));
-
- SetLength(UnitPath, 2);
-
  MainPath := IncludeTrailingPathDelimiter( MainPath );
- UnitPath[0] := IncludeTrailingPathDelimiter( MainPath + 'lib' );
+ unitPathList.AddFolder( MainPath + 'lib' );
 
  if (ParamCount = 0) then Syntax(3);
 
@@ -17638,7 +17636,7 @@ begin
 	 NumTok, ' tokens, ',NumIdent, ' idents, ',  NumBlocks, ' blocks, ', NumTypes, ' types');
 {$ELSE}
  Writeln(IntToStr(Tok[NumTok].Line) + ' lines compiled, ' + FloatToStr(seconds) + ' sec, '
- 	 + IntToStr(NumTok) + ' tokens, ' + IntToStr(NumIdent) + ' idents, ' 
+ 	 + IntToStr(NumTok) + ' tokens        , ' + IntToStr(NumIdent) + ' idents, '
 	 + IntToStr(NumBlocks) + ' blocks, ' +  IntToStr(NumTypes) + ' types');
 {$ENDIF}
 

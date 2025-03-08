@@ -9,7 +9,10 @@ interface
 	procedure TokenizeProgram(UsesOn: Boolean = true);
 
 	procedure TokenizeMacro(a: string; Line, Spaces: integer);
-
+	
+	// For testing. Idea: Put token array into a ITokenList, so it can be tested independently of the whole scanner
+	procedure AddToken(Kind: Byte; UnitIndex, Line, Column: Integer; Value: Int64);
+	
 	function get_digit(var i:integer; var a:string): string;
 
 	function get_constant(var i:integer; var a:string): string;
@@ -301,8 +304,8 @@ begin
         Error(NumTok, 'Undefined resource type: Type = ''' + res.resType + ''', Name = ''' + res.resName + '''');
 
 
-     if (res.resFile <> '') and not(FindFile(res.resFile)) then
-       Error(NumTok, 'Resource file not found: Type = ' + res.resType + ', Name = ''' + res.resName + '''');
+     if (res.resFile <> '') and ( unitPathList.FindFile(res.resFile) = '') then
+       Error(NumTok, 'Resource file not found: Type = ' + res.resType + ', Name = ''' + res.resName + ''' in unit path '''+unitPathList.ToString+'''');
 
 
      for j := 1 to MAXPARAMS do begin

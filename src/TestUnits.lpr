@@ -90,6 +90,7 @@ uses
 
     pathList := TPathList.Create;
     pathList.AddFolder('Folder1');
+    pathList.AddFolder('Folder2');
     pathList.AddFolder('Folder2'+TFileSystem.PathDelim);
     Assert(pathList.GetSize() = 2);
     Assert(pathList.ToString() = 'Folder1'+TFileSystem.PathDelim +';Folder2'+TFileSystem.PathDelim );
@@ -113,9 +114,7 @@ uses
 
     // Unit Common
     unitPathList:=TPathList.Create;
-    UnitPath := nil;
-    SetLength(UnitPath, 1);
-    UnitPath[0] := 'lib';
+    unitPathList.AddFolder('libnone');
     filePath := '';
     try
       filePath := FindFile('TestUnit', 'unit');

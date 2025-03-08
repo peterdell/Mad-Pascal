@@ -8,26 +8,55 @@
       <Unit>
         <Filename Value="TestUnits.lpr"/>
         <IsPartOfProject Value="True"/>
-        <TopLine Value="106"/>
-        <CursorPos X="36" Y="115"/>
-        <UsageCount Value="22"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="108"/>
+        <CursorPos X="5" Y="138"/>
+        <UsageCount Value="23"/>
         <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="FileIO.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="467"/>
+        <CursorPos X="55" Y="486"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Common.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="835"/>
+        <CursorPos X="30" Y="849"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Console.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="8"/>
+        <CursorPos Y="37"/>
+        <UsageCount Value="20"/>
+        <Loaded Value="True"/>
+      </Unit>
+      <Unit>
+        <Filename Value="Utilities.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="-1"/>
+        <TopLine Value="-1"/>
+        <CursorPos X="-1" Y="-1"/>
+        <UsageCount Value="20"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="mp.pas"/>
         <EditorIndex Value="4"/>
-        <TopLine Value="17472"/>
-        <CursorPos X="25" Y="17493"/>
-        <UsageCount Value="10"/>
-        <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
-      </Unit>
-      <Unit>
-        <Filename Value="FileIO.pas"/>
-        <EditorIndex Value="5"/>
-        <TopLine Value="167"/>
-        <CursorPos X="31" Y="188"/>
-        <UsageCount Value="12"/>
+        <TopLine Value="17482"/>
+        <CursorPos X="2" Y="17491"/>
+        <UsageCount Value="11"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
@@ -39,100 +68,15 @@
         <Loaded Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="Common.pas"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="593"/>
-        <CursorPos X="15" Y="610"/>
-        <UsageCount Value="12"/>
-      </Unit>
-      <Unit>
-        <Filename Value="Console.pas"/>
-        <EditorIndex Value="2"/>
-        <TopLine Value="8"/>
-        <CursorPos Y="37"/>
-        <UsageCount Value="11"/>
-        <Loaded Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="Scanner.pas"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
-        <TopLine Value="292"/>
-        <CursorPos X="147" Y="308"/>
+        <TopLine Value="231"/>
+        <CursorPos X="20" Y="236"/>
         <UsageCount Value="10"/>
         <Loaded Value="True"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
     </Units>
-    <JumpHistory HistoryIndex="23">
-      <Position>
-        <Filename Value="mp.pas"/>
-        <Caret Line="14952" Column="11" TopLine="14925"/>
-      </Position>
-      <Position>
-        <Filename Value="mp.pas"/>
-        <Caret Line="15705" Column="11" TopLine="15679"/>
-      </Position>
-      <Position>
-        <Filename Value="mp.pas"/>
-        <Caret Line="15706" Column="21" TopLine="15680"/>
-      </Position>
-      <Position>
-        <Filename Value="mp.pas"/>
-        <Caret Line="15712" Column="29" TopLine="15686"/>
-      </Position>
-      <Position>
-        <Filename Value="mp.pas"/>
-        <Caret Line="15713" Column="16" TopLine="15687"/>
-      </Position>
-      <Position>
-        <Filename Value="mp.pas"/>
-        <Caret Line="15716" Column="20" TopLine="15690"/>
-      </Position>
-      <Position>
-        <Filename Value="mp.pas"/>
-        <Caret Line="15717" Column="12" TopLine="15691"/>
-      </Position>
-      <Position>
-        <Filename Value="mp.pas"/>
-        <Caret Line="15718" Column="22" TopLine="15692"/>
-      </Position>
-      <Position>
-        <Filename Value="mp.pas"/>
-        <Caret Line="15739" Column="51" TopLine="15772"/>
-      </Position>
-      <Position>
-        <Filename Value="mp.pas"/>
-        <Caret Line="17490" Column="10" TopLine="17472"/>
-      </Position>
-      <Position>
-        <Filename Value="FileIO.pas"/>
-        <Caret Line="171" Column="62" TopLine="148"/>
-      </Position>
-      <Position>
-        <Filename Value="FileIO.pas"/>
-        <Caret Line="163" Column="32" TopLine="155"/>
-      </Position>
-      <Position>
-        <Filename Value="FileIO.pas"/>
-        <Caret Line="81" TopLine="71"/>
-      </Position>
-      <Position>
-        <Filename Value="TestUnits.lpr"/>
-        <Caret Line="96" Column="20" TopLine="79"/>
-      </Position>
-      <Position>
-        <Filename Value="FileIO.pas"/>
-        <Caret Line="80" TopLine="61"/>
-      </Position>
-      <Position>
-        <Filename Value="FileIO.pas"/>
-        <Caret Line="4"/>
-      </Position>
-      <Position>
-        <Filename Value="FileIO.pas"/>
-        <Caret Line="3" Column="5"/>
-      </Position>
+    <JumpHistory HistoryIndex="28">
       <Position>
         <Filename Value="FileIO.pas"/>
         <Caret Line="12"/>
@@ -161,6 +105,93 @@
         <Filename Value="Scanner.pas"/>
         <Caret Line="308" Column="146" TopLine="292"/>
       </Position>
+      <Position>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="168" Column="41" TopLine="166"/>
+      </Position>
+      <Position>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="173" TopLine="166"/>
+      </Position>
+      <Position>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="174" TopLine="166"/>
+      </Position>
+      <Position>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="175" TopLine="166"/>
+      </Position>
+      <Position>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="171" TopLine="165"/>
+      </Position>
+      <Position>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="176" TopLine="165"/>
+      </Position>
+      <Position>
+        <Filename Value="TestUnits.lpr"/>
+        <Caret Line="93" TopLine="76"/>
+      </Position>
+      <Position>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="172" TopLine="165"/>
+      </Position>
+      <Position>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="197" Column="31" TopLine="185"/>
+      </Position>
+      <Position>
+        <Filename Value="FileIO.pas"/>
+      </Position>
+      <Position>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="20" Column="19"/>
+      </Position>
+      <Position>
+        <Filename Value="TestUnits.lpr"/>
+        <Caret Line="93" Column="9" TopLine="76"/>
+      </Position>
+      <Position>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="176" Column="8" TopLine="161"/>
+      </Position>
+      <Position>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="78" Column="31" TopLine="63"/>
+      </Position>
+      <Position>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="192" Column="29" TopLine="167"/>
+      </Position>
+      <Position>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="197" Column="31" TopLine="172"/>
+      </Position>
+      <Position>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="476" Column="32" TopLine="449"/>
+      </Position>
+      <Position>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="324" Column="35" TopLine="307"/>
+      </Position>
+      <Position>
+        <Filename Value="Common.pas"/>
+        <Caret Line="609" Column="33" TopLine="593"/>
+      </Position>
+      <Position>
+        <Filename Value="Common.pas"/>
+        <Caret Line="753" TopLine="749"/>
+      </Position>
+      <Position>
+        <Filename Value="Common.pas"/>
+        <Caret Line="849" Column="30" TopLine="835"/>
+      </Position>
+      <Position>
+        <Filename Value="TestUnits.lpr"/>
+        <Caret Line="117" Column="36" TopLine="102"/>
+      </Position>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
@@ -177,8 +208,6 @@
         <Item1 Value="C:\Windows\system32\cmd.exe /k ${TargetCmdLine}"/>
         <Item2 Value="C:\Windows\system32\cmd.exe /C ${TargetCmdLine}"/>
       </List>
-      <List Name="WorkingDirectory" Type="File" Count="1"/>
-      <List Name="CommandLineParameters" Count="1"/>
     </HistoryLists>
   </ProjectSession>
   <Debugging>
@@ -201,6 +230,9 @@
       </Item>
       <Item>
         <Expression Value="ErrTokenIndex"/>
+      </Item>
+      <Item>
+        <Expression Value="folderPath"/>
       </Item>
     </Watches>
   </Debugging>

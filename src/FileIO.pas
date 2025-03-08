@@ -167,8 +167,17 @@ end;
 
 procedure TPathList.AddFolder(folderPath: TFilePath);
 var
-  size: Integer;
+  i, size: Integer;
 begin
+
+  folderPath:=IncludeTrailingPathDelimiter(folderPath);
+
+  // Do not add duplicates.
+  for i:=Low(paths) to High(paths) do
+  begin
+    if paths[i] = folderPath then exit;
+  end;
+
   size := GetSize;
   Inc(size);
   SetLength(paths, size);
@@ -304,7 +313,7 @@ end;
 
 function TTextFile.Write(s: String): ITextFile;
 begin
-{$IFNDEF PAS2JS}
+  {$IFNDEF PAS2JS}
   System.Write(f, s);
 {$ENDIF}
   Result := Self;
@@ -312,6 +321,7 @@ end;
 
 function TTextFile.Write(s: String; w: Integer): ITextFile;
 begin
+// TODO: Implemente width padding using w
 {$IFNDEF PAS2JS}
   System.Write(f, s);
 {$ENDIF}
@@ -320,6 +330,7 @@ end;
 
 function TTextFile.Write(i: Integer; w: Integer): ITextFile;
 begin
+// TODO: Implemente width padding using w
 {$IFNDEF PAS2JS}
   System.Write(f, i);
 {$ENDIF}
@@ -464,7 +475,7 @@ end;
 
 class function TFileSystem.FileExists_(filePath: TFilePath): Boolean;
 begin
-  Result := False; // TODO FileExists(filePathUnicode);
+  Result := FileExists(filePath);
 end;
 
 class function TFileSystem.NormalizePath(filePath: TFilePath): TFilePath;
@@ -472,6 +483,7 @@ begin
 
   Result := filePath;
 
+  // https://github.com/tebe6502/Mad-Pascal/issues/113
   {$IFDEF UNIX}
    if Pos('\', filePath) > 0 then
     Result := LowerCase(StringReplace(filePath, '\', '/', [rfReplaceAll]));

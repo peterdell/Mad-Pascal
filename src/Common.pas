@@ -606,7 +606,7 @@ var
   MainPath, FilePath, optyA, optyY, optyBP2,
   optyFOR0, optyFOR1, optyFOR2, optyFOR3, outTmp, outputFile: TString;
 
-  msgWarning, msgNote, msgUser, UnitPath, OptimizeBuf, LinkObj: TArrayString;
+  msgWarning, msgNote, msgUser, OptimizeBuf, LinkObj: TArrayString;
   unitPathList: TPathList;
 
 
@@ -701,13 +701,14 @@ uses SysUtils, Messages, Utilities;
 // ----------------------------------------------------------------------------
 
 
-function FindFile(Name: string; ftyp: TString): string; overload;
+function FindFile(name: string; ftyp: TString): string; overload;
 begin
-  if unitPathList.FindFile( name) = '' then
+  result:=unitPathList.FindFile( name);
+  if result = '' then
    if ftyp = 'unit' then
-    Error(NumTok, 'Can''t find unit '''+ChangeFileExt(Name,'')+''' used by program '''+PROGRAM_NAME+'" in unit path '''+unitPathList.ToString+'''.')
+    Error(NumTok, 'Can''t find unit '''+ChangeFileExt(Name,'')+''' used by program '''+PROGRAM_NAME+''' in unit path '''+unitPathList.ToString+'''.')
    else
-    Error(NumTok, 'Can''t open '+ftyp+' file '''+Result+'''');
+    Error(NumTok, 'Can''t open '+ftyp+' file '''+name+'''');
 end;
 
 // ----------------------------------------------------------------------------
@@ -749,21 +750,7 @@ end;
 
 
 procedure AddPath(s: string);
-var k: integer;
 begin
-
-  for k:=1 to High(UnitPath)-1 do
-    if UnitPath[k] = s then exit;
-							// https://github.com/tebe6502/Mad-Pascal/issues/113
-  {$IFDEF UNIX}
-   if Pos('\', s) > 0 then
-    s := LowerCase(StringReplace(s, '\', '/', [rfReplaceAll]));
-  {$ENDIF}
-
-  k:=High(UnitPath);
-  UnitPath[k] := IncludeTrailingPathDelimiter ( s );
-
-  SetLength(UnitPath, k + 2);
   unitPathList.AddFolder(s);
 end;
 
@@ -860,7 +847,6 @@ begin
 
  SetLength(Tok, 0);
  SetLength(IFTmpPosStack, 0);
- SetLength(UnitPath, 0);
  unitPathList.Free;
 end;
 
