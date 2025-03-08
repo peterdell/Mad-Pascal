@@ -9214,7 +9214,7 @@ case Tok[i].Kind of
    	    SINGLETOK: ConstVal := CastToSingle(ConstVal);
 	HALFSINGLETOK: ConstVal := CastToHalfSingle(ConstVal);
      else
-       ConstVal := ftmp[0]
+       ConstVal := CastToReal(ConstVal);
      end;
 
      ValType := VarType;
@@ -10077,14 +10077,10 @@ var
   RightValType, ConstValType, isZero: Byte;
   sLeft, sRight, cRight, yes: Boolean;
   ConstVal, ConstValRight: Int64;
-  ftmp: TFloat;
 
 begin
 
  ConstVal:=0;
-
- ftmp[0]:=0;
- ftmp[1]:=0;
 
  isZero := INTEGERTOK;
 
@@ -10098,7 +10094,7 @@ begin
 
 
    if (ValType = HALFSINGLETOK) {or ((VarType = HALFSINGLETOK) and (ValType in RealTypes))} then begin
-     ConstVal := CardToHalf( ftmp );
+     ConstVal := CastToHalfSingle(ConstVal);
      ValType := HALFSINGLETOK;  // Currently redundant
    end;
 
