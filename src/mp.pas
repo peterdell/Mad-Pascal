@@ -9209,8 +9209,7 @@ case Tok[i].Kind of
 
     fl := Tok[i].FracValue;
 
-    ftmp[0] := round(fl * TWOPOWERFRACBITS);
-    ftmp[1] := integer(fl);
+    ftmp:=FromSingle(fl);
 
     move(ftmp, ConstVal, sizeof(ftmp));
 
@@ -9996,8 +9995,7 @@ if SafeCompileConstExpression(j, ConstVal, ValType, VarType) then begin
 
      fl := -fl;
 
-     ftmp[0] := round(fl * TWOPOWERFRACBITS);
-     ftmp[1] := integer(fl);
+     ftmp:=FromSingle(fl);
 
      move(ftmp, ConstVal, sizeof(ftmp));
 

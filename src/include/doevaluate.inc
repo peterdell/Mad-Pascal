@@ -73,9 +73,7 @@ begin
    fl := Evaluate(_s, i);
 
    if ConstValType in RealTypes then begin
-     ftmp[0] := round(fl * TWOPOWERFRACBITS);
-     // JAC! ftmp[1] := integer(fl);
-     ftmp[1] := trunc(fl);
+     ftmp:=FromSingle(fl);
    end else begin
      ftmp[0] := round(fl);
      ftmp[1] := 0;

@@ -808,8 +808,7 @@ case Tok[i].Kind of
 	 FRACTOK: fl:=frac(fl);
 	end;
 
-	ftmp[0] := round(fl * TWOPOWERFRACBITS);
-	ftmp[1] := integer(fl);
+	ftmp:=FromSingle(fl);
 
 	move(ftmp, ConstVal, sizeof(ftmp));
 
@@ -1188,8 +1187,7 @@ case Tok[i].Kind of
 
   FRACNUMBERTOK:
     begin
-     ftmp[0] := round( Tok[i].FracValue * TWOPOWERFRACBITS );
-     ftmp[1] := integer( Tok[i].FracValue );
+     ftmp:=FromSingle(Tok[i].FracValue);
 
      move(ftmp, ConstVal, sizeof(ftmp));
 
@@ -1385,8 +1383,7 @@ while Tok[j + 1].Kind in [MULTOK, DIVTOK, MODTOK, IDIVTOK, SHLTOK, SHRTOK, ANDTO
 
 		fl := fl * fl_;
 
-		ftmp[0] := round(fl * TWOPOWERFRACBITS);
-		ftmp[1] := integer(fl);
+		ftmp:=FromSingle(fl);
 
 		move(ftmp, ConstVal, sizeof(ftmp));
     	      end else
@@ -1407,8 +1404,7 @@ while Tok[j + 1].Kind in [MULTOK, DIVTOK, MODTOK, IDIVTOK, SHLTOK, SHRTOK, ANDTO
 
 		fl := fl / fl_;
 
-		ftmp[0] := round(fl * TWOPOWERFRACBITS);
-		ftmp[1] := integer(fl);
+		ftmp:=FromSingle(fl);
 
 		move(ftmp, ConstVal, sizeof(ftmp));
     	     end;
@@ -1470,8 +1466,7 @@ if Tok[i].Kind = MINUSTOK then begin
 
   fl := -fl;
 
-  ftmp[0] := round(fl * TWOPOWERFRACBITS);
-  ftmp[1] := integer(fl);
+  ftmp:=FromSingle(fl);
 
   move(ftmp, ConstVal, sizeof(ftmp));
 
@@ -1523,8 +1518,7 @@ end;
 
 		fl := fl + fl_;
 
-		ftmp[0] := round(fl * TWOPOWERFRACBITS);
-		ftmp[1] := integer(fl);
+		ftmp:=FromSingle(fl);
 
 		move(ftmp, ConstVal, sizeof(ftmp));
     	      end else
@@ -1539,8 +1533,7 @@ end;
 
 		fl := fl - fl_;
 
-		ftmp[0] := round(fl * TWOPOWERFRACBITS);
-		ftmp[1] := integer(fl);
+		ftmp:=FromSingle(fl);
 
 		move(ftmp, ConstVal, sizeof(ftmp));
 

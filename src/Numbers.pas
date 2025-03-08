@@ -6,11 +6,7 @@ interface
 {$i Types.inc}
 
 
-  // Fixed-point 32-bit real number storage
-const
-  FRACBITS		= 8;	// Float Fixed Point
-  TWOPOWERFRACBITS	= 256;
-
+// Fixed-point 32-bit real number storage
 type  TFloat = array [0..1] of integer; // 2*32 bits
 
 function Zero: TFloat;
@@ -25,6 +21,10 @@ procedure MoveTFloat(ftmp: TFloat; ConstVal: Int64); overload;
 
 implementation
 
+const
+FRACBITS		= 8;	// Float Fixed Point
+TWOPOWERFRACBITS	= 256;
+
 function Zero: TFloat;
 begin
   Result:=Default(TFloat);
@@ -38,8 +38,7 @@ begin
 
    fl := integer(ConstVal);
 
-   ftmp[0] := round(fl * TWOPOWERFRACBITS);
-   ftmp[1] := integer(fl);
+   ftmp:=FromSingle(fl);
 
    move(ftmp, ConstVal, sizeof(ftmp));
 
