@@ -17213,9 +17213,10 @@ begin
 
  i:=1;
  while i <= TEnvironment.GetParameterCount() do begin
-  parameter:=ParamStr(i);
+  parameter:=TEnvironment.GetParameterString(i);
   parameterUpperCase:=AnsiUpperCase(parameter);
-  if ParamStr(i)[1] = '-' then begin
+  // Options start with a minus.
+  if parameter[1] = '-' then begin
 
    if parameterUpperCase = '-O' then begin
 
@@ -17334,14 +17335,16 @@ begin
    end else
      ParameterError(i, 'Unkown option '''+parameter+'''.');
 
-  end else
+  end
+  // No minus, so this must be the file name.
+  else
 
    begin
     UnitName[1].Name := parameter;	//ChangeFileExt(parameter, '.pas');
     UnitName[1].Path := UnitName[1].Name;
 
     if not TFileSystem.FileExists_(UnitName[1].Name) then begin
-     writeln('Error: Can''t open file ''' + UnitName[1].Name + '''');
+     writeln('Error: Can''t open file ''' + UnitName[1].Name + '''.');
      FreeTokens;
      RaiseHaltException(THaltException.COMPILING_NOT_STARTED);
     end;
@@ -17394,24 +17397,43 @@ end;	//ParseParam
 procedure Main;
 
 {$IFNDEF PAS2JS}
-const PI_VALUE: Int64 = $40490FDB00000324; // does not fit into 53 bits Javascript double  mantissa
-const NAN_VALUE: Int64 =$FFC00000FFC00000;
-const INFINITY_VALUE: Int64 = $7F8000007F800000;
-const NEGINFINITY_VALUE: Int64 = $FF800000FF800000;
+const PI_VALUE: TNumber = $40490FDB00000324; // does not fit into 53 bits Javascript double  mantissa
+const NAN_VALUE: TNumber =$FFC00000FFC00000;
+const INFINITY_VALUE: TNumber = $7F8000007F800000;
+const NEGINFINITY_VALUE: TNumber = $FF800000FF800000;
 {$ELSE}
 const PI_VALUE: Int64 = 3; // does not fit into 53 bits Javascript double  mantissa
 const NAN_VALUE: Int64 = $11111111;
 const INFINITY_VALUE: Int64 = $22222222;
 const NEGINFINITY_VALUE: Int64 = $33333333;
+
+var fileMap: TFileMap;
+var fileMapEntry: TFileMapEntry;
 {$ENDIF}
 
 var seconds: ValReal;
+
 begin
 
 {$IFDEF WINDOWS}
  if Windows.GetFileType(Windows.GetStdHandle(STD_OUTPUT_HANDLE)) = Windows.FILE_TYPE_PIPE then begin
   System.Assign(Output, ''); FileMode:=1; System.Rewrite(Output);
  end;
+{$ENDIF}
+
+{$IFDEF PAS2JS}
+ fileMap:=nil;
+ SetLength(fileMap,3);
+ fileMapEntry.filePath:='Input.pas';
+ fileMapEntry.content:='Program program; end.';
+ fileMap[0]:=fileMapEntry;
+ fileMapEntry.filePath:='lib';
+ fileMapEntry.content:='';
+ fileMap[1]:=fileMapEntry;
+ fileMapEntry.filePath:='Output.a65';
+ fileMapEntry.content:='1234';
+ fileMap[2]:=fileMapEntry;
+ TFileSystem.Init(fileMap);
 {$ENDIF}
 
 //WriteLn('Sub-Pascal 32-bit real mode compiler v. 2.0 by Vasiliy Tereshkov, 2009');

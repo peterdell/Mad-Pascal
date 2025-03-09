@@ -7,6 +7,9 @@ interface
 {$i define.inc}
 {$i Types.inc}
 
+{$IFDEF PAS2JS}
+ {$DEFINE SIMULATED_FILE_IO}
+{$ENDIF}
 
 uses SysUtils;
 
@@ -69,22 +72,43 @@ type
   end;
 
 type
+  TFileMapEntry = class
+    filePath: TFilePath;
+    content: String;
+  end;
+
+type
+  TFileMap = array of TFileMapEntry;
+
+
+type
   TFileSystem = class
   public
   const
-  {$IFNDEF PAS2JS}
+  {$IFNDEF SIMULATED_FILE_IO}
     PathDelim = DirectorySeparator;
   {$ELSE}
     PathDelim = '/';
   {$ENDIF}
+    class procedure Init(fileMap: TFileMap);
     class function CreateBinaryFile: IBinaryFile; static;
     class function CreateTextFile: ITextFile; static;
     class function FileExists_(filePath: TFilePath): Boolean;
     class function NormalizePath(filePath: TFilePath): String;
+  protected
+    class function GetFileMapEntry(const filePath: TFilePath): TFileMapEntry;
   end;
 
 implementation
 
+
+var
+  fileMap: TFileMap;
+
+class procedure TFileSystem.Init(fileMap: TFileMap);
+begin
+  FileIO.fileMap := fileMap;
+end;
 
 type
   TFile = class(TInterfacedObject, IFile)
@@ -102,11 +126,15 @@ type
 
 type
   TTextFile = class(TFile, ITextFile)
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   private
   type TSystemTextFile = System.TextFile;
   private
     f: TSystemTextFile;
+{$ELSE}
+  private fileMapEntry: TFileMapEntry;
+  private fileMode: Integer;
+  private filePos: Longint;
 {$ENDIF}
   public
     constructor Create;
@@ -158,7 +186,7 @@ type
 
   end;
 
-{$IFDEF PAS2JS}
+{$IFDEF SIMULATED_FILE_IO}
 //  {$I 'include\pas2js\FileIO-PAS2JS-Implementation.inc'}
 {$ENDIF}
 
@@ -244,14 +272,14 @@ end;
 procedure TTextFile.Assign(filePath: TFilePath);
 begin
   Self.filePath := filePath;
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   AssignFile(f, filePath);
 {$ENDIF}
 end;
 
 procedure TTextFile.Close();
 begin
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   CloseFile(f);
 {$ENDIF}
 
@@ -259,7 +287,7 @@ end;
 
 procedure TTextFile.Erase();
 begin
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   System.Erase(f);
 {$ENDIF}
 
@@ -267,8 +295,10 @@ end;
 
 function TTextFile.EOF(): Boolean;
 begin
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   Result := System.EOF(f);
+{$ELSE}
+  Result := (fileMapEntry.content.length = filePos);
 {$ENDIF}
 
 end;
@@ -276,7 +306,7 @@ end;
 
 procedure TTextFile.Flush();
 begin
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   System.Flush(f);
 {$ENDIF}
 
@@ -284,15 +314,20 @@ end;
 
 procedure TTextFile.Read(var c: Char);
 begin
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   System.Read(f, c);
+{$ELSE}
+  Assert(fileMode=0);
+ // if Eof then raise E...
+  c:=fileMapEntry.content[filePos];
+  Inc(filePos);
 {$ENDIF}
 
 end;
 
 procedure TTextFile.ReadLn(var s: String);
 begin
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   System.ReadLn(f, s);
 {$ENDIF}
 
@@ -300,76 +335,92 @@ end;
 
 procedure TTextFile.Reset();
 begin
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   System.FileMode := 0;
   System.Reset(f);
+{$ELSE}
+  fileMapEntry:=TFileSystem.GetFileMapEntry(filePath);
+  fileMode:=0;
+  filePos:=0;
 {$ENDIF}
 
 end;
 
 procedure TTextFile.Rewrite();
 begin
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   System.FileMode := 1;
   System.Rewrite(f);
+{$ELSE}
+  fileMapEntry:=TFileSystem.GetFileMapEntry(filePath);
+  fileMode:=1;
+  filePos:=0;
 {$ENDIF}
 end;
 
 function TTextFile.Write(s: String): ITextFile;
 begin
-  {$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   System.Write(f, s);
+{$ELSE}
+  Assert(fileMode=1);
+  fileMapEntry.content:=fileMapEntry.content+s;
+  filePos:=filePos+length(s);
 {$ENDIF}
   Result := Self;
 end;
 
 function TTextFile.Write(s: String; w: Integer): ITextFile;
+var
+  sFormatted: String;
 begin
   // TODO: Implemente width padding using w
-{$IFNDEF PAS2JS}
-  System.Write(f, s);
-{$ENDIF}
+  sFormatted := s;
+  Write(sFormatted);
   Result := Self;
 end;
 
 function TTextFile.Write(i: Integer; w: Integer): ITextFile;
+var
+  sFormatted: String;
 begin
-  // TODO: Implemente width padding using w
-{$IFNDEF PAS2JS}
-  System.Write(f, i);
-{$ENDIF}
+  sFormatted := IntToStr(i);
+  Write(sFormatted, w);
   Result := Self;
 end;
 
 procedure TTextFile.WriteLn();
+const CR  = ^M;		// Char for a CR
 begin
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   System.WriteLn(f, '');
+{$ELSE}
+  Write(CR);
 {$ENDIF}
 
 end;
 
 procedure TTextFile.WriteLn(s: String); overload;
 begin
-{$IFNDEF PAS2JS}
-  System.WriteLn(f, s);
-{$ENDIF}
-
+  Write(s);
+  WriteLn;
 end;
+
 
 procedure TTextFile.WriteLn(s1: String; s2: String); overload;
 begin
-{$IFNDEF PAS2JS}
-  System.WriteLn(f, s1, s2);
-{$ENDIF}
+  Write(s1);
+  Write(s2);
+  WriteLn;
 
 end;
 
 procedure TTextFile.WriteLn(s1: String; s2: String; s3: String); overload;
 begin
-{$IFNDEF PAS2JS}
-  System.WriteLn(f, s1, s2, s3);
-{$ENDIF}
+  Write(s1);
+  Write(s2);
+  Write(s3);
+  WriteLn;
 
 end;
 
@@ -484,7 +535,7 @@ begin
   {$IFNDEF PAS2JS}
   Result := FileExists(filePath);
   {$ELSE}
-  Result :=false;
+  Result :=GetFileMapEntry(filePath) <> nil;
   {$ENDIF}
 end;
 
@@ -503,6 +554,21 @@ begin
     Result := LowerCase(filePath);
   {$ENDIF}
 
+end;
+
+class function TFileSystem.GetFileMapEntry(const filePath: TFilePath): TFileMapEntry;
+var
+  i: Integer;
+begin
+  Result := nil;
+  for i := Low(fileMap) to High(fileMap) do
+  begin
+    if fileMap[i].filePath = filePath then
+    begin
+      Result := fileMap[i];
+      exit;
+    end;
+  end;
 end;
 
 end.
