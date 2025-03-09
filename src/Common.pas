@@ -1301,7 +1301,7 @@ end;	//DefineStaticString
 
 procedure ClearWordMemory(anArray: TWordMemory);
 begin
-  for i := Low(Ident) to High(Ident) do
+  for i := Low(anArray) to High(anArray) do
   begin
   	anArray[i]:=0;
   end;
