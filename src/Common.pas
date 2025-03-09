@@ -31,7 +31,7 @@ const
 
   UNTYPETOK		= 0;
 
-  CONSTTOK		= 1;     // !!! nie zmieniac
+  CONSTTOK		= 1;     // !!! Don't change
   TYPETOK		= 2;     // !!!
   VARTOK		= 3;     // !!!
   PROCEDURETOK		= 4;     // !!!
@@ -173,20 +173,20 @@ const
   OBJECTTOK		= 140;	// Size = 2/???
   SHORTREALTOK		= 141;	// Size = 2 SHORTREAL			Fixed-Point Q8.8
   REALTOK		= 142;	// Size = 4 REAL			Fixed-Point Q24.8
-  SINGLETOK		= 143;	// Size = 4 SINGLE / FLOAT		IEEE-754 32bit
-  HALFSINGLETOK		= 144;	// Size = 2 HALFSINGLE / FLOAT16	IEEE-754 16bit
+  SINGLETOK		= 143;	// Size = 4 SINGLE / FLOAT		IEEE-754 32-bit
+  HALFSINGLETOK		= 144;	// Size = 2 HALFSINGLE / FLOAT16	IEEE-754 16-bit
   PCHARTOK		= 145;	// Size = 2 POINTER TO ARRAY OF CHAR
   ENUMTOK		= 146;	// Size = 1 BYTE
   PROCVARTOK		= 147;	// Size = 2
   TEXTFILETOK		= 148;	// Size = 2/12 TEXTFILE
   FORWARDTYPE		= 149;	// Size = 2
 
-  SHORTSTRINGTOK	= 150;	// zamieniamy na STRINGTOK
-  FLOATTOK		= 151;	// zamieniamy na SINGLETOK
-  FLOAT16TOK		= 152;	// zamieniamy na HALFSINGLETOK
-  TEXTTOK		= 153;	// zamieniamy na TEXTFILETOK
+  SHORTSTRINGTOK	= 150;	// We change into STRINGTOK
+  FLOATTOK		= 151;	// We change into SINGLETOK
+  FLOAT16TOK		= 152;	// We change into HALFSINGLETOK
+  TEXTTOK		= 153;	// We change into TEXTFILETOK
 
-  DEREFERENCEARRAYTOK	= 154;	// dla wskaznika do tablicy
+  DEREFERENCEARRAYTOK	= 154;	// For ARRAY pointers
 
 
   DATAORIGINOFFSET	= 160;
@@ -237,11 +237,9 @@ const
 //  FUNC			= FUNCTIONTOK;
   LABELTYPE		= LABELTOK;
   UNITTYPE		= UNITTOK;
-
   ENUMTYPE		= ENUMTOK;
 
   // Compiler parameters
-
   MAXNAMELENGTH		= 32;
   MAXTOKENNAMES		= 200;
   MAXSTRLENGTH		= 255;
@@ -250,21 +248,21 @@ const
 //  MAXTOKENS		= 32768;
   MAXPOSSTACK		= 512;
   MAXIDENTS		= 16384;
-  MAXBLOCKS		= 16384;	// maksymalna liczba blokow
-  MAXPARAMS		= 8;		// maksymalna liczba parametrow dla PROC, FUNC
-  MAXVARS		= 256;		// maksymalna liczba parametrow dla VAR
+  MAXBLOCKS		= 16384;	// Maximum number of blocks
+  MAXPARAMS		= 8;		// Maximum number of parameters for PROC, FUNC
+  MAXVARS		= 256;		// Maximum number of parameters for VAR
   MAXUNITS		= 2048;
   MAXALLOWEDUNITS	= 256;
-  MAXDEFINES		= 256;		// maksymalna liczba $DEFINE
+  MAXDEFINES		= 256;		// Max number of $DEFINEs
 
   CODEORIGIN		= $100;
   DATAORIGIN		= $8000;
 
+  // Passes
   CALLDETERMPASS	= 1;
   CODEGENERATIONPASS	= 2;
 
   // Indirection levels
-
   ASVALUE			= 0;
   ASPOINTER			= 1;
   ASPOINTERTOPOINTER		= 2;
@@ -291,14 +289,12 @@ const
   RECORDVARIABLE	= 2;
 
   // Parameter passing
-
-  VALPASSING		= 1;
-  CONSTPASSING		= 2;
-  VARPASSING		= 3;
+  VALPASSING		= 1; // By value, modifiable
+  CONSTPASSING		= 2; // By const, unodifiable
+  VARPASSING		= 3; // By reference, modifiable
 
 
   // Data sizes
-
   DataSize: array [BYTETOK..FORWARDTYPE] of Byte = (
   	1,	// Size = 1 BYTE
   	2,	// Size = 2 WORD
@@ -745,7 +741,8 @@ var IdentTtemp: integer;
 
     Result := 0;
 
-    for BlockStackIndex := BlockStackTop downto 0 do	// search all nesting levels from the current one to the most outer one
+    // Search all nesting levels from the current one to the most outer one
+    for BlockStackIndex := BlockStackTop downto 0 do
     for IdentIndex := 1 to NumIdent do
       if (Ident[IdentIndex].DataType = ENUMTYPE) and (Ident[IdentIndex].NumAllocElements = Num) and (BlockStack[BlockStackIndex] = Ident[IdentIndex].Block) then
 	exit(IdentIndex);
@@ -779,12 +776,20 @@ end;	//GetEnumName
 function StrToInt(const a: string): Int64;
 (*----------------------------------------------------------------------------*)
 (*----------------------------------------------------------------------------*)
+{$IFNDEF PAS2JS}
 var i: integer;
 begin
  val(a,Result, i);
 end;
-
-
+{$ELSE}
+// This code below should work the same in FPC, but this needs to be tested first.
+var value: integer;
+var i: integer;
+begin
+ val(a,value, i);
+ Result := value;
+end;
+{$ENDIF}
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
