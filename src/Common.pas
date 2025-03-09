@@ -363,8 +363,6 @@ type
 
   );
 
-//  TString = string[MAXSTRLENGTH];
-//  TName   = string[MAXNAMELENGTH];
   TString = string;
   TName   = string;
 
@@ -409,24 +407,16 @@ type
   TToken = record
     UnitIndex, Column: Smallint;
     Line: Integer;
-//    case Kind: Byte of
-//      IDENTTOK:
-//	(Name: ^TString);
-//      INTNUMBERTOK:
-//	(Value: Int64);
-//      FRACNUMBERTOK:
-//	(FracValue: Single);
-//      STRINGLITERALTOK:
-//	(StrAddress: Word;
-//	 StrLength: Word);
-     Kind: Byte;
-//     Name: ^TString;
-     Name: TString;
-     Value: Int64;
-     FracValue: Single;
-     StrAddress: Word;
-     StrLength: Word;
-
+    Kind: Byte;
+    // For Kind=IDENTTOK:
+    Name: TString;
+    // For Kind=INTNUMBERTOK:
+    Value: Int64;
+    // For Kind=FRACNUMBERTOK:
+    FracValue: Single;
+    // For Kind=STRINGLITERALTOK:
+    StrAddress: Word;
+    StrLength: Word;
     end;
 
   TIdentifier = record
@@ -457,37 +447,32 @@ type
     Section: Boolean;
 
     Kind: Byte;
-    
-//    case Kind: Byte of
-//      PROCEDURETOK, FUNCTIONTOK:
-//	(
-	 NumParams: Word;
-	 Param: TParamList;
-	 ProcAsBlock: Integer;
-	 ObjectIndex: Integer;
 
-	 IsUnresolvedForward,
-	 updateResolvedForward,
-	 isOverload,
-	 isRegister,
-	 isInterrupt,
-	 isRecursion,
-	 isStdCall,
-	 isPascal,
-	 isInline,
-	 isAsm,
-	 isExternal,
-	 isKeep,
-	 isVolatile,
-	 isStriped,
-	 IsNotDead: Boolean;
-//    );
+//  For kind=PROCEDURETOK, FUNCTIONTOK:
+	NumParams: Word;
+	Param: TParamList;
+	ProcAsBlock: Integer;
+	ObjectIndex: Integer;
 
-//      VARIABLE, USERTYPE:
-//
-	 NumAllocElements, NumAllocElements_: Cardinal;
-	 AllocElementType: Byte
-	 // );
+	IsUnresolvedForward,
+	updateResolvedForward,
+	isOverload,
+	isRegister,
+	isInterrupt,
+	isRecursion,
+	isStdCall,
+	isPascal,
+	isInline,
+	isAsm,
+	isExternal,
+	isKeep,
+	isVolatile,
+	isStriped,
+	IsNotDead: Boolean;
+
+//  For kind=VARIABLE, USERTYPE:
+    NumAllocElements, NumAllocElements_: Cardinal;
+    AllocElementType: Byte
     end;
 
 
@@ -794,11 +779,9 @@ end;	//GetEnumName
 function StrToInt(const a: string): Int64;
 (*----------------------------------------------------------------------------*)
 (*----------------------------------------------------------------------------*)
-var value: integer;
 var i: integer;
 begin
- val(a,value, i);
- Result := value;
+ val(a,Result, i);
 end;
 
 

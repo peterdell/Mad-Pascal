@@ -591,10 +591,10 @@ var
 	  tmp:=0;
 	  NumRead:=0;
           bin:=TFileSystem.CreateBinaryFile;
-	  bin.Assign(fn); bin.Reset(1);
+          bin.Assign(fn); bin.Reset(1);
 
   	  Repeat
-    		bin.BlockRead(tmp, 1, NumRead);
+    	bin.BlockRead(tmp, 1, NumRead);
 
 		if NumRead = 1 then begin
 
@@ -1508,7 +1508,6 @@ var
 	   end
 	   else begin				// Identifier found
 	     Tok[NumTok].Kind := IDENTTOK;
-//	     New(Tok[NumTok].Name);
 	     Tok[NumTok].Name := Text;
 	   end;
 

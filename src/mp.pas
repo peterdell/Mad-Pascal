@@ -180,7 +180,7 @@ program MADPASCAL;
 {$i define.inc}
 
 uses
-        SysUtils,
+    SysUtils,
 {$IFDEF WINDOWS}
 	Windows,
 {$ENDIF}
@@ -510,9 +510,9 @@ type TOV = record
            end;
 
 type TL = record
-		  u,b: integer;
-		  Param: TParamList;
-		  NumParams: word;
+		    u,b: integer;
+		    Param: TParamList;
+		    NumParams: word;
           end;
 
 var IdentIndex, BlockStackIndex: Integer;
@@ -13963,10 +13963,10 @@ begin
 
 	yes := TRUE;
 
-        HeaFile:=TFileSystem.CreateTextFile;
-        HeaFile.Assign(fnam); HeaFile.Reset;
+    HeaFile:=TFileSystem.CreateTextFile;
+    HeaFile.Assign(fnam); HeaFile.Reset;
 
-        txt:='';
+    txt:='';
 	while not HeaFile.EOF do begin
 	  HeaFile.ReadLn(txt);
 
@@ -17577,7 +17577,6 @@ begin
 {$IFDEF USEOPTFILE}
 
  OptFile.Close;
- OptFile.Free;
 
 {$ENDIF}
 

@@ -1069,9 +1069,8 @@ var inxUse, found: Boolean;
   const min_j=0;
   const last_j=3;
   type TArray0_3Boolean = array[min_j..last_j] of Boolean;
-  var j: integer;
-      i: integer;
-      cnt_l,					                // load stack pointer
+  var i, j: integer;
+      cnt_l,					                                // load stack pointer
       cnt_s: array [0..last_i_plus_one] of TArray0_3Boolean;	// store stack pointer
 
 
@@ -1094,7 +1093,7 @@ var inxUse, found: Boolean;
     		cnt_s[i][j]:=false;
     	end;
     end;   
- 
+
    end;
 
 
