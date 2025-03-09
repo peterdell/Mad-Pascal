@@ -328,13 +328,21 @@ const
 
 type
 
-//  ModifierCode = (mKeep = $100, mOverload= $80, mInterrupt = $40, mRegister = $20, mAssembler = $10, mForward = $08, mPascal = $04, mStdCall = $02, mInline = $01);
+  // Current limitation in PAS2JS. Have to find a different way, because the const values are sigificant.
+  // Error: not yet implemented: mKeep:TPasEnumValue [20180126202434] "enum const"
+  {$IFNDEF PAS2JS}
+  ModifierCode = (mKeep = $100, mOverload= $80, mInterrupt = $40, mRegister = $20, mAssembler = $10, mForward = $08, mPascal = $04, mStdCall = $02, mInline = $01);
+  {$ELSE}
   ModifierCode = (mKeep, mOverload, mInterrupt, mRegister, mAssembler, mForward, mPascal, mStdCall, mInline);
+  {$ENDIF}
 
   irCode = (iDLI, iVBLD, iVBLI, iTIM1, iTIM2, iTIM4);
 
-// ioCode = (ioOpenRead = 4, ioReadRecord = 5, ioRead = 7, ioOpenWrite = 8, ioAppend = 9, ioWriteRecord = 9, ioWrite = $0b, ioOpenReadWrite = $0c, ioFileMode = $f0, ioClose = $ff);
+  {$IFNDEF PAS2JS}
+  ioCode = (ioOpenRead = 4, ioReadRecord = 5, ioRead = 7, ioOpenWrite = 8, ioAppend = 9, ioWriteRecord = 9, ioWrite = $0b, ioOpenReadWrite = $0c, ioFileMode = $f0, ioClose = $ff);
+  {$ELSE}
   ioCode = (ioOpenRead, ioReadRecord, ioRead, ioOpenWrite, ioAppend, ioWriteRecord, ioWrite, ioOpenReadWrite, ioFileMode, ioClose);
+  {$ENDIF}
 
 
   code65 =
