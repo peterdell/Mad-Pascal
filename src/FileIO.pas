@@ -6,8 +6,9 @@ interface
 
 {$i define.inc}
 {$i Types.inc}
+{$SCOPEDENUMS ON}
 
-{$IFDEF PAS2JS}
+{$IFDEF SIMULATED_FILE_IO}
  {$DEFINE SIMULATED_FILE_IO}
 {$ENDIF}
 
@@ -73,13 +74,27 @@ type
 
 type
   TFileMapEntry = class
+  public
+  type TFileType=(TextFile, BinaryFile, Folder);
+
+  public
     filePath: TFilePath;
+    fileType: TFileType;
     content: String;
   end;
 
 type
-  TFileMap = array of TFileMapEntry;
+  TFileMap = class
+  public
+    constructor Create;
+    function AddEntry(const filePath: TFilePath; const fileType: TFileMapEntry.TFileType): TFileMapEntry;
+    function GetEntry(const filePath: TFilePath): TFileMapEntry;
 
+  private
+    entries: array of TFileMapEntry;
+
+
+  end;
 
 type
   TFileSystem = class
@@ -132,9 +147,12 @@ type
   private
     f: TSystemTextFile;
 {$ELSE}
-  private fileMapEntry: TFileMapEntry;
-  private fileMode: Integer;
-  private filePos: Longint;
+  private
+    fileMapEntry: TFileMapEntry;
+  private
+    fileMode: Integer;
+  private
+    filePos: TFilePosition;
 {$ENDIF}
   public
     constructor Create;
@@ -162,7 +180,7 @@ type
 
 type
   TBinaryFile = class(TFile, IBinaryFile)
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   private
   type TSystemBinaryFile = file of Char;
   private
@@ -187,7 +205,7 @@ type
   end;
 
 {$IFDEF SIMULATED_FILE_IO}
-//  {$I 'include\pas2js\FileIO-PAS2JS-Implementation.inc'}
+//  {$I 'include\SIMULATED_FILE_IO\FileIO-SIMULATED_FILE_IO-Implementation.inc'}
 {$ENDIF}
 
 
@@ -253,7 +271,9 @@ begin
   end;
 end;
 
+// ----------------------------------------------------------------------------
 // TFile
+// ----------------------------------------------------------------------------
 
 constructor TFile.Create;
 begin
@@ -261,8 +281,9 @@ begin
 end;
 
 
-
+// ----------------------------------------------------------------------------
 // TTextFile
+// ----------------------------------------------------------------------------
 
 constructor TTextFile.Create;
 begin
@@ -317,9 +338,9 @@ begin
 {$IFNDEF SIMULATED_FILE_IO}
   System.Read(f, c);
 {$ELSE}
-  Assert(fileMode=0);
- // if Eof then raise E...
-  c:=fileMapEntry.content[filePos];
+  Assert(fileMode = 0);
+  // if Eof then raise E...
+  c := fileMapEntry.content[filePos];
   Inc(filePos);
 {$ENDIF}
 
@@ -339,9 +360,9 @@ begin
   System.FileMode := 0;
   System.Reset(f);
 {$ELSE}
-  fileMapEntry:=TFileSystem.GetFileMapEntry(filePath);
-  fileMode:=0;
-  filePos:=0;
+  fileMapEntry := TFileSystem.GetFileMapEntry(filePath);
+  fileMode := 0;
+  filePos := 0;
 {$ENDIF}
 
 end;
@@ -352,9 +373,9 @@ begin
   System.FileMode := 1;
   System.Rewrite(f);
 {$ELSE}
-  fileMapEntry:=TFileSystem.GetFileMapEntry(filePath);
-  fileMode:=1;
-  filePos:=0;
+  fileMapEntry := TFileSystem.GetFileMapEntry(filePath);
+  fileMode := 1;
+  filePos := 0;
 {$ENDIF}
 end;
 
@@ -363,9 +384,9 @@ begin
 {$IFNDEF SIMULATED_FILE_IO}
   System.Write(f, s);
 {$ELSE}
-  Assert(fileMode=1);
-  fileMapEntry.content:=fileMapEntry.content+s;
-  filePos:=filePos+length(s);
+  Assert(fileMode = 1);
+  fileMapEntry.content := fileMapEntry.content + s;
+  filePos := filePos + length(s);
 {$ENDIF}
   Result := Self;
 end;
@@ -390,7 +411,8 @@ begin
 end;
 
 procedure TTextFile.WriteLn();
-const CR  = ^M;		// Char for a CR
+const
+  CR = ^M;    // Char for a CR
 begin
 {$IFNDEF SIMULATED_FILE_IO}
   System.WriteLn(f, '');
@@ -424,8 +446,9 @@ begin
 
 end;
 
-
+// ----------------------------------------------------------------------------
 // TBinaryFile
+// ----------------------------------------------------------------------------
 
 constructor TBinaryFile.Create;
 begin
@@ -435,21 +458,21 @@ end;
 procedure TBinaryFile.Assign(filePath: TFilePath);
 begin
   Self.filePath := filePath;
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   AssignFile(f, filePath);
 {$ENDIF}
 end;
 
 procedure TBinaryFile.BlockRead(var Buf; Count: Longint; var Result: Longint);
 begin
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   System.BlockRead(f, Buf, Count, Result);
 {$ENDIF}
 end;
 
 procedure TBinaryFile.Close();
 begin
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   CloseFile(f);
 {$ENDIF}
 
@@ -457,14 +480,14 @@ end;
 
 function TBinaryFile.EOF(): Boolean;
 begin
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   Result := System.EOF(f);
 {$ENDIF}
 end;
 
 procedure TBinaryFile.Erase();
 begin
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   System.Erase(f);
 {$ENDIF}
 
@@ -472,14 +495,14 @@ end;
 
 function TBinaryFile.FilePos(): Int64;
 begin
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   Result := System.FilePos(f);
 {$ENDIF}
 end;
 
 procedure TBinaryFile.Read(var c: Char);
 begin
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
 
   System.Read(f, c);
 {$ENDIF}
@@ -489,7 +512,7 @@ end;
 
 procedure TBinaryFile.Reset(); overload;
 begin
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   System.FileMode := 0;
   System.Reset(f);
 {$ENDIF}
@@ -497,7 +520,7 @@ end;
 
 procedure TBinaryFile.Reset(l: Longint); overload;
 begin
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   System.FileMode := 0;
   System.Reset(f, l);
 {$ENDIF}
@@ -506,7 +529,7 @@ end;
 
 procedure TBinaryFile.Rewrite();
 begin
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   System.Rewrite(f);
 {$ENDIF}
 
@@ -514,12 +537,53 @@ end;
 
 procedure TBinaryFile.Seek2(Pos: Int64);
 begin
-{$IFNDEF PAS2JS}
+{$IFNDEF SIMULATED_FILE_IO}
   System.Seek(f, pos);
 {$ENDIF}
 end;
 
 
+// ----------------------------------------------------------------------------
+// TFileMap
+// ----------------------------------------------------------------------------
+
+constructor TFileMap.Create;
+begin
+  entries := null;
+end;
+
+function TFileMap.AddEntry(const filePath: TFilePath; const fileType: TFileMapEntry.TFileType): TFileMapEntry;
+var
+  entry: TFileMapEntry;
+begin
+  entry := GetEntry(filePath);
+  Assert(entry = nil, 'Entry with file path ''' + filePath + ''' is already in the file map.');
+  entry := TFileMapEntry.Create;
+  entry.filePath := filePath;
+  entry.fileType:=fileType;
+  SetLength(entries, Length(entries) + 1);
+  entries[High(entries)] := entry;
+  Result := entry;
+end;
+
+function TFileMap.GetEntry(const filePath: TFilePath): TFileMapEntry;
+var
+  i: Integer;
+begin
+  Result := nil;
+  for i := Low(entries) to High(entries) do
+  begin
+    if entries[i].filePath = filePath then
+    begin
+      Result := entries[i];
+      exit;
+    end;
+  end;
+end;
+
+// ----------------------------------------------------------------------------
+// TFileSystem
+// ----------------------------------------------------------------------------
 class function TFileSystem.CreateBinaryFile: IBinaryFile;
 begin
   Result := TBinaryFile.Create;
@@ -532,10 +596,10 @@ end;
 
 class function TFileSystem.FileExists_(filePath: TFilePath): Boolean;
 begin
-  {$IFNDEF PAS2JS}
+  {$IFNDEF SIMULATED_FILE_IO}
   Result := FileExists(filePath);
   {$ELSE}
-  Result :=GetFileMapEntry(filePath) <> nil;
+  Result := GetFileMapEntry(filePath) <> nil;
   {$ENDIF}
 end;
 
@@ -557,18 +621,8 @@ begin
 end;
 
 class function TFileSystem.GetFileMapEntry(const filePath: TFilePath): TFileMapEntry;
-var
-  i: Integer;
 begin
-  Result := nil;
-  for i := Low(fileMap) to High(fileMap) do
-  begin
-    if fileMap[i].filePath = filePath then
-    begin
-      Result := fileMap[i];
-      exit;
-    end;
-  end;
+  Result := fileMap.GetEntry(filePath);
 end;
 
 end.

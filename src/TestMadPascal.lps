@@ -8,28 +8,27 @@
       <Unit>
         <Filename Value="mp.pas"/>
         <IsPartOfProject Value="True"/>
-        <TopLine Value="9085"/>
-        <CursorPos X="121" Y="9101"/>
-        <UsageCount Value="34"/>
+        <TopLine Value="17394"/>
+        <CursorPos X="33" Y="17403"/>
+        <UsageCount Value="43"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="Common.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="2"/>
-        <TopLine Value="312"/>
-        <CursorPos X="44" Y="220"/>
-        <UsageCount Value="58"/>
+        <EditorIndex Value="9"/>
+        <CursorPos X="3" Y="17"/>
+        <UsageCount Value="67"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="Console.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <WindowIndex Value="-1"/>
-        <TopLine Value="-1"/>
-        <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="58"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="2"/>
+        <CursorPos X="29" Y="39"/>
+        <UsageCount Value="67"/>
+        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
@@ -38,16 +37,18 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="63"/>
         <CursorPos X="18" Y="90"/>
-        <UsageCount Value="58"/>
+        <UsageCount Value="67"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="FileIO.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="463"/>
-        <CursorPos X="26" Y="484"/>
-        <UsageCount Value="58"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="8"/>
+        <TopLine Value="101"/>
+        <CursorPos X="33" Y="137"/>
+        <UsageCount Value="67"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="MathEvaluate.pas"/>
@@ -56,7 +57,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="58"/>
+        <UsageCount Value="67"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
@@ -66,31 +67,32 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="58"/>
+        <UsageCount Value="67"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="Parser.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="3"/>
-        <TopLine Value="267"/>
-        <CursorPos Y="270"/>
-        <UsageCount Value="58"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="2779"/>
+        <CursorPos X="43" Y="2793"/>
+        <UsageCount Value="67"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="Scanner.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="1476"/>
-        <CursorPos X="63" Y="1492"/>
-        <UsageCount Value="58"/>
+        <EditorIndex Value="7"/>
+        <TopLine Value="1678"/>
+        <CursorPos X="37" Y="1271"/>
+        <UsageCount Value="67"/>
+        <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="SplitString.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="58"/>
+        <UsageCount Value="67"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
@@ -100,28 +102,27 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="58"/>
+        <UsageCount Value="67"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="Utilities.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="12"/>
-        <CursorPos X="10" Y="18"/>
-        <UsageCount Value="58"/>
+        <CursorPos X="6" Y="51"/>
+        <UsageCount Value="67"/>
       </Unit>
       <Unit>
         <Filename Value="TestMadPascal.pas"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="43"/>
+        <UsageCount Value="42"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="MadPascalTest.lpr"/>
         <EditorIndex Value="-1"/>
         <WindowIndex Value="-1"/>
-        <UsageCount Value="17"/>
+        <UsageCount Value="16"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
@@ -129,17 +130,15 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="9" Y="10"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="40"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="Numbers.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="1"/>
-        <TopLine Value="77"/>
-        <CursorPos X="48" Y="119"/>
-        <UsageCount Value="29"/>
+        <EditorIndex Value="4"/>
+        <CursorPos X="60" Y="10"/>
+        <UsageCount Value="38"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
@@ -148,129 +147,169 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="114"/>
         <CursorPos X="18" Y="50"/>
+        <UsageCount Value="13"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit>
+      <Unit>
+        <Filename Value="..\..\..\..\..\Windows\Tools\PAS\Lazarus\fpc\3.2.2\source\rtl\inc\systemh.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="1319"/>
+        <CursorPos X="11" Y="1336"/>
+        <UsageCount Value="9"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include\opt6502\opt_SPL.inc"/>
+        <EditorIndex Value="3"/>
+        <CursorPos X="8" Y="3"/>
         <UsageCount Value="14"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit>
+      <Unit>
+        <Filename Value="targets\parse_param.inc"/>
+        <EditorIndex Value="1"/>
+        <CursorPos X="15" Y="6"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit>
+      <Unit>
+        <Filename Value="targets\init.inc"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="9"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit>
+      <Unit>
+        <Filename Value="include\syntax.inc"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="15"/>
+        <CursorPos X="70" Y="53"/>
+        <UsageCount Value="26"/>
+        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
     </Units>
     <JumpHistory HistoryIndex="29">
       <Position>
-        <Filename Value="mp.pas"/>
-        <Caret Line="14222" Column="24" TopLine="14209"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="96" Column="20" TopLine="78"/>
       </Position>
       <Position>
-        <Filename Value="mp.pas"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="529" Column="74" TopLine="508"/>
       </Position>
       <Position>
-        <Filename Value="mp.pas"/>
-        <Caret Line="9959" TopLine="9937"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="96" Column="20" TopLine="78"/>
       </Position>
       <Position>
-        <Filename Value="mp.pas"/>
-        <Caret Line="10085" Column="100" TopLine="10057"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="533" TopLine="500"/>
       </Position>
       <Position>
-        <Filename Value="mp.pas"/>
-        <Caret Line="14227" Column="33" TopLine="14201"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="529" Column="13" TopLine="505"/>
       </Position>
       <Position>
-        <Filename Value="mp.pas"/>
-        <Caret Line="14416" Column="33" TopLine="14390"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="96" Column="35" TopLine="78"/>
       </Position>
       <Position>
-        <Filename Value="mp.pas"/>
-        <Caret Line="15894" Column="36" TopLine="15867"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="544" Column="5" TopLine="508"/>
       </Position>
       <Position>
-        <Filename Value="mp.pas"/>
-        <Caret Line="9137" Column="38" TopLine="9121"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="132" Column="37" TopLine="108"/>
       </Position>
       <Position>
-        <Filename Value="mp.pas"/>
-        <Caret Line="9176" Column="36" TopLine="9160"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="72" Column="16" TopLine="54"/>
       </Position>
       <Position>
-        <Filename Value="mp.pas"/>
-        <Caret Line="9468" Column="68" TopLine="9452"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="78" Column="36" TopLine="54"/>
       </Position>
       <Position>
-        <Filename Value="mp.pas"/>
-        <Caret Line="9137" Column="68" TopLine="9121"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="96" Column="77" TopLine="66"/>
       </Position>
       <Position>
-        <Filename Value="Numbers.pas"/>
-        <Caret Line="15" Column="23" TopLine="8"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="204" Column="26" TopLine="182"/>
       </Position>
       <Position>
-        <Filename Value="Parser.pas"/>
-        <Caret Line="1102" Column="53" TopLine="1086"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="354" Column="16" TopLine="325"/>
       </Position>
       <Position>
-        <Filename Value="Parser.pas"/>
-        <Caret Line="1196" Column="35" TopLine="1181"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="383" Column="5" TopLine="351"/>
       </Position>
       <Position>
-        <Filename Value="Parser.pas"/>
-        <Caret Line="1102" Column="75" TopLine="1087"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="390" Column="9" TopLine="362"/>
       </Position>
       <Position>
-        <Filename Value="Parser.pas"/>
-        <Caret Line="1288" Column="4" TopLine="1272"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="391" Column="10" TopLine="379"/>
       </Position>
       <Position>
-        <Filename Value="Numbers.pas"/>
-        <Caret Line="39" Column="44" TopLine="31"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="475" Column="28" TopLine="445"/>
       </Position>
       <Position>
-        <Filename Value="Numbers.pas"/>
-        <Caret Line="507" TopLine="376"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="134" Column="10" TopLine="114"/>
       </Position>
       <Position>
-        <Filename Value="Numbers.pas"/>
-        <Caret Line="54" Column="5" TopLine="34"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="332" Column="55" TopLine="3"/>
       </Position>
       <Position>
-        <Filename Value="Numbers.pas"/>
-        <Caret Line="59" Column="5" TopLine="53"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="132" Column="23" TopLine="101"/>
       </Position>
       <Position>
-        <Filename Value="Numbers.pas"/>
-        <Caret Line="138" Column="23" TopLine="121"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="72" Column="16" TopLine="54"/>
       </Position>
       <Position>
-        <Filename Value="Numbers.pas"/>
-        <Caret Line="55" Column="61" TopLine="36"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="78" Column="36" TopLine="54"/>
       </Position>
       <Position>
-        <Filename Value="Numbers.pas"/>
-        <Caret Line="216" TopLine="180"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="96" Column="77" TopLine="66"/>
       </Position>
       <Position>
-        <Filename Value="Numbers.pas"/>
-        <Caret Line="309" Column="27" TopLine="292"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="132" Column="38" TopLine="102"/>
       </Position>
       <Position>
-        <Filename Value="Numbers.pas"/>
-        <Caret Line="446" Column="10" TopLine="428"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="334" Column="3" TopLine="303"/>
       </Position>
       <Position>
-        <Filename Value="Numbers.pas"/>
-        <Caret Line="61" Column="19" TopLine="31"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="346" Column="3" TopLine="316"/>
       </Position>
       <Position>
-        <Filename Value="Parser.pas"/>
-        <Caret Line="258" Column="54" TopLine="258"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="316" Column="19" TopLine="297"/>
       </Position>
       <Position>
-        <Filename Value="Numbers.pas"/>
-        <Caret Line="86" Column="20" TopLine="63"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="319" Column="11" TopLine="301"/>
       </Position>
       <Position>
-        <Filename Value="Numbers.pas"/>
-        <Caret Line="85" Column="62" TopLine="63"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="15" Column="17" TopLine="538"/>
       </Position>
       <Position>
-        <Filename Value="Numbers.pas"/>
-        <Caret Line="86" Column="20" TopLine="63"/>
+        <Filename Value="FileIO.pas"/>
+        <Caret Line="10" Column="6"/>
       </Position>
     </JumpHistory>
     <RunParams>
@@ -278,8 +317,8 @@
       <Modes ActiveMode="default">
         <Mode Name="default">
           <local>
-            <CommandLineParams Value="-ipath:..\lib Test-MP.pas"/>
-            <LaunchingApplication PathPlusParams="C:\Windows\system32\cmd.exe /k ${TargetCmdLine}"/>
+            <CommandLineParams Value="-ipath:..\lib Test-MP.pas -STACK:12345 -as"/>
+            <LaunchingApplication Use="True" PathPlusParams="C:\Windows\system32\cmd.exe /k ${TargetCmdLine}"/>
           </local>
         </Mode>
       </Modes>
@@ -289,26 +328,19 @@
         <Item1 Value="C:\Windows\system32\cmd.exe /k ${TargetCmdLine}"/>
         <Item2 Value="C:\Windows\system32\cmd.exe /C ${TargetCmdLine}"/>
       </List>
-      <List Name="CommandLineParameters" Count="5">
-        <Item1 Value="-ipath:..\lib Test-MP.pas"/>
-        <Item2 Value="-i:..\lib Test-MP.pas"/>
-        <Item3 Value="Test-MP.pas"/>
-        <Item4 Value="Test-0.pas"/>
-        <Item5 Value="-mDelphi Test-0.pas"/>
+      <List Name="CommandLineParameters" Count="7">
+        <Item1 Value="-ipath:..\lib Test-MP.pas -STACK:12345 -as"/>
+        <Item2 Value="-ipath:..\lib Test-MP.pas -as"/>
+        <Item3 Value="-ipath:..\lib Test-MP.pas"/>
+        <Item4 Value="-i:..\lib Test-MP.pas"/>
+        <Item5 Value="Test-MP.pas"/>
+        <Item6 Value="Test-0.pas"/>
+        <Item7 Value="-mDelphi Test-0.pas"/>
       </List>
       <List Name="WorkingDirectory" Type="File" Count="1"/>
     </HistoryLists>
   </ProjectSession>
   <Debugging>
-    <BreakPoints>
-      <Item>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="Utilities.pas"/>
-        <Line Value="30"/>
-      </Item>
-    </BreakPoints>
     <Watches>
       <Item>
         <Expression Value="self.filePath"/>
