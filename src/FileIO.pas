@@ -549,7 +549,7 @@ end;
 
 constructor TFileMap.Create;
 begin
-  entries := null;
+  self.entries := nil;
 end;
 
 function TFileMap.AddEntry(const filePath: TFilePath; const fileType: TFileMapEntry.TFileType): TFileMapEntry;
