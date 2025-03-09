@@ -9,11 +9,6 @@ set MP_EXE=%MP_SRC_FOLDER%\mp.exe
 
 set WUDSN_MP_EXE=%WUDSN_TOOLS_FOLDER%\PAS%\MP\bin\windows\mp.exe
 
-set TEST_MP=Test-MP
-set TEST_MP_PAS=%TEST_MP%.pas
-set TEST_MP_ASM=%TEST_MP%.a65
-set TEST_MP_XEX=%TEST_MP%.xex
-
 cd /d %MP_SRC_FOLDER%
 
 if not "%TEST_EXE%"=="" (
@@ -26,12 +21,22 @@ if not "%TEST_EXE%"=="" (
   )
 )
 
+set TEST_1_FOLDER=%MP_SRC_FOLDER%
+set TEST_1_FILE=Test-MP
+
+set TEST_2_FOLDER=C:\jac\system\Atari800\Programming\Repositories\Mad-Pascal\samples\a8\games\PacMad
+set TEST_2_FILE=pacmad
+
+rem Regression test with standard MP.
+if 1==1 (
 if not "%MP_EXE%"=="" (
   echo.
   echo INFO: Compiling with WUDSN version.
   echo ===================================
   echo.
-  call :run_mp %WUDSN_MP_EXE%
+  call :run_mp %WUDSN_MP_EXE% %TEST_1_FOLDER% %TEST_1_FILE%
+  call :run_mp %WUDSN_MP_EXE% %TEST_2_FOLDER% %TEST_2_FILE%
+
    
   echo.
   echo.
@@ -42,8 +47,10 @@ if not "%MP_EXE%"=="" (
   call fpc.bat %MP_SRC_FOLDER%\mp.pas
   if errorlevel 1 goto :eof
   if exist "%MP_EXE%" (
-    call :run_mp "%MP_EXE%"
+    call :run_mp %MP_EXE% %TEST_1_FOLDER% %TEST_1_FILE%
+    call :run_mp %MP_EXE% %TEST_2_FOLDER% %TEST_2_FILE%
   )
+)
 )
 
 goto :eof
@@ -51,22 +58,42 @@ goto :eof
 
 :run_mp
   set MP=%1
-  echo INFO: Starting compiling with "%MP%".
-  if exist %TEST_MP_ASM% del %TEST_MP_ASM%
-  %MP% -ipath:%MP_FOLDER%\lib %TEST_MP_PAS%
-  if errorlevel 1 goto :mp_error
-  if exist %TEST_MP_ASM% (
-     if exist %TEST_MP_XEX% del %TEST_MP_XEX%
-     mads %TEST_MP_ASM% -x -i:%MP_FOLDER%\base -o:%TEST_MP_XEX%
-     if exist %TEST_MP_XEX% (
-       echo Starting test program "%TEST_MP_XEX%".
-       %TEST_MP_XEX%
-     ) 
+  set TEST_FOLDER=%2
+  set TEST_MP=%3
+  
+  set MP_INPUT_PAS=%TEST_MP%.pas
+  set MP_OUTPUT_ASM=%TEST_MP%.a65
+  if %MP%==%WUDSN_MP_EXE% (
+    set MADS_OUTPUT_XEX=%TEST_MP%-WUDSN.xex
+  ) else (
+    set MADS_OUTPUT_XEX=%TEST_MP%.xex
   )
+  
+  pushd %TEST_FOLDER%
+  echo INFO: Compiling "%MP_INPUT_PAS%" in "%TEST_FOLDER%" with "%MP%".
+  if exist %MP_OUTPUT_ASM% del %MP_OUTPUT_ASM%
+  %MP% -ipath:%MP_FOLDER%\lib %MP_INPUT_PAS%
+  if errorlevel 1 goto :mp_error
+  if exist %MP_OUTPUT_ASM% (
+     if exist %MADS_OUTPUT_XEX% del %MADS_OUTPUT_XEX%
+     mads %MP_OUTPUT_ASM% -x -i:%MP_FOLDER%\base -o:%MADS_OUTPUT_XEX%
+     if exist %MADS_OUTPUT_XEX% (
+       echo Starting test program "%MADS_OUTPUT_XEX%".
+       %MADS_OUTPUT_XEX%
+     ) else (
+       echo ERROR: MADS output file %MADS_OUTPUT_XEX% not created.
+       pause
+     ) 
+  ) else (
+    echo ERROR: MP output file %MP_OUTPUT_ASM% not created.
+    pause
+  )
+  popd
 goto :eof
 
 :mp_error
-echo ERROR: Mad-Pascal error.
-pause
-goto :eof
+  popd
+  echo ERROR: Mad-Pascal error.
+  pause
+  goto :eof
 
