@@ -17212,7 +17212,7 @@ begin
   c := '';		// cpu
 
  i:=1;
- while i <= ParamCount do begin
+ while i <= TEnvironment.GetParameterCount() do begin
   parameter:=ParamStr(i);
   parameterUpperCase:=AnsiUpperCase(parameter);
   if ParamStr(i)[1] = '-' then begin
@@ -17429,7 +17429,7 @@ begin
  MainPath := IncludeTrailingPathDelimiter( MainPath );
  unitPathList.AddFolder( MainPath + 'lib' );
 
- if (ParamCount = 0) then Syntax(3);
+ if (TEnvironment.GetParameterCount = 0) then Syntax(3);
 
  NumUnits:=1;			     // !!! 1 !!!
 

@@ -5,12 +5,12 @@ interface
 {$i define.inc}
 {$i Types.inc}
 
-type TEnvironment = class
-
-     class function GetParameterCount(): Longint;
-     class function GetParameterString(const i: Longint): String;
-     class function GetParameterStringUpperCase(const i: Longint): String;
-end;
+type
+  TEnvironment = class
+    class function GetParameterCount(): Longint;
+    class function GetParameterString(const i: Longint): String;
+    class function GetParameterStringUpperCase(const i: Longint): String;
+  end;
 
 type
   THaltException = class
@@ -29,7 +29,7 @@ type
     exitCode: Longint;
 
   public
-     constructor Create(exitCode: Longint);
+    constructor Create(exitCode: Longint);
     function GetExitCode: Longint;
   end;
 
@@ -48,17 +48,29 @@ uses SysUtils;
 
 class function TEnvironment.GetParameterCount(): Longint;
 begin
+{$IFNDEF PAS2JS}
    Result:=ParamCount;
+{$ELSE}
+  Result := 3;
+{$ENDIF}
 end;
 
-class function TEnvironment.GetParameterString(const i:Longint): String;
+class function TEnvironment.GetParameterString(const i: Longint): String;
 begin
-   Result:=ParamStr(i);
+   {$IFNDEF PAS2JS}
+      Result:=ParamStr(i);
+   {$ELSE}
+  case i of
+    1: Result := 'Input.pas';
+    2: Result := '-i:lib';
+    3: Result := '-o:Output.a65';
+  end;
+   {$ENDIF}
 end;
 
-class function TEnvironment.GetParameterStringUpperCase(const i:Longint): String;
+class function TEnvironment.GetParameterStringUpperCase(const i: Longint): String;
 begin
-   Result:=AnsiUpperCase(GetParameterString(i));
+  Result := AnsiUpperCase(GetParameterString(i));
 end;
 
 // ----------------------------------------------------------------------------
