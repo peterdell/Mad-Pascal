@@ -24,7 +24,7 @@ if not "%TEST_EXE%"=="" (
 if not "%MP_EXE%"=="" (
 
 rem Regression test with standard MP.
-   if 1==0 (
+   if 1==1 (
      echo.
      echo INFO: Compiling with WUDSN version.
      echo ===================================
@@ -91,7 +91,7 @@ goto :eof
         fc /b %MADS_OUTPUT_XEX%  %MADS_OUTPUT_XEX_REF%
         if errorlevel 1 goto :fc_error
       ) else (
-        echo WARNING: Reference file  %MADS_OUTPUT_XEX_REF% does not exist, no comparsion possible.
+        echo WARNING: Reference file "%MADS_OUTPUT_XEX_REF%" does not exist, no comparsion possible.
       )
     )
   )
@@ -120,9 +120,7 @@ rem    call :run_mp %1=%MP_FOLDER%\samples\a8\games\PacMad pacmadd
     call :run_mp %1 %MP_FOLDER%\samples\a8\graph_crossplatform fedorahat
     call :run_mp %1 %MP_FOLDER%\samples\a8\graph_crossplatform cannabis
     call :run_mp %1 %MP_FOLDER%\samples\a8\graph_crossplatform snowflake
-rem    call :run_mp %1 %MP_FOLDER%\samples\a8\graph_crossplatform splineCompiling spline.pas
-rem ERROR: spline.pas (98,54) Error: Can't determine which overloaded function 'LINE' to call
-
+    call :run_mp %1 %MP_FOLDER%\samples\a8\graph_crossplatform spline
     call :run_mp %1 %MP_FOLDER%\samples\a8\graph_crossplatform fern
     goto :eof
  

@@ -8,7 +8,7 @@ interface
 {$i Types.inc}
 {$SCOPEDENUMS ON}
 
-{$IFDEF SIMULATED_FILE_IO}
+{$IFDEF PAS2JS}
  {$DEFINE SIMULATED_FILE_IO}
 {$ENDIF}
 

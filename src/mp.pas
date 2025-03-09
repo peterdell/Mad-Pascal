@@ -17422,17 +17422,13 @@ begin
 {$ENDIF}
 
 {$IFDEF PAS2JS}
- fileMap:=nil;
- SetLength(fileMap,3);
- fileMapEntry.filePath:='Input.pas';
- fileMapEntry.content:='Program program; end.';
- fileMap[0]:=fileMapEntry;
- fileMapEntry.filePath:='lib';
- fileMapEntry.content:='';
- fileMap[1]:=fileMapEntry;
- fileMapEntry.filePath:='Output.a65';
- fileMapEntry.content:='1234';
- fileMap[2]:=fileMapEntry;
+ fileMap := TFileMap.Create;
+ fileMapEntry:=fileMap.AddEntry('Input.pas', TFileMapEntry.TFileType.TextFile);
+ fileMapEntry.content := 'Program program; end.';
+ fileMapEntry := fileMap.AddEntry('lib', TFileMapEntry.TFileType.Folder);
+ fileMapEntry.content := 'SubFolder1;SubFolder2';
+ fileMapEntry := fileMap.AddEntry('Input.bin', TFileMapEntry.TFileType.BinaryFile);
+ fileMapEntry.content := '01010110101';
  TFileSystem.Init(fileMap);
 {$ENDIF}
 
