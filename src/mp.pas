@@ -39,7 +39,7 @@ Contributors:
 + David Schmenk :
 	- IEEE-754 (32bit) Single[Float]
 
-+ Daniel Kozminski :
++ Daniel Koźmiński :
 	- unit STRINGUTILS
 	- unit CIO
 
@@ -70,10 +70,10 @@ Contributors:
 	- unit LZ4: unLZ4
 	- unit aPLib: unAPL
 
-+ Krzysztof Swiecicki :
++ Krzysztof Święcicki :
 	- unit PP
 
-+ Marcin Zukowski :
++ Marcin Żukowski :
 	- unit FASTGRAPH: fLine
 
 + Michael Jaskula :
@@ -114,7 +114,7 @@ Contributors:
 	- unit LZJB
 	- unit RC4
 
-+ Wojciech Bocianski (http://bocianu.atari.pl/) :
++ Wojciech Bociański (http://bocianu.atari.pl/) :
 	- library BLIBS: B_CRT, B_DL, B_PMG, B_SYSTEM, B_UTILS, XBIOS
 	- MADSTRAP
 	- PASDOC
@@ -122,6 +122,8 @@ Contributors:
 
 + Zlatko Bleha (https://atariwiki.org/wiki/Wiki.jsp?page=Super%20fast%20circle%20routine) :
 	- GRAPH.INC Circle
+
+
 
 
 # rejestr X (=$FF) uzywany jest do przekazywania parametrow przez programowy stos :STACKORIGIN
@@ -9468,6 +9470,7 @@ case Tok[i].Kind of
 	  if not(ValType in RealTypes) then ConstVal:=FromInt64(ConstVal);
 
 	  ConstVal:=CastToSingle(ConstVal);
+
 	  ValType := SINGLETOK;
 
 	  Push(ConstVal, ASVALUE, DataSize[ValType]);
@@ -9954,7 +9957,6 @@ var
   ConstVal: Int64;
   RightValType: Byte;
 
-
 begin
 
 
@@ -10094,7 +10096,6 @@ begin
 
    if (ValType = SINGLETOK) {or ((VarType = SINGLETOK) and (ValType in RealTypes))} then begin
      ConstVal:=CastToSingle(ConstVal);
-
      ValType := SINGLETOK; // Currently redundant
    end;
 
@@ -10465,7 +10466,6 @@ var
   forLoop: TForLoop;
   Name, EnumName, svar, par1, par2: string;
   forBPL: byte;
-
 begin
 
 Result:=i;
@@ -17197,6 +17197,7 @@ end;	//CompileProgram
 
 {$i include/syntax.inc}
 
+
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 
@@ -17412,7 +17413,6 @@ var fileMapEntry: TFileMapEntry;
 {$ENDIF}
 
 var seconds: ValReal;
-
 begin
 
 {$IFDEF WINDOWS}
@@ -17498,7 +17498,6 @@ begin
  UnitName[NumUnits].Path := FindFile('system.pas', 'unit');
 
  TokenizeProgram(false);
-
 
 // ----------------------------------------------------------------------------
 
@@ -17610,6 +17609,7 @@ end;
 
 var exitCode: TExitCode;
 begin
+
   exitCode :=0;
   try
     Main;

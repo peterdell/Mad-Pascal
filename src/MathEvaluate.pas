@@ -51,11 +51,11 @@ end;
 function constant: real;
 var
      n: string;
-//  v1: real; // For FPC
-    v1: ValReal; // For PAS2JS, should also work for FPC and be used a return value there
+    v1: real;
+//    v1: ValReal; // For PAS2JS, should also work for FPC and be used a return value there
      v, k, ln: integer;
-//   p: word; // For FPC
-     p: integer; // For PAS2JS, see Test-70287.pas
+     p: word;
+//   p: integer; // For PAS2JS, see Test-70287.pas
   pflg: boolean;
 
   IdentTemp: integer;
@@ -111,6 +111,8 @@ begin
 	      inc(cix);
 	    end;
 
+      //  If the conversion isn't successful, then the parameter Code contains
+      //  the index of the character in S which prevented the conversion
 	  val(n,v,p);
 
 	  v1:=v;
