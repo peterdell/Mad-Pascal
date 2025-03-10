@@ -338,7 +338,7 @@ type
 
   irCode = (iDLI, iVBLD, iVBLI, iTIM1, iTIM2, iTIM4);
 
-  {$INFDEF PAS2JS}
+  {$IFNDEF PAS2JS}
   ioCode = (ioOpenRead = 4, ioReadRecord = 5, ioRead = 7, ioOpenWrite = 8, ioAppend = 9, ioWriteRecord = 9, ioWrite = $0b, ioOpenReadWrite = $0c, ioFileMode = $f0, ioClose = $ff);
   {$ELSE}
   ioCode = (ioOpenRead, ioReadRecord, ioRead, ioOpenWrite, ioAppend, ioWriteRecord, ioWrite, ioOpenReadWrite, ioFileMode, ioClose);
