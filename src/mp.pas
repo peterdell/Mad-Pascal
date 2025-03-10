@@ -17608,10 +17608,8 @@ begin
  NormVideo;
 end;
 
-var exitCode: LongInt;
+var exitCode: TExitCode;
 begin
-  WriteLn('Starting at '+DateTimeToStr(Now()));
-
   exitCode :=0;
   try
     Main;
@@ -17621,7 +17619,6 @@ begin
     end;
   end;
 
-  WriteLn('Ending at '+DateTimeToStr(Now()));
   if (exitCode <> 0) then
   begin
   	WriteLn('Program ended with exit code ' + IntToStr(exitCode));
