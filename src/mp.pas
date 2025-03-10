@@ -17340,7 +17340,7 @@ begin
   else
 
    begin
-    UnitName[1].Name := TEnvironment.GetParameterString(i)
+    UnitName[1].Name := TEnvironment.GetParameterString(i);
     UnitName[1].Path := UnitName[1].Name;
 
     if not TFileSystem.FileExists_(UnitName[1].Name) then begin
