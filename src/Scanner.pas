@@ -38,8 +38,7 @@ begin
 
  for i := Low(Ident) to High(Ident) do
  begin
- 	Ident[i].Name := '';
- 	// TODO: Clear more  using Default()
+ 	Ident[i] := Default(TIdentifier);
  end;
  ClearWordMemory(DataSegment);
  ClearWordMemory(StaticStringData);

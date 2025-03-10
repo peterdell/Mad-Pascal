@@ -686,9 +686,9 @@ begin
   result:=unitPathList.FindFile( name);
   if result = '' then
    if ftyp = 'unit' then
-    Error(NumTok, 'Can''t find unit '''+ChangeFileExt(Name,'')+''' used by program '''+PROGRAM_NAME+''' in unit path '''+unitPathList.ToString+'''.')
+    Error(NumTok, 'Can''t find unit '''+ChangeFileExt(name,'')+''' used by program '''+PROGRAM_NAME+''' in unit path '''+unitPathList.ToString+'''.')
    else
-    Error(NumTok, 'Can''t open '+ftyp+' file '''+name+'''');
+    Error(NumTok, 'Can''t find '+ftyp+' file '''+name+''' used by program '''+PROGRAM_NAME+''' in unit path '''+unitPathList.ToString+'''.');
 end;
 
 // ----------------------------------------------------------------------------
