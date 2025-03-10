@@ -39,7 +39,7 @@ begin
  for i := Low(Ident) to High(Ident) do
  begin
  	Ident[i].Name := '';
- 	// TODO: Clear more
+ 	// TODO: Clear more  using Default()
  end;
  ClearWordMemory(DataSegment);
  ClearWordMemory(StaticStringData);
