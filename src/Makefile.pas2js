@@ -1,9 +1,11 @@
 # Experimental: JAC!
+# Example usage: FPC installed in "C:\jac\system\Windows\Tools\PAS\PAS2JS\pas2js-win64-x86_64-3.0.1"
+#
 # Start Bash Shell
 # cd /c/jac/system/Atari800/Programming/Repositories/Mad-Pascal/src 
 # export PATH=/c/jac/system/Windows/Tools/PAS/PAS2JS/pas2js-win64-x86_64-3.0.1/bin/:$PATH
 # make -f Makefile.pas2js
-# REF: C:\jac\system\Windows\Tools\PAS\PAS2JS\pas2js-win64-x86_64-3.0.1
+# REF: C:\jac\system\Windows\Tools\PAS\PAS2JS\pas2js-win64-x86_64-3.0.1\bin
 
 SRC = mp.pas \
   Common.pas \
@@ -26,7 +28,7 @@ BIN = $(BINDIR)/mp.js
 TEST_SRC = Test-0.pas
 TEST_BIN = $(BINDIR)/Test-0.js
 
-PAS2JS = /c/jac/system/Windows/Tools/PAS/PAS2JS/pas2js-win64-x86_64-3.0.1/bin/pas2js.exe -Jc -Jirtl.js -Tbrowser
+PAS2JS = pas2js.exe -Jc -Jirtl.js -Tbrowser
 
 $(BIN): clean $(SRC)
 	echo "Compiling $(SRC)"

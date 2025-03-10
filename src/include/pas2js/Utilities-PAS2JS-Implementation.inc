@@ -11,11 +11,6 @@ function CompareWord( const buf1; const buf2; len: SizeInt ):SizeInt;
 begin
 end;
 
-procedure MoveSingle(i: Integer; s: Single);
-begin
-end;
-
-
 function GetTickCount64: QWord;
 begin
 end;

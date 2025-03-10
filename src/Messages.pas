@@ -22,7 +22,7 @@ type
 // ----------------------------------------------------------------------------
 
 	procedure Error(ErrTokenIndex: Integer; Msg: string);
-	// TODO:: Use overload and rename to Error, like for Note
+	// TODO: Use overload and rename to Error, like for Note
 	procedure iError(ErrTokenIndex: Integer; err: ErrorCode; IdentIndex: Integer = 0; SrcType: Int64 = 0; DstType: Int64 = 0);
 
 	procedure Note(NoteTokenIndex: Integer; IdentIndex: Integer); overload;

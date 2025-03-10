@@ -13992,7 +13992,7 @@ begin
 
 	HeaFile.Close;
 
-        if RCLIBRARY then begin asm65(''); asm65(#9'rmb'); asm65('') end;				// reset bank -> #0
+    if RCLIBRARY then begin asm65(''); asm65(#9'rmb'); asm65('') end;				// reset bank -> #0
 
     end else
 
@@ -17208,7 +17208,7 @@ var i: Integer;
     t, c: string;
 begin
 
-  t := 'A8';		// target
+  t := 'A8';	// target
   c := '';		// cpu
 
  i:=1;
@@ -17340,7 +17340,7 @@ begin
   else
 
    begin
-    UnitName[1].Name := parameter;	//ChangeFileExt(parameter, '.pas');
+    UnitName[1].Name := TEnvironment.GetParameterString(i)
     UnitName[1].Path := UnitName[1].Name;
 
     if not TFileSystem.FileExists_(UnitName[1].Name) then begin
