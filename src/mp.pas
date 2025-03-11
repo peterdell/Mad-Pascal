@@ -2057,17 +2057,17 @@ begin
 
  case ioCode of
 
-   TIOCode.ioAppend,
-   TIOCode.ioOpenRead,
-   TIOCode.ioOpenWrite:
+   TIOCode.Append,
+   TIOCode.OpenRead,
+   TIOCode.OpenWrite:
 
 	asm65(#9'@openfile '+Ident[IdentIndex].Name+', #'+IntToStr(ord(ioCode)));
 
-   TIOCode.ioFileMode:
+   TIOCode.FileMode:
 
 	asm65(#9'@openfile '+Ident[IdentIndex].Name+', MAIN.SYSTEM.FileMode');
 
-   TIOCode.ioClose:
+   TIOCode.Close:
 
    	asm65(#9'@closefile '+Ident[IdentIndex].Name);
 
@@ -2098,15 +2098,15 @@ begin
 
  case ioCode of
 
-   TIOCode.ioRead,
-   TIOCode.ioWrite,
-   TIOCode.ioReadRecord,
-   TIOCode.ioWriteRecord:
+   TIOCode.Read,
+   TIOCode.Write,
+   TIOCode.ReadRecord,
+   TIOCode.WriteRecord:
 
 	if NumParams = 3 then
-	  asm65(#9'@readfile '+Ident[IdentIndex].Name+', #'+IntToStr(ord(ioCode) or $80))
+	  asm65(#9'@readfile '+Ident[IdentIndex].Name+', #'+IntToStr(GetIOBits(ioCode) or $80))
 	else
-	  asm65(#9'@readfile '+Ident[IdentIndex].Name+', #'+IntToStr(ord(ioCode)));
+	  asm65(#9'@readfile '+Ident[IdentIndex].Name+', #'+IntToStr(GetIOBits(ioCode)));
 
  end;
 
@@ -12501,7 +12501,7 @@ WHILETOK:
 
 	GenerateAssignment(ASPOINTERTOPOINTER, 2, 0, Ident[IdentIndex].Name, 's@file.record');
 
-	GenerateFileOpen(IdentIndex, TIOCode.ioFileMode);
+	GenerateFileOpen(IdentIndex, TIOCode.FileMode);
 
 	Result := i;
 	end;
@@ -12552,7 +12552,7 @@ WHILETOK:
 
 	GenerateAssignment(ASPOINTERTOPOINTER, 2, 0, Ident[IdentIndex].Name, 's@file.record');
 
-	GenerateFileOpen(IdentIndex, TIOCode.ioOpenWrite);
+	GenerateFileOpen(IdentIndex, TIOCode.OpenWrite);
 
 	Result := i;
 	end;
@@ -12588,7 +12588,7 @@ WHILETOK:
 
 	GenerateAssignment(ASPOINTERTOPOINTER, 2, 0, Ident[IdentIndex].Name, 's@file.record');
 
-	GenerateFileOpen(IdentIndex, TIOCode.ioAppend);
+	GenerateFileOpen(IdentIndex, TIOCode.Append);
 
 	Result := i + 3;
        end;
@@ -12703,7 +12703,7 @@ WHILETOK:
 
 	NumActualParams := CompileBlockRead(i, IdentIndex, GetIdent('BLOCKREAD'));
 
-	GenerateFileRead(IdentIndex, TIOCode.ioRead, NumActualParams);
+	GenerateFileRead(IdentIndex, TIOCode.Read, NumActualParams);
 
 	Result := i;
 	end;
@@ -12732,7 +12732,7 @@ WHILETOK:
 	inc(i, 2);
 	NumActualParams := CompileBlockRead(i, IdentIndex, GetIdent('BLOCKWRITE'));
 
-	GenerateFileRead(IdentIndex, TIOCode.ioWrite, NumActualParams);
+	GenerateFileRead(IdentIndex, TIOCode.Write, NumActualParams);
 
 	Result := i;
 	end;
@@ -12758,7 +12758,7 @@ WHILETOK:
 
 	CheckTok(i + 3, CPARTOK);
 
-	GenerateFileOpen(IdentIndex, TIOCode.ioClose);
+	GenerateFileOpen(IdentIndex, TIOCode.Close);
 
 	Result := i + 3;
 	end;
@@ -12785,7 +12785,7 @@ WHILETOK:
 
 	  asm65(#9'lda #eol');
 	  asm65(#9'sta @buf');
-	  GenerateFileRead(IdentIndex, TIOCode.ioReadRecord, 0);
+	  GenerateFileRead(IdentIndex, TIOCode.ReadRecord, 0);
 
 	  inc(i, 3);
 
@@ -12912,7 +12912,7 @@ WHILETOK:
 			asm65(#9'lda #$01');
 			asm65(#9'sta (:bp2),y');
 
-	        	GenerateFileRead(IdentIndex, TIOCode.ioWriteRecord, 0);
+	        	GenerateFileRead(IdentIndex, TIOCode.WriteRecord, 0);
 
 		   end else begin								// WRITE
 
@@ -12924,7 +12924,7 @@ WHILETOK:
 			asm65(#9'lda #$00');
 			asm65(#9'sta (:bp2),y');
 
-	        	GenerateFileRead(IdentIndex, TIOCode.ioWrite, 0);
+	        	GenerateFileRead(IdentIndex, TIOCode.Write, 0);
 
 		   end;
 
@@ -12952,7 +12952,7 @@ WHILETOK:
 			asm65(#9'lda #$01');
 			asm65(#9'sta (:bp2),y');
 
-	        	GenerateFileRead(IdentIndex, TIOCode.ioWriteRecord, 0);
+	        	GenerateFileRead(IdentIndex, TIOCode.WriteRecord, 0);
 
 		   end else begin								// WRITE
 
@@ -12966,7 +12966,7 @@ WHILETOK:
 			asm65(#9'lda #$00');
 			asm65(#9'sta (:bp2),y');
 
-	        	GenerateFileRead(IdentIndex, TIOCode.ioWrite, 0);
+	        	GenerateFileRead(IdentIndex, TIOCode.Write, 0);
 
 		   end;
 
@@ -12995,7 +12995,7 @@ WHILETOK:
 			asm65(#9'lda #$01');
 			asm65(#9'sta (:bp2),y');
 
-	        	GenerateFileRead(IdentIndex, TIOCode.ioWriteRecord, 0);
+	        	GenerateFileRead(IdentIndex, TIOCode.WriteRecord, 0);
 
 		   end else begin								// WRITE
 
@@ -13009,7 +13009,7 @@ WHILETOK:
 			asm65(#9'lda #$00');
 			asm65(#9'sta (:bp2),y');
 
-	        	GenerateFileRead(IdentIndex, TIOCode.ioWrite, 0);
+	        	GenerateFileRead(IdentIndex, TIOCode.Write, 0);
 
 		   end;
 
@@ -14730,55 +14730,55 @@ begin
 	  case Tok[i + 1].Kind of
 
 	    OVERLOADTOK: begin
-			   Status := Status or ord(TModifierCode.mOverload);
+			   SetModifierBit(TModifierCode.mOverload, Status);
 			   inc(i);
 			   CheckTok(i + 1, SEMICOLONTOK);
 			 end;
 
 	   ASSEMBLERTOK: begin
-			   Status := Status or ord(TModifierCode.mAssembler);
+			   SetModifierBit(TModifierCode.mAssembler, Status);
 			   inc(i);
 			   CheckTok(i + 1, SEMICOLONTOK);
 			 end;
 
 {	     FORWARDTOK: begin
-			   Status := Status or ord(mForward);
+			   SetModifierBit(TModifierCode.mForward, Status);
 			   inc(i);
 			   CheckTok(i + 1, SEMICOLONTOK);
 			 end;
  }
 	    REGISTERTOK: begin
-			   Status := Status or ord(TModifierCode.mRegister);
+			   SetModifierBit(TModifierCode.mRegister, Status);
 			   inc(i);
 			   CheckTok(i + 1, SEMICOLONTOK);
 			 end;
 
 	      STDCALLTOK: begin
-			   Status := Status or ord(TModifierCode.mStdCall);
+			   SetModifierBit(TModifierCode.mStdCall, Status);
 			   inc(i);
 			   CheckTok(i + 1, SEMICOLONTOK);
 			 end;
 
 	      INLINETOK: begin
-			   Status := Status or ord(TModifierCode.mInline);
+			   SetModifierBit(TModifierCode.mInline, Status);
 			   inc(i);
 			   CheckTok(i + 1, SEMICOLONTOK);
 			 end;
 
 	   INTERRUPTTOK: begin
-			   Status := Status or ord(TModifierCode.mInterrupt);
+			   SetModifierBit(TModifierCode.mInterrupt, Status);
 			   inc(i);
 			   CheckTok(i + 1, SEMICOLONTOK);
 			 end;
 
 	      PASCALTOK: begin
-			   Status := Status or ord(TModifierCode.mPascal);
+			   SetModifierBit(TModifierCode.mPascal, Status);
 			   inc(i);
 			   CheckTok(i + 1, SEMICOLONTOK);
 			 end;
 
              KEEPTOK: begin
-			   Status := Status or ord(TModifierCode.mKeep);
+			   SetModifierBit(TModifierCode.mKeep, Status);
 			   inc(i);
 			   CheckTok(i + 1, SEMICOLONTOK);
 			 end;
@@ -16646,17 +16646,18 @@ while Tok[i].Kind in
 
 	 Tmp := 0;
 
-	 if Ident[ForwardIdentIndex].isKeep	 then Tmp := Tmp or ord(TModifierCode.mKeep);
-	 if Ident[ForwardIdentIndex].isOverload	 then Tmp := Tmp or ord(TModifierCode.mOverload);
-	 if Ident[ForwardIdentIndex].isAsm	 then Tmp := Tmp or ord(TModifierCode.mAssembler);
-	 if Ident[ForwardIdentIndex].isRegister	 then Tmp := Tmp or ord(TModifierCode.mRegister);
-	 if Ident[ForwardIdentIndex].isInterrupt then Tmp := Tmp or ord(TModifierCode.mInterrupt);
-	 if Ident[ForwardIdentIndex].isPascal	 then Tmp := Tmp or ord(TModifierCode.mPascal);
-	 if Ident[ForwardIdentIndex].isStdCall	 then Tmp := Tmp or ord(TModifierCode.mStdCall);
-	 if Ident[ForwardIdentIndex].isInline	 then Tmp := Tmp or ord(TModifierCode.mInline);
+	 if Ident[ForwardIdentIndex].isKeep	 then SetModifierBit(TModifierCode.mKeep, tmp);
+	 if Ident[ForwardIdentIndex].isOverload	 then SetModifierBit(TModifierCode.mOverload, tmp);
+	 if Ident[ForwardIdentIndex].isAsm	 then SetModifierBit(TModifierCode.mAssembler, tmp);
+	 if Ident[ForwardIdentIndex].isRegister	 then SetModifierBit(TModifierCode.mRegister, tmp);
+	 if Ident[ForwardIdentIndex].isInterrupt then SetModifierBit(TModifierCode.mInterrupt, tmp);
+	 if Ident[ForwardIdentIndex].isPascal	 then SetModifierBit(TModifierCode.mPascal, tmp);
+	 if Ident[ForwardIdentIndex].isStdCall	 then SetModifierBit(TModifierCode.mStdCall, tmp);
+	 if Ident[ForwardIdentIndex].isInline	 then SetModifierBit(TModifierCode.mInline, tmp);
 
 	 if Tmp <> TmpResult then
-	   Error(i, 'Function header doesn''t match the previous declaration ''' + Ident[ForwardIdentIndex].Name + '''');
+           // TODO: List the difference in the modifiers
+	   Error(i, 'Function header doesn''t match the previous declaration ''' + Ident[ForwardIdentIndex].Name + '''. Different modifiers.');
 
 
 	 if IsNestedFunction then

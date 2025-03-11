@@ -330,22 +330,13 @@ const
 
 type
 
-  // Current limitation in PAS2JS. Have to find a different way, because the const values are sigificant.
-  // Error: not yet implemented: mKeep:TPasEnumValue [20180126202434] "enum const"
-  {$IFNDEF PAS2JS}
-  TModifierCode = (mKeep = $100, mOverload= $80, mInterrupt = $40, mRegister = $20, mAssembler = $10, mForward = $08, mPascal = $04, mStdCall = $02, mInline = $01);
-  {$ELSE}
-  TModifierCode = (mKeep, mOverload, mInterrupt, mRegister, mAssembler, mForward, mPascal, mStdCall, mInline);
-  {$ENDIF}
+  TModifierCode = (mInline, mStdCall ,  mPascal,  mForward, mAssembler, mRegister, mInterrupt, mOverload, mKeep );
+  TModifierBits = Word;
 
   TInterruptCode = (iDLI, iVBLD, iVBLI, iTIM1, iTIM2, iTIM4);
 
-  {$IFNDEF PAS2JS}
-  TIOCode = (ioOpenRead = 4, ioReadRecord = 5, ioRead = 7, ioOpenWrite = 8, ioAppend = 9, ioWriteRecord = 9, ioWrite = $0b, ioOpenReadWrite = $0c, ioFileMode = $f0, ioClose = $ff);
-  {$ELSE}
-  TIOCode = (ioOpenRead, ioReadRecord, ioRead, ioOpenWrite, ioAppend, ioWriteRecord, ioWrite, ioOpenReadWrite, ioFileMode, ioClose);
-  {$ENDIF}
-
+  TIOCode = (OpenRead, ReadRecord, Read, OpenWrite, Append, WriteRecord, Write, OpenReadWrite, FileMode, Close);
+  TIOBits = Byte;
 
   TCode65 =
   (
@@ -676,11 +667,40 @@ var
 
 	function StrToInt(const a: string): Int64;
 
+        procedure SetModifierBit(const modifierCode: TModifierCode; var bits: TModifierBits);
+        function GetIOBits(const ioCode: TIOCode): TIOBits;
+
 // ----------------------------------------------------------------------------
 
 implementation
 
 uses SysUtils, Messages, Utilities;
+
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+
+procedure SetModifierBit(const modifierCode: TModifierCode; var bits: TModifierBits);
+begin
+  bits := bits Or ( Word(1) shl Ord( modifierCode ));
+end;
+
+function GetIOBits(const ioCode: TIOCode): TIOBits;
+begin
+case ioCode of
+   TIOCode.OpenRead : Result:=$04;
+   TIOCode.ReadRecord : Result:= $05;
+   TIOCode.Read: Result:= $07;
+   TIOCode.OpenWrite: Result:=$08;
+   TIOCode.Append: Result:=$09;
+   TIOCode.WriteRecord: Result:= $09;
+   TIOCode.Write: Result:= $0b;
+   TIOCode.OpenReadWrite: Result:= $0c;
+   TIOCode.FileMode: Result:= $f0;
+   TIOCode.Close: Result:= $ff;
+      else
+       Assert(false, 'Invalid ioCode.');
+end;
+end;
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
