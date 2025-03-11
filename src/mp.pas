@@ -259,7 +259,7 @@ begin
 
  if Ident[IdentIndex].NumParams > 0 then
   for ParamIndex := Ident[IdentIndex].NumParams downto 1 do
-   Result := Result + IntToHex(Ident[IdentIndex].Param[ParamIndex].PassMethod, 2) +
+   Result := Result + IntToHex(Ord(Ident[IdentIndex].Param[ParamIndex].PassMethod), 2) +
 		      IntToHex(Ident[IdentIndex].Param[ParamIndex].DataType, 2) +
 		      IntToHex(Ident[IdentIndex].Param[ParamIndex].AllocElementType, 2) +
 		      IntToHex(Ident[IdentIndex].Param[ParamIndex].NumAllocElements, 8 * ord(Ident[IdentIndex].Param[ParamIndex].NumAllocElements <> 0));
@@ -366,9 +366,9 @@ for BlockStackIndex := BlockStackTop downto 0 do	// search all nesting levels fr
 
 	  ( (Param[i].DataType in Pointers) and (Ident[IdentIndex].Param[i].DataType = Param[i].AllocElementType) ) or		// dla parametru VAR
 
-          ( (Ident[IdentIndex].Param[i].DataType = UNTYPETOK) and (Ident[IdentIndex].Param[i].PassMethod = VARPASSING) ) //or
+          ( (Ident[IdentIndex].Param[i].DataType = UNTYPETOK) and (Ident[IdentIndex].Param[i].PassMethod = TParameterPassingMethod.VARPASSING) ) //or
 
-//	  ( (Ident[IdentIndex].Param[i].DataType = UNTYPETOK) and (Ident[IdentIndex].Param[i].PassMethod = VARPASSING) and (Param[i].DataType in OrdinalTypes {+ [POINTERTOK]} {IntegerTypes + [CHARTOK]}) )
+//	  ( (Ident[IdentIndex].Param[i].DataType = UNTYPETOK) and (Ident[IdentIndex].Param[i].PassMethod = TParameterPassingMethod.VARPASSING) and (Param[i].DataType in OrdinalTypes {+ [POINTERTOK]} {IntegerTypes + [CHARTOK]}) )
 
 	 then begin
 
@@ -1359,13 +1359,13 @@ case IndirectionLevel of
 
     a65(TCode65.addBX);
 
-  if (Ident[IdentIndex].isAbsolute) and (Ident[IdentIndex].PassMethod <> VARPASSING) and (NumAllocElements = 0) then asm65('+'+svar);	// +lda
+  if (Ident[IdentIndex].isAbsolute) and (Ident[IdentIndex].PassMethod <> TParameterPassingMethod.VARPASSING) and (NumAllocElements = 0) then asm65('+'+svar);	// +lda
 
 //	writeln(Ident[IdentIndex].PassMethod,',', Ident[IdentIndex].name,',',Ident[IdentIndex].DataType,',',Ident[IdentIndex].AllocElementType,',',Ident[IdentIndex].NumAllocElements,' | ', svar,',',ExtractName(IdentIndex, svar),',',par);
 
     if TestName(IdentIndex, svar) then begin
 
-     if (Ident[IdentIndex].DataType = POINTERTOK) and (Ident[IdentIndex].AllocElementType <> UNTYPETOK) and (Ident[IdentIndex].PassMethod <> VARPASSING) then
+     if (Ident[IdentIndex].DataType = POINTERTOK) and (Ident[IdentIndex].AllocElementType <> UNTYPETOK) and (Ident[IdentIndex].PassMethod <> TParameterPassingMethod.VARPASSING) then
       asm65(#9'mwy ' + svar + ' :bp2')
      else
       asm65(#9'mwy ' + ExtractName(IdentIndex, svar) + ' :bp2');
@@ -1376,7 +1376,7 @@ case IndirectionLevel of
 
     if TestName(IdentIndex, svar) then begin
 
-     if (Ident[IdentIndex].DataType = POINTERTOK) and (Ident[IdentIndex].AllocElementType <> UNTYPETOK) and (Ident[IdentIndex].PassMethod <> VARPASSING) then
+     if (Ident[IdentIndex].DataType = POINTERTOK) and (Ident[IdentIndex].AllocElementType <> UNTYPETOK) and (Ident[IdentIndex].PassMethod <> TParameterPassingMethod.VARPASSING) then
       asm65(#9'ldy #$' + IntToHex(par, 2))
      else
       asm65(#9'ldy #' + svar + '-DATAORIGIN');
@@ -1414,7 +1414,7 @@ case IndirectionLevel of
 	 end;
       end;
 
-  if (Ident[IdentIndex].isAbsolute) and (Ident[IdentIndex].PassMethod <> VARPASSING) and (NumAllocElements = 0) then asm65('+');	// +lda
+  if (Ident[IdentIndex].isAbsolute) and (Ident[IdentIndex].PassMethod <> TParameterPassingMethod.VARPASSING) and (NumAllocElements = 0) then asm65('+');	// +lda
 
     end;
 
@@ -1431,7 +1431,7 @@ case IndirectionLevel of
 
 	 if (NumAllocElements > 256) or (NumAllocElements in [0,1]) then begin
 
-	  if (Ident[IdentIndex].isAbsolute) and (Ident[IdentIndex].PassMethod <> VARPASSING) and (NumAllocElements = 0) then asm65('+'+svar);	// +lda
+	  if (Ident[IdentIndex].isAbsolute) and (Ident[IdentIndex].PassMethod <> TParameterPassingMethod.VARPASSING) and (NumAllocElements = 0) then asm65('+'+svar);	// +lda
 
 	  if (Ident[IdentIndex].isAbsolute) and (Ident[IdentIndex].idType = ARRAYTOK) and (Ident[IdentIndex].Value >= 0) then begin
 
@@ -1456,11 +1456,11 @@ case IndirectionLevel of
 	  asm65(#9'lda (:bp),y');
 	  asm65(#9'sta' + GetStackVariable(0));
 
-	  if (Ident[IdentIndex].isAbsolute) and (Ident[IdentIndex].PassMethod <> VARPASSING) and (NumAllocElements = 0) then asm65('+');	// +lda
+	  if (Ident[IdentIndex].isAbsolute) and (Ident[IdentIndex].PassMethod <> TParameterPassingMethod.VARPASSING) and (NumAllocElements = 0) then asm65('+');	// +lda
 
 	 end else begin
 
-	  if Ident[IdentIndex].PassMethod = VARPASSING then begin
+	  if Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING then begin
 
 	   LoadBP2(IdentIndex, svar);
 
@@ -1543,7 +1543,7 @@ case IndirectionLevel of
 
 	 end else begin
 
-	  if Ident[IdentIndex].PassMethod = VARPASSING then begin
+	  if Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING then begin
 
 	   LoadBP2(IdentIndex, svar);
 
@@ -1646,7 +1646,7 @@ case IndirectionLevel of
 
 	 end else begin
 
-	  if Ident[IdentIndex].PassMethod = VARPASSING then begin
+	  if Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING then begin
 
 	   LoadBP2(IdentIndex, svar);
 
@@ -2290,7 +2290,7 @@ begin
 
 		  end else begin
 
-		   if Ident[IdentIndex].PassMethod = VARPASSING then begin
+		   if Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING then begin
 
 		    LoadBP2(IdentIndex, svar);
 
@@ -2324,7 +2324,7 @@ begin
 
 		 end;
 
-	      2: if Ident[IdentIndex].PassMethod = VARPASSING then begin
+	      2: if Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING then begin
 
 		  LoadBP2(IdentIndex, svar);
 
@@ -2411,7 +2411,7 @@ begin
 
 		 end;
 
-	      4: if Ident[IdentIndex].PassMethod = VARPASSING then begin
+	      4: if Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING then begin
 
 		  LoadBP2(IdentIndex, svar);
 
@@ -2762,7 +2762,7 @@ case IndirectionLevel of
 
 	 if (NumAllocElements > 256) or (NumAllocElements in [0,1]) then begin
 
-	  if (Ident[IdentIndex].isAbsolute) and (Ident[IdentIndex].PassMethod <> VARPASSING) and (NumAllocElements = 0) then asm65('-'+svar);	// -sta
+	  if (Ident[IdentIndex].isAbsolute) and (Ident[IdentIndex].PassMethod <> TParameterPassingMethod.VARPASSING) and (NumAllocElements = 0) then asm65('-'+svar);	// -sta
 
 	    if (Ident[IdentIndex].isAbsolute) and (Ident[IdentIndex].idType = ARRAYTOK) and (Ident[IdentIndex].Value >= 0) then begin
 
@@ -2787,11 +2787,11 @@ case IndirectionLevel of
 	    asm65(#9'lda :STACKORIGIN,x');
 	    asm65(#9'sta (:bp),y');
 
-	  if (Ident[IdentIndex].isAbsolute) and (Ident[IdentIndex].PassMethod <> VARPASSING) and (NumAllocElements = 0) then asm65('-');	// -sta
+	  if (Ident[IdentIndex].isAbsolute) and (Ident[IdentIndex].PassMethod <> TParameterPassingMethod.VARPASSING) and (NumAllocElements = 0) then asm65('-');	// -sta
 
 	 end else begin
 
-	 if Ident[IdentIndex].PassMethod = VARPASSING then begin
+	 if Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING then begin
 
 	  LoadBP2(IdentIndex, svar);
 
@@ -2873,7 +2873,7 @@ case IndirectionLevel of
 
 	 end else begin
 
-	 if Ident[IdentIndex].PassMethod = VARPASSING then begin
+	 if Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING then begin
 
 	  LoadBP2(IdentIndex, svar);
 
@@ -2975,7 +2975,7 @@ case IndirectionLevel of
 
 	 end else begin
 
-	 if Ident[IdentIndex].PassMethod = VARPASSING then begin
+	 if Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING then begin
 
 	  LoadBP2(IdentIndex, svar);
 
@@ -3063,7 +3063,7 @@ case IndirectionLevel of
 
 	 end else begin
 
-	 if Ident[IdentIndex].PassMethod = VARPASSING then begin
+	 if Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING then begin
 
 	  LoadBP2(IdentIndex, svar);
 
@@ -3135,7 +3135,7 @@ case IndirectionLevel of
 
 	 end else begin
 
-	 if Ident[IdentIndex].PassMethod = VARPASSING then begin
+	 if Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING then begin
 
 	  LoadBP2(IdentIndex, svar);
 
@@ -3423,7 +3423,7 @@ ASARRAYORIGINOFPOINTERTORECORDARRAYORIGIN:				// record_array[index].array[i]
     begin
     asm65('; as Pointer to Pointer');
 
-  if (Ident[IdentIndex].isAbsolute) and (Ident[IdentIndex].PassMethod <> VARPASSING) and (NumAllocElements = 0) then asm65('-'+svar);	// -sta
+  if (Ident[IdentIndex].isAbsolute) and (Ident[IdentIndex].PassMethod <> TParameterPassingMethod.VARPASSING) and (NumAllocElements = 0) then asm65('-'+svar);	// -sta
 
 //	writeln(Ident[IdentIndex].Name,',',Ident[IdentIndex].DataType,',',Ident[IdentIndex].AllocElementType,' / ',svar ,' / ', UnitName[Ident[IdentIndex].UnitIndex].Name,',',svar.LastIndexOf('.'));
 
@@ -3438,7 +3438,7 @@ ASARRAYORIGINOFPOINTERTORECORDARRAYORIGIN:				// record_array[index].array[i]
      asm65(#9'mwy ' + svar + ' :bp2');
 
 {
-        if (Ident[IdentIndex].DataType = POINTERTOK) and (Ident[IdentIndex].PassMethod = VARPASSING) then begin
+        if (Ident[IdentIndex].DataType = POINTERTOK) and (Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING) then begin
 
 
   writeln(Ident[Identindex].name,',',Ident[Identindex].AllocElementType,',',Ident[Identindex].NumAllocElements,',',Ident[Identindex].kind);
@@ -3487,7 +3487,7 @@ ASARRAYORIGINOFPOINTERTORECORDARRAYORIGIN:				// record_array[index].array[i]
 
       end;
 
-  if (Ident[IdentIndex].isAbsolute) and (Ident[IdentIndex].PassMethod <> VARPASSING) and (NumAllocElements = 0) then asm65('-');	// -sta
+  if (Ident[IdentIndex].isAbsolute) and (Ident[IdentIndex].PassMethod <> TParameterPassingMethod.VARPASSING) and (NumAllocElements = 0) then asm65('-');	// -sta
 
      a65(TCode65.subBX);
 
@@ -6322,7 +6322,7 @@ begin
 
 	end else
 
-	if (Ident[IdentIndex].PassMethod = VARPASSING) or (NumAllocElements * DataSize[AllocElementType] > 256) or (NumAllocElements in [0,1]) then begin
+	if (Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING) or (NumAllocElements * DataSize[AllocElementType] > 256) or (NumAllocElements in [0,1]) then begin
 
 //	writeln(Ident[IdentIndex].DataType,',',Ident[IdentIndex].AllocElementType,',',Ident[IdentIndex].NumAllocElements,',',Ident[IdentIndex].PassMethod,',',Ident[IdentIndex].idType );
 
@@ -6351,7 +6351,7 @@ begin
 	     end else
 	      if (Ident[IdentIndex].DataType in [FILETOK, TEXTFILETOK, RECORDTOK, OBJECTTOK] {+ Pointers}) or
 	         ((Ident[IdentIndex].DataType in Pointers) and (Ident[IdentIndex].AllocElementType <> 0) and (Ident[IdentIndex].NumAllocElements > 0)) or
-		 (Ident[IdentIndex].PassMethod = VARPASSING) or
+		 (Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING) or
 		 (VarPass and (Ident[IdentIndex].DataType in Pointers))  then begin
 
 //	writeln(Ident[IdentIndex].Name,',',Ident[IdentIndex].DataType,',',Ident[IdentIndex].AllocElementType,',',Ident[IdentIndex].NumAllocElements,',',Ident[IdentIndex].PassMethod,',',Tok[i + 2].Kind);
@@ -6359,7 +6359,7 @@ begin
 		 DEREFERENCE := (Tok[i + 2].Kind = DEREFERENCETOK);
 
 
-		 if (Ident[IdentIndex].PassMethod = VARPASSING) and (Ident[IdentIndex].NumAllocElements > 0) and
+		 if (Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING) and (Ident[IdentIndex].NumAllocElements > 0) and
 		    (Ident[IdentIndex].DataType in Pointers) and (Ident[IdentIndex].AllocElementType in Pointers) and (Ident[IdentIndex].idType = DATAORIGINOFFSET) then begin
 
 		   Push(Ident[IdentIndex].Value, ASPOINTERTORECORD, DataSize[POINTERTOK], IdentIndex)
@@ -6426,18 +6426,18 @@ begin
 
 		  end else
 		   if address or VarPass then begin
-//		   if (Ident[IdentIndex].DataType in Pointers) and (Ident[IdentIndex].NumAllocElements = 0) {and (Ident[IdentIndex].PassMethod <> VARPASSING)} then begin
+//		   if (Ident[IdentIndex].DataType in Pointers) and (Ident[IdentIndex].NumAllocElements = 0) {and (Ident[IdentIndex].PassMethod <> TParameterPassingMethod.VARPASSING)} then begin
 
 //	writeln('1: ',Ident[IdentIndex].Name,',',Ident[IdentIndex].idType,',',Ident[IdentIndex].DataType,',',Ident[IdentIndex].AllocElementType,',',Ident[IdentIndex].NumAllocElements,'..',Ident[IdentIndex].NumAllocElements_,',',Ident[IdentIndex].PassMethod,',',DEREFERENCE,',',varpass,' o ',Ident[IdentIndex].isAbsolute);
 
                      if (Ident[IdentIndex].DataType in [RECORDTOK, OBJECTTOK, FILETOK, TEXTFILETOK]) or
 		        (VarPass and (Ident[IdentIndex].DataType = POINTERTOK) and (Ident[IdentIndex].AllocElementType in AllTypes - [PROCVARTOK, RECORDTOK, OBJECTTOK]) and (Ident[IdentIndex].NumAllocElements = 0)) or
-		        ((Ident[IdentIndex].DataType in Pointers) and (Ident[IdentIndex].AllocElementType in [RECORDTOK, OBJECTTOK]) and (VarPass or (Ident[IdentIndex].PassMethod = VARPASSING)) ) or
+		        ((Ident[IdentIndex].DataType in Pointers) and (Ident[IdentIndex].AllocElementType in [RECORDTOK, OBJECTTOK]) and (VarPass or (Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING)) ) or
 		        (Ident[IdentIndex].isAbsolute and (Ident[IdentIndex].Value and $ff = 0) and (byte((Ident[IdentIndex].Value shr 24) and $7f) in [1..127])) or
 		        ((Ident[IdentIndex].DataType in Pointers) and (Ident[IdentIndex].AllocElementType in [RECORDTOK, OBJECTTOK]) and (Ident[IdentIndex].NumAllocElements_ = 0)) or
 		        ((Ident[IdentIndex].DataType in Pointers) and (Ident[IdentIndex].idType = DATAORIGINOFFSET)) or
 		        ((Ident[IdentIndex].DataType in Pointers) and not (Ident[IdentIndex].AllocElementType in [UNTYPETOK, RECORDTOK, OBJECTTOK, PROCVARTOK]) and (Ident[IdentIndex].NumAllocElements > 0)) or
-		        ((Ident[IdentIndex].DataType in Pointers) and (Ident[IdentIndex].PassMethod = VARPASSING) )
+		        ((Ident[IdentIndex].DataType in Pointers) and (Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING) )
 		     then
 		       Push(Ident[IdentIndex].Value, ASPOINTER, DataSize[POINTERTOK], IdentIndex)
 		     else
@@ -6526,7 +6526,7 @@ begin
        Result[NumActualParams].i := i;
 
 {
-       if (Ident[IdentIndex].Param[NumActualParams].PassMethod = VARPASSING) then begin		// !!! to nie uwzglednia innych procedur/funkcji o innej liczbie parametrow
+       if (Ident[IdentIndex].Param[NumActualParams].PassMethod = TParameterPassingMethod.VARPASSING) then begin		// !!! to nie uwzglednia innych procedur/funkcji o innej liczbie parametrow
 
 	CompileExpression(i + 2, ActualParamType);
 
@@ -6625,7 +6625,7 @@ begin
    yes := {(Ident[IdentIndex].ObjectIndex > 0) or} Ident[IdentIndex].isRecursion or Ident[IdentIndex].isStdCall;
 
    for ParamIndex := Ident[IdentIndex].NumParams downto 1 do
-    if not ( (Ident[IdentIndex].Param[ParamIndex].PassMethod = VARPASSING) or
+    if not ( (Ident[IdentIndex].Param[ParamIndex].PassMethod = TParameterPassingMethod.VARPASSING) or
 	     ((Ident[IdentIndex].Param[ParamIndex].DataType in Pointers) and (Ident[IdentIndex].Param[ParamIndex].NumAllocElements and $FFFF in [0,1])) or
 	     ((Ident[IdentIndex].Param[ParamIndex].DataType in Pointers) and (Ident[IdentIndex].Param[ParamIndex].AllocElementType in [RECORDTOK, OBJECTTOK])) or
              (Ident[IdentIndex].Param[ParamIndex].DataType in OrdinalTypes + RealTypes)
@@ -6694,7 +6694,7 @@ begin
 
        end else begin
 
-         if (Ident[ProcVarIndex].PassMethod = VARPASSING) then begin
+         if (Ident[ProcVarIndex].PassMethod = TParameterPassingMethod.VARPASSING) then begin
 
           if pos('.', svar) > 0 then begin
 
@@ -6809,7 +6809,7 @@ begin
 
        i := Param[NumActualParams].i;
 
-       if (Ident[IdentIndex].Param[NumActualParams].PassMethod = VARPASSING) then begin
+       if (Ident[IdentIndex].Param[NumActualParams].PassMethod = TParameterPassingMethod.VARPASSING) then begin
 
 	i := CompileAddress(i + 1, ActualParamType, AllocElementType, true);
 
@@ -6842,7 +6842,7 @@ begin
 	if IdentTemp > 0 then begin
 
 
-	if Ident[IdentTemp].Kind = FUNCTIONTOK then iError(i, CantAdrConstantExp);	// VARPASSING function not possible
+	if Ident[IdentTemp].Kind = FUNCTIONTOK then iError(i, CantAdrConstantExp);	// TParameterPassingMethod.VARPASSING function not possible
 
 
 //	writeln(' - ',Tok[i].Name,',',ActualParamType,',',AllocElementType, ',', Ident[IdentTemp].NumAllocElements );
@@ -6858,7 +6858,7 @@ begin
  writeln(Ident[IdentIndex].Param[NumActualParams].PassMethod,',', Ident[IdentTemp].PassMethod);
 }
 
-	    if Ident[IdentTemp].PassMethod <> VARPASSING then
+	    if Ident[IdentTemp].PassMethod <> TParameterPassingMethod.VARPASSING then
 
 	      if Ident[IdentIndex].Param[NumActualParams].DataType in [RECORDTOK, OBJECTTOK] then
 	        Error(i, 'Incompatible types: got "' + Types[Ident[IdentTemp].NumAllocElements].Field[0].Name +'" expected "^' + Types[Ident[IdentIndex].Param[NumActualParams].NumAllocElements].Field[0].Name + '"')
@@ -7130,7 +7130,7 @@ begin
 
 
 	if (Ident[IdentIndex].isRecursion = false) and (Ident[IdentIndex].isStdCall = false) and (ParamIndex > 1) and
-	   (Ident[IdentIndex].Param[NumActualParams].PassMethod <> VARPASSING) and
+	   (Ident[IdentIndex].Param[NumActualParams].PassMethod <> TParameterPassingMethod.VARPASSING) and
 	   (Ident[IdentIndex].Param[NumActualParams].DataType in [RECORDTOK, OBJECTTOK] + Pointers) and
 	   (Ident[IdentIndex].Param[NumActualParams].NumAllocElements and $FFFF > 1) then
 
@@ -7257,7 +7257,7 @@ begin
 if (yes = FALSE) and (Ident[IdentIndex].NumParams > 0) then begin
 
  for ParamIndex := 1 to NumActualParams do
-  if Ident[IdentIndex].Param[ParamIndex].PassMethod = VARPASSING then begin
+  if Ident[IdentIndex].Param[ParamIndex].PassMethod = TParameterPassingMethod.VARPASSING then begin
 
 					asm65(#9'lda :STACKORIGIN,x');
 					asm65(#9'sta ' + svar + '.' + Ident[IdentIndex].Param[ParamIndex].Name);
@@ -7770,7 +7770,7 @@ case Tok[i].Kind of
 
 		svar := GetLocalName(IdentIndex);
 
-		if (Ident[IdentIndex].NumAllocElements * 2 > 256) or (Ident[IdentIndex].NumAllocElements in [0,1]) or (Ident[IdentIndex].PassMethod = VARPASSING) then begin
+		if (Ident[IdentIndex].NumAllocElements * 2 > 256) or (Ident[IdentIndex].NumAllocElements in [0,1]) or (Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING) then begin
 
     		asm65(#9'lda ' + svar);
      		asm65(#9'add :STACKORIGIN-1,x');
@@ -7813,7 +7813,7 @@ case Tok[i].Kind of
 		exit;
 
 		end else
-		if (Ident[IdentIndex].PassMethod = VARPASSING) or (Ident[IdentIndex].NumAllocElements = 0) then begin
+		if (Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING) or (Ident[IdentIndex].NumAllocElements = 0) then begin
 		 a65(TCode65.addBX);
 
 		 svar := GetLocalName(IdentIndex);
@@ -9102,7 +9102,7 @@ case Tok[i].Kind of
 	   i:=j;
 
 
-	  if (Ident[IdentIndex].PassMethod = VARPASSING) and (Ident[IdentIndex].NumAllocElements = 0) then begin
+	  if (Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING) and (Ident[IdentIndex].NumAllocElements = 0) then begin
 
 //	writeln(Ident[IdentIndex].Name,',',Ident[IdentIndex].DataType,',',Ident[IdentIndex].AllocElementType,',',Ident[IdentIndex].NumAllocElements,',',Ident[IdentIndex].NumAllocElements_,',',Ident[IdentIndex].idType,'/',Ident[IdentIndex].Kind,' = ',Ident[IdentIndex].PassMethod ,' | ',ValType,',',Tok[j].kind,',',Tok[j+1].kind);
 
@@ -9154,12 +9154,12 @@ case Tok[i].Kind of
 
 
 
-	  if (Ident[IdentIndex].PassMethod = VARPASSING) and (Ident[IdentIndex].NumAllocElements > 0) and
+	  if (Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING) and (Ident[IdentIndex].NumAllocElements > 0) and
 	     (Ident[IdentIndex].DataType in Pointers) and (Ident[IdentIndex].AllocElementType in Pointers) and (Ident[IdentIndex].idType = DATAORIGINOFFSET) then
 
 	   Push(ConstVal, ASPOINTERTORECORD, DataSize[ValType], IdentIndex)
 	  else
-	  if (Ident[IdentIndex].PassMethod = VARPASSING) and (Ident[IdentIndex].NumAllocElements = 0) then
+	  if (Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING) and (Ident[IdentIndex].NumAllocElements = 0) then
 	   Push(ConstVal, ASPOINTERTOPOINTER, DataSize[ValType], IdentIndex)
 	  else
 	  {if Ident[IdentIndex].IdType = DEREFERENCETOK then		// !!! test-record\record_dereference_as_val.pas !!!
@@ -10481,7 +10481,7 @@ end;
 procedure CheckAssignment(i: integer; IdentIndex: integer);
 begin
 
- if Ident[IdentIndex].PassMethod = CONSTPASSING then
+ if Ident[IdentIndex].PassMethod = TParameterPassingMethod.CONSTPASSING then
    Error(i, 'Can''t assign values to const variable');
 
  if Ident[IdentIndex].LoopVariable then
@@ -10886,7 +10886,7 @@ case Tok[i].Kind of
 	  else								// Without dereferencing or indexing
 	    begin
 
-	    if (Ident[IdentIndex].PassMethod = VARPASSING) then begin
+	    if (Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING) then begin
 	     IndirectionLevel := ASPOINTERTOPOINTER;
 
 	     if Ident[IdentIndex].AllocElementType = UNTYPETOK then
@@ -10924,7 +10924,7 @@ case Tok[i].Kind of
 
 
 	    if (Ident[IdentIndex].DataType = PCHARTOK) and
-//	       ( (IndirectionLevel in [ASPOINTER, ASPOINTERTOPOINTER]) or ((IndirectionLevel = ASPOINTERTOARRAYORIGIN) and (Ident[IdentIndex].PassMethod = VARPASSING)) ) and
+//	       ( (IndirectionLevel in [ASPOINTER, ASPOINTERTOPOINTER]) or ((IndirectionLevel = ASPOINTERTOARRAYORIGIN) and (Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING)) ) and
 	       (IndirectionLevel = ASPOINTER) and
 	       (Tok[i + 2].Kind in [STRINGLITERALTOK, CHARLITERALTOK, IDENTTOK]) then
 	      begin
@@ -10938,7 +10938,7 @@ case Tok[i].Kind of
 	    if (Ident[IdentIndex].DataType in Pointers) and
 	       (Ident[IdentIndex].AllocElementType = CHARTOK) and
 	       (Ident[IdentIndex].NumAllocElements > 0) and
-	       ( (IndirectionLevel in [ASPOINTER, ASPOINTERTOPOINTER]) or ((IndirectionLevel = ASPOINTERTOARRAYORIGIN) and (Ident[IdentIndex].PassMethod = VARPASSING)) ) and
+	       ( (IndirectionLevel in [ASPOINTER, ASPOINTERTOPOINTER]) or ((IndirectionLevel = ASPOINTERTOARRAYORIGIN) and (Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING)) ) and
 	       (Tok[i + 2].Kind in [STRINGLITERALTOK, CHARLITERALTOK, IDENTTOK]) then
 	      begin
 
@@ -11169,7 +11169,7 @@ case Tok[i].Kind of
 //     	writeln('0> ',Ident[IdentIndex].Name,',',VarType,',',Ident[IdentIndex].DataType,',',Ident[IdentIndex].AllocElementType,',',Ident[IdentIndex].NumAllocElements,' | ', ExpressionType,',',IndirectionLevel);
 
 
-	      if (Ident[IdentIndex].PassMethod <> VARPASSING) and (IndirectionLevel <> ASPOINTERTODEREFERENCE) and (Ident[IdentIndex].DataType = POINTERTOK) and (Ident[IdentIndex].NumAllocElements = 0) and (ExpressionType <> POINTERTOK) then begin
+	      if (Ident[IdentIndex].PassMethod <> TParameterPassingMethod.VARPASSING) and (IndirectionLevel <> ASPOINTERTODEREFERENCE) and (Ident[IdentIndex].DataType = POINTERTOK) and (Ident[IdentIndex].NumAllocElements = 0) and (ExpressionType <> POINTERTOK) then begin
 
 		if (Ident[IdentIndex].AllocElementType in {IntegerTypes}OrdinalTypes) and (ExpressionType in {IntegerTypes}OrdinalTypes) then
 
@@ -11358,7 +11358,7 @@ case Tok[i].Kind of
 //	writeln('--- ', IndirectionLevel);
 
 
-			if Ident[IdentTemp].PassMethod = VARPASSING then begin
+			if Ident[IdentTemp].PassMethod = TParameterPassingMethod.VARPASSING then begin
 
 			  asm65(#9'mwy ' + GetLocalName(IdentTemp) + ' :bp2');
 
@@ -12089,7 +12089,7 @@ WHILETOK:
 	if not ( (Ident[IdentIndex].Kind = VARIABLE) and (Ident[IdentIndex].DataType in OrdinalTypes + Pointers) {and (Ident[IdentIndex].AllocElementType = UNTYPETOK)} ) then
 	  Error(i + 1, 'Ordinal variable expected as ''FOR'' loop counter')
 	 else
-	 if (Ident[IdentIndex].isInitialized) or (Ident[IdentIndex].PassMethod <> VALPASSING) then
+	 if (Ident[IdentIndex].isInitialized) or (Ident[IdentIndex].PassMethod <> TParameterPassingMethod.VALPASSING) then
 	  Error(i + 1, 'Simple local variable expected as FOR loop counter')
 	 else
 	    begin
@@ -13353,7 +13353,7 @@ WHILETOK:
 
 	   inc(NumActualParams);
 
-	   if Ident[IdentIndex].PassMethod <> VARPASSING then begin
+	   if Ident[IdentIndex].PassMethod <> TParameterPassingMethod.VARPASSING then begin
 
 	    if yes = false then ExpandParam(ExpressionType, ActualParamType);
 
@@ -13393,9 +13393,9 @@ WHILETOK:
 
 	 end else	// if Tok[i + 1].Kind = COMMATOK
 
-	   if (Ident[IdentIndex].PassMethod = VARPASSING) or ((Ident[IdentIndex].DataType in Pointers) and (Ident[IdentIndex].AllocElementType in OrdinalTypes + Pointers + [RECORDTOK, OBJECTTOK])) then
+	   if (Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING) or ((Ident[IdentIndex].DataType in Pointers) and (Ident[IdentIndex].AllocElementType in OrdinalTypes + Pointers + [RECORDTOK, OBJECTTOK])) then
 
-	     if (Ident[IdentIndex].PassMethod = VARPASSING) or (Ident[IdentIndex].NumAllocElements > 0) or (IndirectionLevel = ASPOINTERTOPOINTER) or ((Ident[IdentIndex].NumAllocElements = 0) and (IndirectionLevel = ASPOINTERTOARRAYORIGIN)) then begin
+	     if (Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING) or (Ident[IdentIndex].NumAllocElements > 0) or (IndirectionLevel = ASPOINTERTOPOINTER) or ((Ident[IdentIndex].NumAllocElements = 0) and (IndirectionLevel = ASPOINTERTOARRAYORIGIN)) then begin
 
 	       ExpressionType := Ident[IdentIndex].AllocElementType;
  	       if ExpressionType = UNTYPETOK then ExpressionType := Ident[IdentIndex].DataType;
@@ -13417,7 +13417,7 @@ WHILETOK:
 	     end;
 
 
-	 if (Ident[IdentIndex].PassMethod = VARPASSING) and (IndirectionLevel <> ASPOINTERTOARRAYORIGIN) then IndirectionLevel := ASPOINTERTOPOINTER;
+	 if (Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING) and (IndirectionLevel <> ASPOINTERTOARRAYORIGIN) then IndirectionLevel := ASPOINTERTOPOINTER;
 
 	 if ExpressionType = UNTYPETOK then
 	  Error(i, 'Assignments to formal parameters and open arrays are not possible');
@@ -14043,7 +14043,7 @@ begin
 
       VARIABLE: if Ident[IdentIndex].isAbsolute then begin		// ABSOLUTE = TRUE
 
-		 if (Ident[IdentIndex].PassMethod <> VARPASSING) and (Ident[IdentIndex].DataType in [RECORDTOK, OBJECTTOK] + Pointers) and (Ident[IdentIndex].NumAllocElements > 0) then begin
+		 if (Ident[IdentIndex].PassMethod <> TParameterPassingMethod.VARPASSING) and (Ident[IdentIndex].DataType in [RECORDTOK, OBJECTTOK] + Pointers) and (Ident[IdentIndex].NumAllocElements > 0) then begin
 
 		  asm65('adr.'+Ident[IdentIndex].Name + Value);
 		  asm65('.var '+Ident[IdentIndex].Name + #9'= adr.' + Ident[IdentIndex].Name + ' .word');
@@ -14059,7 +14059,7 @@ begin
 
 		end else						// ABSOLUTE = FALSE
 
-		 if (Ident[IdentIndex].PassMethod <> VARPASSING) and (Ident[IdentIndex].DataType in [RECORDTOK, OBJECTTOK] + Pointers) and (Ident[IdentIndex].NumAllocElements > 0) then begin
+		 if (Ident[IdentIndex].PassMethod <> TParameterPassingMethod.VARPASSING) and (Ident[IdentIndex].DataType in [RECORDTOK, OBJECTTOK] + Pointers) and (Ident[IdentIndex].NumAllocElements > 0) then begin
 
 //	writeln(Ident[IdentIndex].Name,',', Ident[IdentIndex].DataType,',',Ident[IdentIndex].AllocElementType,',',Ident[IdentIndex].NumAllocElements,',',Ident[IdentIndex].IdType);
 
@@ -14596,7 +14596,8 @@ end;	//GenerateLocal
 
 
 procedure FormalParameterList(var i: integer; var NumParams: integer; var Param: TParamList; out Status: word; IsNestedFunction: Boolean; out NestedFunctionResultType: Byte; out NestedFunctionNumAllocElements: cardinal; out NestedFunctionAllocElementType: Byte);
-var ListPassMethod, NumVarOfSameType, VarTYpe, AllocElementType: byte;
+var ListPassMethod: TParameterPassingMethod;
+    NumVarOfSameType, VarTYpe, AllocElementType: byte;
     NumAllocElements: cardinal;
     VarOfSameTypeIndex: integer;
     VarOfSameType: TVariableList;
@@ -14617,16 +14618,16 @@ begin
 	repeat
 	  NumVarOfSameType := 0;
 
-	  ListPassMethod := VALPASSING;
+	  ListPassMethod := TParameterPassingMethod.VALPASSING;
 
 	  if Tok[i + 1].Kind = CONSTTOK then
 	    begin
-	    ListPassMethod := CONSTPASSING;
+	    ListPassMethod := TParameterPassingMethod.CONSTPASSING;
 	    inc(i);
 	    end
 	  else if Tok[i + 1].Kind = VARTOK then
 	    begin
-	    ListPassMethod := VARPASSING;
+	    ListPassMethod := TParameterPassingMethod.VARPASSING;
 	    inc(i);
 	    end;
 
@@ -14647,9 +14648,9 @@ begin
 	  NumAllocElements := 0;
 	  AllocElementType := 0;
 
-	  if (ListPassMethod in [CONSTPASSING, VARPASSING])  and (Tok[i].Kind <> COLONTOK) then begin
+	  if (ListPassMethod in [TParameterPassingMethod.CONSTPASSING, TParameterPassingMethod.VARPASSING])  and (Tok[i].Kind <> COLONTOK) then begin
 
-	   ListPassMethod := VARPASSING;
+	   ListPassMethod := TParameterPassingMethod.VARPASSING;
 	   dec(i);
 
 	  end else begin
@@ -14661,7 +14662,7 @@ begin
 
 	   i := CompileType(i + 1, VarType, NumAllocElements, AllocElementType);
 
-	   if (VarType = FILETOK) and (ListPassMethod <> VARPASSING) then
+	   if (VarType = FILETOK) and (ListPassMethod <> TParameterPassingMethod.VARPASSING) then
 	     Error(i, 'File types must be var parameters');
 
 	  end;
@@ -14883,7 +14884,7 @@ begin
 	    Types[NumAllocElements].Field[ParamIndex].AllocElementType, 0, DATAORIGINOFFSET);
 
 	    Ident[NumIdent].Value := Ident[NumIdent].Value - tmpVarDataSize_;
-	    Ident[NumIdent].PassMethod := VARPASSING;
+	    Ident[NumIdent].PassMethod := TParameterPassingMethod.VARPASSING;
 //	    Ident[NumIdent].AllocElementType := Ident[NumIdent].DataType;
 
 	  end;
@@ -14929,7 +14930,8 @@ var
   ImplementationUse, open_array, iocheck_old, isInterrupt_old, yes, Assignment, {pack,} IsNestedFunction,
   isAbsolute, isExternal, isForward, isVolatile, isStriped, isAsm, isReg, isInt, isInl, isOvr: Boolean;
   VarType, VarRegister, NestedFunctionResultType, ConstValType, AllocElementType, ActualParamType,
-  NestedFunctionAllocElementType, NestedDataType, NestedAllocElementType, IdType, varPassMethod: Byte;
+  NestedFunctionAllocElementType, NestedDataType, NestedAllocElementType, IdType: Byte;
+  varPassMethod: TParameterPassingMethod;
   Tmp, TmpResult: word;
 
   external_name: TString;
@@ -14955,7 +14957,7 @@ NestedAllocElementType := 0;
 NestedNumAllocElements := 0;
 ParamIndex := 0;
 
-varPassMethod := 255;
+varPassMethod := TParameterPassingMethod.UNDEFINED;
 
 ImplementationUse:=false;
 
@@ -15013,7 +15015,7 @@ if Ident[BlockIdentIndex].ObjectIndex > 0 then begin
    asm65(#9'sty ' + Types[Ident[BlockIdentIndex].ObjectIndex].Field[0].Name + '+1');
 
    DefineIdent(i, Types[Ident[BlockIdentIndex].ObjectIndex].Field[0].Name, VARIABLE,  WORDTOK, 0 , 0, 0);
-   Ident[NumIdent].PassMethod := VARPASSING;
+   Ident[NumIdent].PassMethod := TParameterPassingMethod.VARPASSING;
    Ident[NumIdent].AllocElementType := WORDTOK;
 //  end;
 
@@ -15076,7 +15078,7 @@ for ParamIndex := 1 to NumParams do
 
 //	writeln(Param[ParamIndex].Name,':',Param[ParamIndex].DataType,'|',Param[ParamIndex].NumAllocElements and $FFFF,'/',Param[ParamIndex].NumAllocElements shr 16);
 
-    if Param[ParamIndex].PassMethod = VARPASSING then begin
+    if Param[ParamIndex].PassMethod = TParameterPassingMethod.VARPASSING then begin
 
      if isReg and (ParamIndex in [1..3]) then begin
       tmpVarDataSize := VarDataSize;
@@ -15219,7 +15221,7 @@ end;
 yes := {(Ident[BlockIdentIndex].ObjectIndex > 0) or} Ident[BlockIdentIndex].isRecursion or Ident[BlockIdentIndex].isStdCall;
 
 for ParamIndex := NumParams downto 1 do
- if not ( (Param[ParamIndex].PassMethod = VARPASSING) or
+ if not ( (Param[ParamIndex].PassMethod = TParameterPassingMethod.VARPASSING) or
           ((Param[ParamIndex].DataType in Pointers) and (Param[ParamIndex].NumAllocElements and $FFFF in [0,1])) or
           ((Param[ParamIndex].DataType in Pointers) and (Param[ParamIndex].AllocElementType in [RECORDTOK, OBJECTTOK])) or
 	  (Param[ParamIndex].DataType in OrdinalTypes + RealTypes)
@@ -15231,7 +15233,7 @@ for ParamIndex := NumParams downto 1 do
 
 // Load ONE parameters from the stack
 if (Ident[BlockIdentIndex].ObjectIndex = 0) then
- if (yes = false) and (NumParams = 1) and (DataSize[Param[1].DataType] = 1) and (Param[1].PassMethod <> VARPASSING) then asm65(#9'sta ' + Param[1].Name);
+ if (yes = false) and (NumParams = 1) and (DataSize[Param[1].DataType] = 1) and (Param[1].PassMethod <> TParameterPassingMethod.VARPASSING) then asm65(#9'sta ' + Param[1].Name);
 
 
 // Load parameters from the stack
@@ -15240,13 +15242,13 @@ if yes then begin
 
   if Ident[BlockIdentIndex].isRecursion or Ident[BlockIdentIndex].isStdCall or (NumParams = 1) then begin
 
-	if Param[ParamIndex].PassMethod = VARPASSING then
+	if Param[ParamIndex].PassMethod = TParameterPassingMethod.VARPASSING then
 	  GenerateAssignment(ASPOINTER, DataSize[POINTERTOK], 0, Param[ParamIndex].Name)
 	else
 	  GenerateAssignment(ASPOINTER, DataSize[Param[ParamIndex].DataType], 0, Param[ParamIndex].Name);
 
 
-  	if (Param[ParamIndex].PassMethod <> VARPASSING) and
+  	if (Param[ParamIndex].PassMethod <> TParameterPassingMethod.VARPASSING) and
      	   (Param[ParamIndex].DataType in [RECORDTOK, OBJECTTOK] + Pointers) and
      	   (Param[ParamIndex].NumAllocElements and $FFFF > 1) then			// copy arrays
 
@@ -15273,7 +15275,7 @@ if yes then begin
 
   	Assignment := true;
 
-  	if (Param[ParamIndex].PassMethod <> VARPASSING) and
+  	if (Param[ParamIndex].PassMethod <> TParameterPassingMethod.VARPASSING) and
      	   (Param[ParamIndex].DataType in [RECORDTOK, OBJECTTOK] + Pointers) and
      	   (Param[ParamIndex].NumAllocElements and $FFFF > 1) then			// copy arrays
 
@@ -15291,7 +15293,7 @@ if yes then begin
 	end;
 
   	if Assignment then
-	  if Param[ParamIndex].PassMethod = VARPASSING then
+	  if Param[ParamIndex].PassMethod = TParameterPassingMethod.VARPASSING then
 	    GenerateAssignment(ASPOINTER, DataSize[POINTERTOK], 0, Param[ParamIndex].Name)
 	  else
 	    GenerateAssignment(ASPOINTER, DataSize[Param[ParamIndex].DataType], 0, Param[ParamIndex].Name);
@@ -15335,7 +15337,7 @@ if Ident[BlockIdentIndex].ObjectIndex > 0 then
 	      Types[Ident[BlockIdentIndex].ObjectIndex].Field[ParamIndex].NumAllocElements,
 	      Types[Ident[BlockIdentIndex].ObjectIndex].Field[ParamIndex].DataType, 0);
 
-  Ident[NumIdent].PassMethod := VARPASSING;
+  Ident[NumIdent].PassMethod := TParameterPassingMethod.VARPASSING;
 
   VarDataSize := tmpVarDataSize + DataSize[POINTERTOK];
 
@@ -16170,7 +16172,7 @@ while Tok[i].Kind in
 
 	inc(i);
 
-	varPassMethod := 255;
+	varPassMethod := TParameterPassingMethod.UNDEFINED;
 
 	if (Tok[i+1].Kind = IDENTTOK) and (Ident[GetIdent(Tok[i+1].Name)].Kind = VARTOK) then begin
 	 ConstVal := Ident[GetIdent(Tok[i+1].Name)].Value - DATAORIGIN;
@@ -16246,10 +16248,10 @@ while Tok[i].Kind in
 	  Ident[NumIdent].NestedNumAllocElements := NestedNumAllocElements;
 	  Ident[NumIdent].isVolatile := isVolatile;
 
-	  if varPassMethod <> 255 then Ident[NumIdent].PassMethod := varPassMethod;
+	  if varPassMethod <> TParameterPassingMethod.UNDEFINED then Ident[NumIdent].PassMethod := varPassMethod;
 
 
-	  if isStriped and (Ident[NumIdent].PassMethod <> VARPASSING) then begin
+	  if isStriped and (Ident[NumIdent].PassMethod <> TParameterPassingMethod.VARPASSING) then begin
 
             if NumAllocElements shr 16 > 0 then
               yes := (NumAllocElements and $FFFF) * (NumAllocElements shr 16) <= 256
@@ -16264,7 +16266,7 @@ while Tok[i].Kind in
 	  end;
 
 
-	  varPassMethod := 255;
+	  varPassMethod := TParameterPassingMethod.UNDEFINED;
 
 
 //	  writeln(VarType, ' / ', AllocElementType ,' = ',NestedDataType, ',',NestedAllocElementType,',', hexStr(NestedNumAllocElements,8),',',hexStr(NumAllocElements,8));

@@ -365,7 +365,7 @@ begin
 			Result := Ident[IdentIndex].NumAllocElements_ * 2
 
 		     end else
-		      if Ident[IdentIndex].PassMethod = VARPASSING then
+		      if Ident[IdentIndex].PassMethod = TParameterPassingMethod.VARPASSING then
 		       Result := RecordSize(IdentIndex)
 		      else
 		       Result := DataSize[POINTERTOK];
@@ -1401,7 +1401,7 @@ else
   Ident[NumIdent].Block := BlockStack[BlockStackTop];
   Ident[NumIdent].NumParams := 0;
   Ident[NumIdent].isAbsolute := false;
-  Ident[NumIdent].PassMethod := VALPASSING;
+  Ident[NumIdent].PassMethod := TParameterPassingMethod.VALPASSING;
   Ident[NumIdent].IsUnresolvedForward := false;
 
   Ident[NumIdent].Section := PublicSection;
@@ -1522,7 +1522,8 @@ end;	//DefineIdent
 function DeclareFunction(i: integer; out ProcVarIndex: cardinal): integer;
 var  VarOfSameType: TVariableList;
      NumVarOfSameType, VarOfSameTypeIndex, x: Integer;
-     ListPassMethod, VarType, AllocElementType: Byte;
+     ListPassMethod: TParameterPassingMethod;
+     VarType, AllocElementType: Byte;
      NumAllocElements: cardinal;
      IsNestedFunction: Boolean;
 //     ConstVal: Int64;
@@ -1558,16 +1559,16 @@ begin
 	repeat
 	  NumVarOfSameType := 0;
 
-	  ListPassMethod := VALPASSING;
+	  ListPassMethod := TParameterPassingMethod.VALPASSING;
 
 	  if Tok[i + 1].Kind = CONSTTOK then
 	    begin
-	    ListPassMethod := CONSTPASSING;
+	    ListPassMethod := TParameterPassingMethod.CONSTPASSING;
 	    inc(i);
 	    end
 	  else if Tok[i + 1].Kind = VARTOK then
 	    begin
-	    ListPassMethod := VARPASSING;
+	    ListPassMethod := TParameterPassingMethod.VARPASSING;
 	    inc(i);
 	    end;
 
@@ -1594,9 +1595,9 @@ begin
 	  NumAllocElements := 0;
 	  AllocElementType := 0;
 
-	  if (ListPassMethod in [CONSTPASSING, VARPASSING])  and (Tok[i].Kind <> COLONTOK) then begin
+	  if (ListPassMethod in [TParameterPassingMethod.CONSTPASSING, TParameterPassingMethod.VARPASSING])  and (Tok[i].Kind <> COLONTOK) then begin
 
-	   ListPassMethod := VARPASSING;
+	   ListPassMethod := TParameterPassingMethod.VARPASSING;
 	   dec(i);
 
 	  end else begin
@@ -1608,7 +1609,7 @@ begin
 
 	   i := CompileType(i + 1, VarType, NumAllocElements, AllocElementType);
 
-	   if (VarType = FILETOK) and (ListPassMethod <> VARPASSING) then
+	   if (VarType = FILETOK) and (ListPassMethod <> TParameterPassingMethod.VARPASSING) then
 	     Error(i, 'File types must be var parameters');
 
 	  end;
@@ -1679,7 +1680,8 @@ end;	//DeclareFunction
 function DefineFunction(i, ForwardIdentIndex: integer; out isForward, isInt, isInl, isOvr: Boolean; var IsNestedFunction: Boolean; out NestedFunctionResultType: Byte; out NestedFunctionNumAllocElements: cardinal; out NestedFunctionAllocElementType: Byte): integer;
 var  VarOfSameType: TVariableList;
      NumVarOfSameType, VarOfSameTypeIndex, x: Integer;
-     ListPassMethod, VarType, AllocElementType: Byte;
+     ListPassMethod: TParameterPassingMethod;
+     VarType, AllocElementType: Byte;
      NumAllocElements: cardinal;
 begin
 
@@ -1713,16 +1715,16 @@ begin
 	repeat
 	  NumVarOfSameType := 0;
 
-	  ListPassMethod := VALPASSING;
+	  ListPassMethod := TParameterPassingMethod.VALPASSING;
 
 	  if Tok[i + 1].Kind = CONSTTOK then
 	    begin
-	    ListPassMethod := CONSTPASSING;
+	    ListPassMethod := TParameterPassingMethod.CONSTPASSING;
 	    inc(i);
 	    end
 	  else if Tok[i + 1].Kind = VARTOK then
 	    begin
-	    ListPassMethod := VARPASSING;
+	    ListPassMethod := TParameterPassingMethod.VARPASSING;
 	    inc(i);
 	    end;
 
@@ -1749,9 +1751,9 @@ begin
 	  NumAllocElements := 0;
 	  AllocElementType := 0;
 
-	  if (ListPassMethod in [CONSTPASSING, VARPASSING])  and (Tok[i].Kind <> COLONTOK) then begin
+	  if (ListPassMethod in [TParameterPassingMethod.CONSTPASSING, TParameterPassingMethod.VARPASSING])  and (Tok[i].Kind <> COLONTOK) then begin
 
-	   ListPassMethod := VARPASSING;
+	   ListPassMethod := TParameterPassingMethod.VARPASSING;
 	   dec(i);
 
 	  end else begin
@@ -1763,7 +1765,7 @@ begin
 
 	   i := CompileType(i + 1, VarType, NumAllocElements, AllocElementType);
 
-	   if (VarType = FILETOK) and (ListPassMethod <> VARPASSING) then
+	   if (VarType = FILETOK) and (ListPassMethod <> TParameterPassingMethod.VARPASSING) then
 	     Error(i, 'File types must be var parameters');
 
 	  end;

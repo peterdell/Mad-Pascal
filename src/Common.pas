@@ -14,6 +14,15 @@ uses FileIO;
   {$SCOPEDENUMS ON}
   type TPass = ( NONE, CALL_DETERMINATION, CODE_GENERATION);
 
+
+  // Parameter passing
+    type TParameterPassingMethod = (
+      UNDEFINED = 0,
+VALPASSING		= 1, // By value, modifiable
+  CONSTPASSING		= 2, // By const, unodifiable
+  VARPASSING		= 3 // By reference, modifiable
+  );
+
 const
 
   title = '1.7.2';
@@ -290,11 +299,6 @@ const
   OBJECTVARIABLE	= 1;
   RECORDVARIABLE	= 2;
 
-  // Parameter passing
-  VALPASSING		= 1; // By value, modifiable
-  CONSTPASSING		= 2; // By const, unodifiable
-  VARPASSING		= 3; // By reference, modifiable
-
 
   // Data sizes
   DataSize: array [BYTETOK..FORWARDTYPE] of Byte = (
@@ -378,7 +382,7 @@ type
     DataType: Byte;
     NumAllocElements: Cardinal;
     AllocElementType: Byte;
-    PassMethod: Byte;
+    PassMethod: TParameterPassingMethod;
     i, i_: integer;
    end;
 
@@ -426,7 +430,7 @@ type
     Libraries : Integer;		// EXTERNAL alias 'libraries'
     DataType: Byte;
     IdType: Byte;
-    PassMethod: Byte;
+    PassMethod: TParameterPassingMethod;
     Pass: TPass;
 
     NestedNumAllocElements: cardinal;
