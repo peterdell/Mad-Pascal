@@ -89,6 +89,10 @@
         <Filename Value="include\doevaluate.inc"/>
         <IsPartOfProject Value="True"/>
       </Unit>
+      <Unit>
+        <Filename Value="targets\parse_param.inc"/>
+        <IsPartOfProject Value="True"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -123,6 +127,11 @@
         <DebugInfoType Value="dsDwarf2Set"/>
       </Debugging>
     </Linking>
+    <Other>
+      <ConfigFile>
+        <StopAfterErrCount Value="100"/>
+      </ConfigFile>
+    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions>
