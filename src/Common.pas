@@ -342,22 +342,22 @@ type
   TCode65 =
   (
 
-  __je, __jne,
-//  __jg, __jge, __jl, __jle,
-  __putCHAR, __putEOL,
-  __addBX, __subBX, __movaBX_Value,
-  __imulECX,
-//  __notaBX, __negaBX, __notBOOLEAN,
-  __addAL_CL, __addAX_CX, __addEAX_ECX,
-  __shlAL_CL, __shlAX_CL, __shlEAX_CL,
-  __subAL_CL, __subAX_CX, __subEAX_ECX,
-  __cmpSTRING, __cmpSTRING2CHAR, __cmpCHAR2STRING,
-  __shrAL_CL, __shrAX_CL, __shrEAX_CL
+  je, jne,
+//  jg, jge, jl, jle,
+  putCHAR, putEOL,
+  addBX, subBX, movaBX_Value,
+  imulECX,
+//  notaBX, negaBX, notBOOLEAN,
+  addAL_CL, addAX_CX, addEAX_ECX,
+  shlAL_CL, shlAX_CL, shlEAX_CL,
+  subAL_CL, subAX_CX, subEAX_ECX,
+  cmpSTRING, cmpSTRING2CHAR, cmpCHAR2STRING,
+  shrAL_CL, shrAX_CL, shrEAX_CL
 
-//  __cmpINT, __cmpEAX_ECX, __cmpAX_CX, __cmpSMALLINT, __cmpSHORTINT,
-//  __andEAX_ECX, __andAX_CX, __andAL_CL,
-//  __orEAX_ECX, __orAX_CX, __orAL_CL,
-//  __xorEAX_ECX, __xorAX_CX __xorAL_CL
+//  cmpINT, cmpEAX_ECX, cmpAX_CX, cmpSMALLINT, cmpSHORTINT,
+//  andEAX_ECX, andAX_CX, andAL_CL,
+//  orEAX_ECX, orAX_CX, orAL_CL,
+//  xorEAX_ECX, xorAX_CX xorAL_CL
 
   );
 
