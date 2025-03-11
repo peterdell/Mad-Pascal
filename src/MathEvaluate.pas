@@ -110,14 +110,14 @@ begin
       Inc(cix);
     end;
 
-    if length(n) = 0 then
+    if Length(n) = 0 then
       RaiseError('Invalid constant %');
 
     // Remove leading zeros
     i := 1;
     while n[i] = '0' do Inc(i);
 
-    ln := length(n);
+    ln := Length(n);
     v := 0;
 
     // Do the conversion
@@ -146,7 +146,7 @@ begin
 
     //  If the conversion isn't successful, then the parameter p (Code) contains
     //  the index of the character in S which prevented the conversion
-    val(n, v, p);
+    Val(n, v, p);
 
     v1 := v;
 
@@ -220,12 +220,12 @@ begin
 
   for i := 1 to High(fop) do
     if (op = 0) then
-      if (copy(s, cix, length(fop[i])) = fop[i]) then
+      if (Copy(s, cix, Length(fop[i])) = fop[i]) then
         op := i;
 
   if (op > 0) then
   begin
-    cix := cix + length(fop[op]);
+    cix := cix + Length(fop[op]);
 
     SkipBlanks;
 
@@ -280,6 +280,8 @@ begin
       12: v1 := int(v1);
       13: v1 := power(v1, v2);
       14: v1 := arctan(v1);
+      else
+        Assert(False, 'Invalid operator code ' + IntToStr(op) + '.');
     end;
 
   end
@@ -300,7 +302,7 @@ begin
         RaiseError('Parenthesis Mismatch');
   end
   else
-  if (s[cix] = '-') or (s[cix] = '+') or (copy(s, cix, 3) = 'NOT') then
+  if (s[cix] = '-') or (s[cix] = '+') or (Copy(s, cix, 3) = 'NOT') then
   begin
     ch := s[cix];
 
@@ -313,6 +315,8 @@ begin
       '+': v1 := factor;
       '-': v1 := -factor;
       'N': v1 := xnot(factor);
+       else
+        Assert(False, 'Invalid case');
     end;
   end
   else
@@ -337,12 +341,12 @@ begin
 
     for i := 1 to High(top) do
       if (op = 0) then
-        if (copy(s, cix, length(top[i])) = top[i]) then
+        if (Copy(s, cix, Length(top[i])) = top[i]) then
           op := i;
 
     if (op > 0) then
     begin
-      cix := cix + length(top[op]);
+      cix := cix + Length(top[op]);
 
       v2 := factor;
 
@@ -381,12 +385,12 @@ begin
 
     for i := 1 to High(seop) do
       if (op = 0) then
-        if (copy(s, cix, length(seop[i])) = seop[i]) then
+        if (Copy(s, cix, Length(seop[i])) = seop[i]) then
           op := i;
 
     if (op > 0) then
     begin
-      cix := cix + length(seop[op]);
+      cix := cix + Length(seop[op]);
 
       v2 := term;
 
