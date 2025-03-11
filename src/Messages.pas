@@ -21,14 +21,13 @@ type
 
 // ----------------------------------------------------------------------------
 
-	procedure Error(ErrTokenIndex: Integer; Msg: string);
-	// TODO: Use overload and rename to Error, like for Note
-	procedure iError(ErrTokenIndex: Integer; err: ErrorCode; IdentIndex: Integer = 0; SrcType: Int64 = 0; DstType: Int64 = 0);
+	procedure Error(ErrTokenIndex: TTokenIndex; Msg: string);  overload;
+	procedure Error(ErrTokenIndex: TTokenIndex; err: ErrorCode; IdentIndex: TTokenIndex = 0; SrcType: Int64 = 0; DstType: Int64 = 0); overload;
 
-	procedure Note(NoteTokenIndex: Integer; IdentIndex: Integer); overload;
-	procedure Note(NoteTokenIndex: Integer; Msg: string); overload;
+	procedure Note(NoteTokenIndex: TTokenIndex; IdentIndex: TTokenIndex); overload;
+	procedure Note(NoteTokenIndex: TTokenIndex; Msg: string); overload;
 
-	procedure Warning(WarnTokenIndex: Integer; err: ErrorCode; IdentIndex: Integer = 0; SrcType: Int64 = 0; DstType: Int64 = 0);
+	procedure Warning(WarnTokenIndex: TTokenIndex; err: ErrorCode; IdentIndex: TTokenIndex = 0; SrcType: Int64 = 0; DstType: Int64 = 0);
 
 	procedure WritelnMsg;
 
@@ -62,7 +61,7 @@ end;
 // ----------------------------------------------------------------------------
 
 
-function ErrorMessage(ErrTokenIndex: Integer; err: ErrorCode; IdentIndex: Integer = 0; SrcType: Int64 = 0; DstType: Int64 = 0): string;
+function ErrorMessage(ErrTokenIndex: TTokenIndex; err: ErrorCode; IdentIndex: TTokenIndex = 0; SrcType: Int64 = 0; DstType: Int64 = 0): string;
 begin
 
  Result := '';
@@ -211,7 +210,7 @@ end;
 // ----------------------------------------------------------------------------
 
 
-procedure iError(ErrTokenIndex: Integer; err: ErrorCode; IdentIndex: Integer = 0; SrcType: Int64 = 0; DstType: Int64 = 0);
+procedure Error(ErrTokenIndex: TTokenIndex; err: ErrorCode; IdentIndex: TTokenIndex = 0; SrcType: Int64 = 0; DstType: Int64 = 0);
 var Msg: string;
 begin
 
@@ -226,7 +225,7 @@ end;
 // ----------------------------------------------------------------------------
 
 
-procedure Error(ErrTokenIndex: Integer; Msg: string);
+procedure Error(ErrTokenIndex: TTokenIndex; Msg: string);
 var token, previousToken: TToken;
 begin
 
@@ -276,7 +275,7 @@ end;
 // ----------------------------------------------------------------------------
 
 
-procedure Warning(WarnTokenIndex: Integer; err: ErrorCode; IdentIndex: Integer = 0; SrcType: Int64 = 0; DstType: Int64 = 0);
+procedure Warning(WarnTokenIndex: TTokenIndex; err: ErrorCode; IdentIndex: TTokenIndex = 0; SrcType: Int64 = 0; DstType: Int64 = 0);
 var i: integer;
     Msg, a: string;
 begin
@@ -319,7 +318,7 @@ end;
 // ----------------------------------------------------------------------------
 
 
-procedure Note(NoteTokenIndex: Integer; IdentIndex: Integer); overload;
+procedure Note(NoteTokenIndex: TTokenIndex; IdentIndex: TTokenIndex); overload;
 var a: string;
 begin
 
@@ -362,7 +361,7 @@ end;
 // ----------------------------------------------------------------------------
 
 
-procedure Note(NoteTokenIndex: Integer; Msg: string); overload;
+procedure Note(NoteTokenIndex: TTokenIndex; Msg: string); overload;
 var a: string;
 begin
 
