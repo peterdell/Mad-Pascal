@@ -13571,7 +13571,7 @@ WHILETOK:
     inc(i, 2);
 
     case ConstVal of
-     ord(TInterruptCode.iDLI): begin
+     ord(TInterruptCode.DLI): begin
 		 asm65;
 		 asm65(#9'lda VDSLST');
 		 asm65(#9'sta '+svar);
@@ -13579,7 +13579,7 @@ WHILETOK:
 		 asm65(#9'sta '+svar+'+1');
 		end;
 
-     ord(TInterruptCode.iVBLI): begin
+     ord(TInterruptCode.VBLI): begin
 		 asm65;
 		 asm65(#9'lda VVBLKI');
 		 asm65(#9'sta '+svar);
@@ -13587,7 +13587,7 @@ WHILETOK:
 		 asm65(#9'sta '+svar+'+1');
 		end;
 
-     ord(TInterruptCode.iVBLD): begin
+     ord(TInterruptCode.VBLD): begin
 		 asm65;
 		 asm65(#9'lda VVBLKD');
 		 asm65(#9'sta '+svar);
@@ -13595,7 +13595,7 @@ WHILETOK:
 		 asm65(#9'sta '+svar+'+1');
 		end;
 
-     ord(TInterruptCode.iTIM1): begin
+     ord(TInterruptCode.TIM1): begin
 		 asm65;
 		 asm65(#9'lda VTIMR1');
 		 asm65(#9'sta '+svar);
@@ -13603,7 +13603,7 @@ WHILETOK:
 		 asm65(#9'sta '+svar+'+1');
 		end;
 
-     ord(TInterruptCode.iTIM2): begin
+     ord(TInterruptCode.TIM2): begin
 		 asm65;
 		 asm65(#9'lda VTIMR2');
 		 asm65(#9'sta '+svar);
@@ -13611,7 +13611,7 @@ WHILETOK:
 		 asm65(#9'sta '+svar+'+1');
 		end;
 
-     ord(TInterruptCode.iTIM4): begin
+     ord(TInterruptCode.TIM4): begin
 		 asm65;
 		 asm65(#9'lda VTIMR4');
 		 asm65(#9'sta '+svar);
@@ -13646,13 +13646,13 @@ WHILETOK:
     GetCommonType(i, POINTERTOK, ActualParamType);
 
     case ConstVal of
-     ord(TInterruptCode.iDLI): begin
+     ord(TInterruptCode.DLI): begin
 		 asm65(#9'mva :STACKORIGIN,x VDSLST');
 		 asm65(#9'mva :STACKORIGIN+STACKWIDTH,x VDSLST+1');
 		 a65(TCode65.__subBX);
 		end;
 
-    ord(TInterruptCode.iVBLI): begin
+    ord(TInterruptCode.VBLI): begin
 		 asm65(#9'lda :STACKORIGIN,x');
 		 asm65(#9'ldy #5');
 		 asm65(#9'sta wsync');
@@ -13664,7 +13664,7 @@ WHILETOK:
 		 a65(TCode65.__subBX);
 		end;
 
-    ord(TInterruptCode.iVBLD): begin
+    ord(TInterruptCode.VBLD): begin
 		 asm65(#9'lda :STACKORIGIN,x');
 		 asm65(#9'ldy #5');
 		 asm65(#9'sta wsync');
@@ -13676,7 +13676,7 @@ WHILETOK:
 		 a65(TCode65.__subBX);
 		end;
 
-     ord(TInterruptCode.iTIM1): begin
+     ord(TInterruptCode.TIM1): begin
 	         asm65(#9'sei');
 		 asm65(#9'mva :STACKORIGIN,x VTIMR1');
 		 asm65(#9'mva :STACKORIGIN+STACKWIDTH,x VTIMR1+1');
@@ -13722,7 +13722,7 @@ WHILETOK:
 	         asm65(#9'cli');
 		end;
 
-     ord(TInterruptCode.iTIM2): begin
+     ord(TInterruptCode.TIM2): begin
 	         asm65(#9'sei');
 		 asm65(#9'mva :STACKORIGIN,x VTIMR2');
 		 asm65(#9'mva :STACKORIGIN+STACKWIDTH,x VTIMR2+1');
@@ -13768,7 +13768,7 @@ WHILETOK:
 	         asm65(#9'cli');
 		end;
 
-     ord(TInterruptCode.iTIM4): begin
+     ord(TInterruptCode.TIM4): begin
 	         asm65(#9'sei');
 		 asm65(#9'mva :STACKORIGIN,x VTIMR4');
 		 asm65(#9'mva :STACKORIGIN+STACKWIDTH,x VTIMR4+1');

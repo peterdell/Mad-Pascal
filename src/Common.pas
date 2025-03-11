@@ -330,10 +330,11 @@ const
 
 type
 
+  // Here the prefixes are kept because otherwise the identifier collide with the Pascal keywords.
   TModifierCode = (mInline, mStdCall ,  mPascal,  mForward, mAssembler, mRegister, mInterrupt, mOverload, mKeep );
   TModifierBits = Word;
 
-  TInterruptCode = (iDLI, iVBLD, iVBLI, iTIM1, iTIM2, iTIM4);
+  TInterruptCode = (DLI, VBLD, VBLI, TIM1, TIM2, TIM4);
 
   TIOCode = (OpenRead, ReadRecord, Read, OpenWrite, Append, WriteRecord, Write, OpenReadWrite, FileMode, Close);
   TIOBits = Byte;
