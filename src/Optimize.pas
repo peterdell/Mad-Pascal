@@ -3275,7 +3275,7 @@ begin
 
  if not OutputDisabled then
 
- if pass = TPass.CODEGENERATIONPASS then begin
+ if pass = TPass.CODE_GENERATION then begin
 
   if optimize_code and common.optimize.use then begin
 

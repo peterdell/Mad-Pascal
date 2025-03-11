@@ -1987,7 +1987,7 @@ begin
 
  Gen; Gen; Gen;						// push dword ptr [bx]
 
- if Pass = TPass.CODEGENERATIONPASS then
+ if Pass = TPass.CODE_GENERATION then
   for i in IFTmpPosStack do
    if i = cnt then begin
     asm65(#9'lda :STACKORIGIN,x');
@@ -2013,7 +2013,7 @@ begin
 
  asm65(#9'lda IFTMP_' + IntToHex(cnt, 4));
 
- if Pass = TPass.CALLDETERMPASS then begin
+ if Pass = TPass.CALL_DETERMINATION then begin
 
   i:=High(IFTmpPosStack);
 
@@ -4074,7 +4074,7 @@ procedure GenerateAsmLabels(l: integer);
 begin
 
 if not OutputDisabled then
- if Pass = TPass.CODEGENERATIONPASS then begin
+ if Pass = TPass.CODE_GENERATION then begin
 {
    for i in AsmLabels do
      if i = l then exit;
@@ -6269,7 +6269,7 @@ begin
 	    asm65(#9'mva <'+Name+' :STACKORIGIN,x');
 	    asm65(#9'mva >'+Name+' :STACKORIGIN+STACKWIDTH,x');
 
-	    if Pass = TPass.CALLDETERMPASS then
+	    if Pass = TPass.CALL_DETERMINATION then
 	      AddCallGraphChild(BlockStack[BlockStackTop], Ident[IdentIndex].ProcAsBlock);
 
 	  end else
@@ -6507,7 +6507,7 @@ begin
 
    oldPass := pass;
    oldCodeSize := CodeSize;
-   Pass := TPass.CALLDETERMPASS;
+   Pass := TPass.CALL_DETERMINATION;
 
    NumActualParams := 0;
    ActualParamType := 0;
@@ -7063,7 +7063,7 @@ begin
 
 		  ActualParamType := STRINGPOINTERTOK;
 
-		  if Pass = TPass.CODEGENERATIONPASS then begin
+		  if Pass = TPass.CODE_GENERATION then begin
 		   DefineStaticString(i, chr(Tok[i].Value));
 		   Tok[i].Kind := STRINGLITERALTOK;
 
@@ -7099,7 +7099,7 @@ begin
 
 		  ActualParamType := PCHARTOK;
 
-		  if Pass = TPass.CODEGENERATIONPASS then begin
+		  if Pass = TPass.CODE_GENERATION then begin
 		   DefineStaticString(i, chr(Tok[i].Value));
 		   Tok[i].Kind := STRINGLITERALTOK;
 
@@ -7215,7 +7215,7 @@ begin
  //writeln(Ident[IdentIndex].name,',',NumActualParams,',',Ident[IdentIndex].isUnresolvedForward ,',',Ident[IdentIndex].isRecursion );
 
 
-   if Pass = TPass.CALLDETERMPASS then											// issue #103 fixed
+   if Pass = TPass.CALL_DETERMINATION then											// issue #103 fixed
     if Ident[IdentIndex].isUnresolvedForward then									//
 															//
       Ident[IdentIndex].updateResolvedForward := TRUE									//
@@ -7352,7 +7352,7 @@ if (yes = FALSE) and (Ident[IdentIndex].NumParams > 0) then begin
 
  if Ident[IdentIndex].isInline then begin
 
-// if pass = CODEGENERATIONPASS then
+// if pass = CODE_GENERATION then
 //    writeln(svar,',', Ident[IdentIndex].ProcAsBlock,',', BlockStack[BlockStackTop], ',' ,Ident[IdentIndex].Block ,',', Ident[IdentIndex].UnitIndex );
 
 //  asm65(#9'.LOCAL ' + svar);
@@ -7507,7 +7507,7 @@ case Tok[i].Kind of
 
       oldPass := pass;
       oldCodeSize := CodeSize;
-      Pass := TPass.CALLDETERMPASS;
+      Pass := TPass.CALL_DETERMINATION;
 
       j:=CompileExpression(i + 2, ValType);
 
@@ -7575,7 +7575,7 @@ case Tok[i].Kind of
 
       oldPass := Pass;
       oldCodeSize := CodeSize;
-      Pass := TPass.CALLDETERMPASS;
+      Pass := TPass.CALL_DETERMINATION;
 
 //      j := i + 2;
 
@@ -7647,7 +7647,7 @@ case Tok[i].Kind of
 
       oldPass := Pass;
       oldCodeSize := CodeSize;
-      Pass := TPass.CALLDETERMPASS;
+      Pass := TPass.CALL_DETERMINATION;
 
       j:=CompileExpression(i + 2, ValType);
 
@@ -9907,7 +9907,7 @@ begin
 
  oldPass := Pass;
  oldCodeSize := CodeSize;
- Pass := TPass.CALLDETERMPASS;
+ Pass := TPass.CALL_DETERMINATION;
 
  j := CompileFactor(i, isZero, ValType, VarType);
 
@@ -11552,7 +11552,7 @@ case Tok[i].Kind of
   INFOTOK:
     begin
 
-      if Pass = TPass.CODEGENERATIONPASS then writeln('User defined: ' + msgUser[Tok[i].Value]);
+      if Pass = TPass.CODE_GENERATION then writeln('User defined: ' + msgUser[Tok[i].Value]);
 
       Result := i;
     end;
@@ -11570,7 +11570,7 @@ case Tok[i].Kind of
   ERRORTOK:
     begin
 
-      if Pass = TPass.CODEGENERATIONPASS then iError(i, UserDefined);
+      if Pass = TPass.CODE_GENERATION then iError(i, UserDefined);
 
        Result := i;
     end;
@@ -11970,7 +11970,7 @@ WHILETOK:
 
     oldPass := Pass;
     oldCodeSize := CodeSize;
-    Pass := TPass.CALLDETERMPASS;
+    Pass := TPass.CALL_DETERMINATION;
 
     k:=i;
 
@@ -13200,7 +13200,7 @@ WHILETOK:
      asm65('#asm:' + IntToStr(AsmBlockIndex));
 
 
-//     if (OutputDisabled=false) and (Pass = CODEGENERATIONPASS) then WriteOut(AsmBlock[AsmBlockIndex]);
+//     if (OutputDisabled=false) and (Pass = CODE_GENERATION) then WriteOut(AsmBlock[AsmBlockIndex]);
 
      inc(AsmBlockIndex);
 
@@ -13966,7 +13966,7 @@ var IdentIndex, size: integer;
 
 begin
 
- if Pass = TPass.CODEGENERATIONPASS then begin
+ if Pass = TPass.CODE_GENERATION then begin
 
   StopOptimization;
 
@@ -15376,37 +15376,37 @@ while Tok[i].Kind in
 
 
   if Tok[i].Kind = LOOPUNROLLTOK then begin
-   if Pass = TPass.CODEGENERATIONPASS then loopunroll := true;
+   if Pass = TPass.CODE_GENERATION then loopunroll := true;
    inc(i, 2);
   end;
 
 
   if Tok[i].Kind = NOLOOPUNROLLTOK then begin
-   if Pass = TPass.CODEGENERATIONPASS then loopunroll := false;
+   if Pass = TPass.CODE_GENERATION then loopunroll := false;
    inc(i, 2);
   end;
 
 
   if Tok[i].Kind = PROCALIGNTOK then begin
-   if Pass = TPass.CODEGENERATIONPASS then codealign.proc := Tok[i].Value;
+   if Pass = TPass.CODE_GENERATION then codealign.proc := Tok[i].Value;
    inc(i, 2);
   end;
 
 
   if Tok[i].Kind = LOOPALIGNTOK then begin
-   if Pass = TPass.CODEGENERATIONPASS then codealign.loop := Tok[i].Value;
+   if Pass = TPass.CODE_GENERATION then codealign.loop := Tok[i].Value;
    inc(i, 2);
   end;
 
 
   if Tok[i].Kind = LINKALIGNTOK then begin
-   if Pass = TPass.CODEGENERATIONPASS then codealign.link := Tok[i].Value;
+   if Pass = TPass.CODE_GENERATION then codealign.link := Tok[i].Value;
    inc(i, 2);
   end;
 
 
   if Tok[i].Kind = INFOTOK then begin
-   if Pass = TPass.CODEGENERATIONPASS then writeln('User defined: ' + msgUser[Tok[i].Value]);
+   if Pass = TPass.CODE_GENERATION then writeln('User defined: ' + msgUser[Tok[i].Value]);
    inc(i, 2);
   end;
 
@@ -15418,7 +15418,7 @@ while Tok[i].Kind in
 
 
   if Tok[i].Kind = ERRORTOK then begin
-   if Pass = TPass.CODEGENERATIONPASS then iError(i, UserDefined);
+   if Pass = TPass.CODE_GENERATION then iError(i, UserDefined);
    inc(i, 2);
   end;
 
@@ -15521,7 +15521,7 @@ while Tok[i].Kind in
 
     CheckTok(i , IDENTTOK);
 
-    if Pass = TPass.CALLDETERMPASS then begin
+    if Pass = TPass.CALL_DETERMINATION then begin
       IdentIndex := GetIdent(Tok[i].Name);
 
       if IdentIndex = 0 then
@@ -15972,7 +15972,7 @@ while Tok[i].Kind in
 	    j := CompileType(i + 5, VarType, NumAllocElements, AllocElementType);
 
 	    DefineIdent(i + 1, Tok[i + 1].Name, USERTYPE, VarType, NumAllocElements, AllocElementType, 0, Tok[i + 3].Kind);
-	    Ident[NumIdent].Pass := TPass.CALLDETERMPASS;
+	    Ident[NumIdent].Pass := TPass.CALL_DETERMINATION;
 
 	   end else begin
 	    j := CompileType(i + 3, VarType, NumAllocElements, AllocElementType);
@@ -15980,7 +15980,7 @@ while Tok[i].Kind in
 	    if Tok[i + 3].Kind = ARRAYTOK then j := CompileType(j + 3, NestedDataType, NestedNumAllocElements, NestedAllocElementType);
 
 	    DefineIdent(i + 1, Tok[i + 1].Name, USERTYPE, VarType, NumAllocElements, AllocElementType, 0, Tok[i + 3].Kind);
-	    Ident[NumIdent].Pass := TPass.CALLDETERMPASS;
+	    Ident[NumIdent].Pass := TPass.CALL_DETERMINATION;
 
 	   end;
 
@@ -16591,7 +16591,7 @@ while Tok[i].Kind in
 
 	TestIdentProc(i, Ident[NumIdent].Name);
 
-	if ((Pass = TPass.CODEGENERATIONPASS) and ( not Ident[NumIdent].IsNotDead) ) then	// Do not compile dead procedures and functions
+	if ((Pass = TPass.CODE_GENERATION) and ( not Ident[NumIdent].IsNotDead) ) then	// Do not compile dead procedures and functions
 	  begin
 	  OutputDisabled := TRUE;
 	  end;
@@ -16616,7 +16616,7 @@ while Tok[i].Kind in
       //  GenerateForwardResolution(ForwardIdentIndex);
       //  CompileBlock(ForwardIdentIndex);
 
-	if ((Pass = TPass.CODEGENERATIONPASS) and ( not Ident[ForwardIdentIndex].IsNotDead) ) then	// Do not compile dead procedures and functions
+	if ((Pass = TPass.CODE_GENERATION) and ( not Ident[ForwardIdentIndex].IsNotDead) ) then	// Do not compile dead procedures and functions
 	  begin
 	  OutputDisabled := TRUE;
 	  end;
@@ -16698,7 +16698,7 @@ while Tok[i].Kind in
   end;// while
 
 
-OutputDisabled := (Pass = TPass.CODEGENERATIONPASS) and (BlockStack[BlockStackTop] <> 1) and (not Ident[BlockIdentIndex].IsNotDead);
+OutputDisabled := (Pass = TPass.CODE_GENERATION) and (BlockStack[BlockStackTop] <> 1) and (not Ident[BlockIdentIndex].IsNotDead);
 
 
 // asm65('@main');
@@ -16790,7 +16790,7 @@ end;
 Dec(BlockStackTop);
 
 
- if pass = TPass.CALLDETERMPASS then
+ if pass = TPass.CALL_DETERMINATION then
   if Ident[BlockIdentIndex].isKeep or Ident[BlockIdentIndex].isInterrupt or Ident[BlockIdentIndex].updateResolvedForward then
     AddCallGraphChild(BlockStack[BlockStackTop], Ident[BlockIdentIndex].ProcAsBlock);
 
@@ -17039,7 +17039,7 @@ asm65;
 asm65('DATAORIGIN');
 
 if DataSegmentUse then begin
- if Pass = TPass.CODEGENERATIONPASS then begin
+ if Pass = TPass.CODE_GENERATION then begin
 
 // !!! musze zapisac wszystko, lacznie z 'zerami' !!! np. aby TextAtr dzialal
 
@@ -17571,7 +17571,7 @@ begin
 
 // First pass: compile the program and build call graph
  NumPredefIdent := NumIdent;
- Pass := TPass.CALLDETERMPASS;
+ Pass := TPass.CALL_DETERMINATION;
  CompileProgram;
 
 
@@ -17610,7 +17610,7 @@ begin
 
  SetLength(OptimizeBuf, 1);
 
- Pass := TPass.CODEGENERATIONPASS;
+ Pass := TPass.CODE_GENERATION;
  CompileProgram;
 
  OutFile.Flush;

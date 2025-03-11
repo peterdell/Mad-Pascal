@@ -12,7 +12,7 @@ uses FileIO;
 
   // Passes
   {$SCOPEDENUMS ON}
-  type TPass = ( NONE, CALLDETERMPASS, CODEGENERATIONPASS);
+  type TPass = ( NONE, CALL_DETERMINATION, CODE_GENERATION);
 
 const
 

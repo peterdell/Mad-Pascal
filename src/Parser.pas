@@ -1422,8 +1422,8 @@ else
 //   if name = 'CH_EOL' then writeln( Ident[NumIdent].Block ,',', Ident[NumIdent].unitindex, ',',  Ident[NumIdent].Section,',', Ident[NumIdent].idType);
 
   if Name <> 'RESULT' then
-   if (NumIdent > NumPredefIdent + 1) and (UnitNameIndex = 1) and (pass = TPass.CODEGENERATIONPASS) then
-     if not ( (Ident[NumIdent].Pass in [ TPass.CALLDETERMPASS , TPass.CODEGENERATIONPASS]) or (Ident[NumIdent].IsNotDead) ) then
+   if (NumIdent > NumPredefIdent + 1) and (UnitNameIndex = 1) and (pass = TPass.CODE_GENERATION) then
+     if not ( (Ident[NumIdent].Pass in [ TPass.CALL_DETERMINATION , TPass.CODE_GENERATION]) or (Ident[NumIdent].IsNotDead) ) then
       Note(ErrTokenIndex, NumIdent);
 
   case Kind of
@@ -2238,7 +2238,7 @@ if Tok[i].Kind = OPARTOK then begin					// enumerated
       inc(NumStaticStrChars, length(FieldInListName[FieldInListIndex].Name) + 1);
 }
       Ident[NumIdent].NumAllocElements := RecType;
-      Ident[NumIdent].Pass :=  TPass.CALLDETERMPASS;
+      Ident[NumIdent].Pass :=  TPass.CALL_DETERMINATION;
 
       DeclareField(FieldInListName[FieldInListIndex].Name, DataType, 0, 0, FieldInListName[FieldInListIndex].Value);
     end;

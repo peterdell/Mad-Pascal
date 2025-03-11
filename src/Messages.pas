@@ -281,7 +281,7 @@ var i: integer;
     Msg, a: string;
 begin
 
- if pass = TPass.CODEGENERATIONPASS then begin
+ if pass = TPass.CODE_GENERATION then begin
 
   Msg := ErrorMessage(WarnTokenIndex, err, IdentIndex, SrcType, DstType);
 
@@ -323,7 +323,7 @@ procedure Note(NoteTokenIndex: Integer; IdentIndex: Integer); overload;
 var a: string;
 begin
 
- if Pass = TPass.CODEGENERATIONPASS then
+ if Pass = TPass.CODE_GENERATION then
   if pos('.', Ident[IdentIndex].Name) = 0 then begin
 
    a := UnitName[Tok[NoteTokenIndex].UnitIndex].Path + ' (' + IntToStr(Tok[NoteTokenIndex].Line) + ')' + ' Note: Local ';
@@ -366,7 +366,7 @@ procedure Note(NoteTokenIndex: Integer; Msg: string); overload;
 var a: string;
 begin
 
- if Pass = TPass.CODEGENERATIONPASS then begin
+ if Pass = TPass.CODE_GENERATION then begin
 
    a := UnitName[Tok[NoteTokenIndex].UnitIndex].Path + ' (' + IntToStr(Tok[NoteTokenIndex].Line) + ')' + ' Note: ';
 
