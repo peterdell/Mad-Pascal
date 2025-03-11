@@ -1,5 +1,5 @@
 
-function doEvaluate: Integer;
+function DoEvaluate(const evaluationContext: IEvaluationContext): Integer;
 var
   s: String;
   par1, par2, p1, p2: Integer;
@@ -10,7 +10,8 @@ var
   function GetParameter: Integer;
   var
     tmp: String;
-    Err, IdentTemp: Integer;
+    err: Integer;
+    constantValue: Int64;
   begin
 
     Result := 0;
@@ -19,9 +20,8 @@ var
     if tmp <> '' then
     begin
 
-      val(tmp, Result, Err);
-      if Err > 0 then Error(i, 'Identifier or number expected but ''' +
-          tmp + ''' found');
+      val(tmp, Result, err);
+      if err > 0 then Error(i, 'Identifier or number expected but ''' + tmp + ''' found');
 
       if Result < 0 then Error(i, 'evaluation parameter is less than zero');
 
@@ -29,14 +29,13 @@ var
     end;
 
 
-    tmp := get_constant(k, s);
+    tmp := evaluationContext.GetConstantName(s, k);
     if tmp <> '' then
     begin
 
-      IdentTemp := GetIdent(tmp);
-
-      if IdentTemp > 0 then
-        Result := Ident[IdentTemp].Value
+      constantValue := 0;
+      if evaluationContext.GetConstantValue(tmp, constantValue) then
+        Result := constantValue
       else
         Error(i, 'Identifier or number expected but ''' + tmp + ''' found');
 
@@ -65,7 +64,7 @@ var
         p := _s.IndexOf(':1');
 
         Delete(_s, p + 1, 2);
-        insert(IntToStr(_0), _s, p + 1);
+        Insert(IntToStr(_0), _s, p + 1);
       end;
 
     if _1 >= 0 then
@@ -74,10 +73,15 @@ var
         p := _s.IndexOf(':2');
 
         Delete(_s, p + 1, 2);
-        insert(IntToStr(_1), _s, p + 1);
+        Insert(IntToStr(_1), _s, p + 1);
       end;
 
-    fl := Evaluate(_s, i);
+    try
+      fl := MathEvaluate.Evaluate(_s, evaluationContext);
+    except
+      on e: EEvaluationException do
+        Error(i, 'Evaluation error at position ' + IntToStr(e.Index) + ' of expression ''' + e.expression + '''. ' + e.message);
+    end;
 
     ConstVal := Assign(ConstValType, fl);
 
@@ -89,7 +93,7 @@ var
 
 begin
 
-  doEvaluate := 0;
+  Result := 0;
 
   par1 := -1;
   par2 := -1;
@@ -108,8 +112,7 @@ begin
       par1 := GetParameter;
 
       omin_spacje(k, s);
-      if s[k] <> ',' then Error(i, 'Syntax error, '','' expected but ''' +
-          s[k] + ''' found');
+      if s[k] <> ',' then Error(i, 'Syntax error, '','' expected but ''' + s[k] + ''' found');
 
       Inc(k);
     end;
@@ -122,16 +125,14 @@ begin
       par2 := GetParameter;
 
       omin_spacje(k, s);
-      if s[k] <> ',' then Error(i, 'Syntax error, '','' expected but ''' +
-          s[k] + ''' found');
+      if s[k] <> ',' then Error(i, 'Syntax error, '','' expected but ''' + s[k] + ''' found');
 
       Inc(k);
     end;
 
     omin_spacje(k, s);
 
-    if s[k] <> '"' then Error(i, 'Syntax error, ''"'' expected but ''' +
-        s[k] + ''' found');
+    if s[k] <> '"' then Error(i, 'Syntax error, ''"'' expected but ''' + s[k] + ''' found');
 
     s := get_string(k, s, True);
 
@@ -144,14 +145,14 @@ begin
         for p2 := 0 to par2 - 1 do
           for p1 := 0 to par1 - 1 do doEvaluations(p1, p2);
 
-        doEvaluate := par1 * par2;
+        Result := par1 * par2;
 
       end
       else
       begin
         for p1 := 0 to par1 - 1 do doEvaluations(p1, -1);
 
-        doEvaluate := par1;
+        Result := par1;
       end;
 
   end;  // if s <> ''

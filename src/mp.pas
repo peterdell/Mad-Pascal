@@ -191,6 +191,43 @@ uses
 {$ENDIF}
 	Common, Console, Messages, Numbers, Scanner, Parser, Optimize, Diagnostic, MathEvaluate, FileIO, Utilities;
 
+// Temporarily own variable, because main program is no class yet.
+var evaluationContext: IEvaluationContext;
+
+type
+  TEvaluationContext = class(TInterfacedObject, IEvaluationContext)
+  public
+    constructor Create;
+    function GetConstantName(const expression: String; var index: Integer): String;
+    function GetConstantValue(const constantName: String; var constantValue: Int64): Boolean;
+  end;
+
+  constructor TEvaluationContext.Create;
+  begin
+  end;
+
+  function TEvaluationContext.GetConstantName(const expression: String; var index: Integer): String;
+  begin
+       Result:= Scanner.get_constant(index, expression);
+  end;
+
+  function TEvaluationContext.GetConstantValue(const constantName: String; var constantValue: Int64): Boolean;
+  var identTemp: Integer;
+  begin
+
+  identTemp := Parser.GetIdent(constantName);
+
+  if identTemp > 0 then  begin
+
+    constantValue := Ident[IdentTemp].Value;
+    Result:=true;
+    end
+    else
+    begin
+    constantValue:=0;
+    Result:=false;
+      end;
+  end;
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
@@ -14320,7 +14357,7 @@ begin
   end else
    //SaveData;
     if Tok[i + 1].Kind = EVALTOK then
-      NumActualParams := doEvaluate
+      NumActualParams := doEvaluate(evaluationContext)
     else
       SaveData;
 
@@ -14487,7 +14524,7 @@ begin
   repeat
 
     if Tok[i + 1].Kind = EVALTOK then
-      doEvaluate
+      doEvaluate(evaluationContext)
     else
       SaveData;
 

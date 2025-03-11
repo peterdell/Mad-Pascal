@@ -15,13 +15,13 @@ interface
 	
 	function get_digit(var i:integer; var a:string): string;
 
-	function get_constant(var i:integer; var a:string): string;
+	function get_constant(var i:integer; const a:string): string;
 
 	function get_label(var i:integer; var a:string; up: Boolean = true): string;
 
 	function get_string(var i:integer; var a:string; up: Boolean = true): string;
 
-	procedure omin_spacje (var i:integer; var a:string);
+	procedure omin_spacje (var i:integer; const a:string);
 
 // ----------------------------------------------------------------------------
 
@@ -81,9 +81,9 @@ end;
 // ----------------------------------------------------------------------------
 
 
-procedure omin_spacje (var i:integer; var a:string);
+procedure omin_spacje (var i:integer; const a:string);
 (*----------------------------------------------------------------------------*)
-(*  omijamy tzw. "biale spacje" czyli spacje, tabulatory		      *)
+(*  Skipp whitespace characters until the next non-whitespace character       *)
 (*----------------------------------------------------------------------------*)
 begin
 
@@ -126,9 +126,9 @@ end;
 // ----------------------------------------------------------------------------
 
 
-function get_constant(var i:integer; var a:string): string;
+function get_constant(var i:integer; const a:string): string;
 (*----------------------------------------------------------------------------*)
-(*  pobierz etykiete zaczynajaca sie znakami 'A'..'Z','_'		      *)
+(*  Get label starting with characters 'A'..'Z','_'		              *)
 (*----------------------------------------------------------------------------*)
 begin
 
