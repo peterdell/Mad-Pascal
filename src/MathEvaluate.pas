@@ -40,7 +40,7 @@ implementation
 uses Math;
 
 type
-  sop = String;
+  TOperator = String;
 
 var
   evaluationContext: IEvaluationContext;
@@ -49,11 +49,11 @@ var
 
   // If the names of the functions are similar then their longer versions should be placed earlier.
   // Example:_ arctan2 .. arctan
-  fop: array[0..14] of sop = (' ', 'PI', 'RND', 'SQRT', 'SQR', 'ARCTAN2', 'COS', 'SIN',
+  fop: array[0..14] of TOperator = (' ', 'PI', 'RND', 'SQRT', 'SQR', 'ARCTAN2', 'COS', 'SIN',
     'TAN', 'EXP', 'LN', 'ABS', 'INT', 'POWER', 'ARCTAN');
 
-  top: array[0..7] of sop = (' ', '*', '/', 'DIV', 'MOD', 'AND', 'SHL', 'SHR');
-  seop: array[0..4] of sop = (' ', '+', '-', 'OR', 'XOR');
+  top: array[0..7] of TOperator = (' ', '*', '/', 'DIV', 'MOD', 'AND', 'SHL', 'SHR');
+  seop: array[0..4] of TOperator = (' ', '+', '-', 'OR', 'XOR');
 
 
 

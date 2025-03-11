@@ -124,12 +124,12 @@ goto :eof
  rem IN: Path to mp.exe
  rem
 :run_tests
-rem    call :run_mp % %MP_SRC_FOLDER% Test-MPP
-rem    call :run_mp %1=%MP_FOLDER%\samples\a8\games\PacMad pacmadd
-    call :run_mp %1 %MP_FOLDER%\samples\a8\graph_crossplatform fedorahat
-    call :run_mp %1 %MP_FOLDER%\samples\a8\graph_crossplatform cannabis
-    call :run_mp %1 %MP_FOLDER%\samples\a8\graph_crossplatform snowflake
-    call :run_mp %1 %MP_FOLDER%\samples\a8\graph_crossplatform spline
-    call :run_mp %1 %MP_FOLDER%\samples\a8\graph_crossplatform fern
+    call :run_mp %1 %MP_SRC_FOLDER% Test-MP
+rem    call :run_mp %1 %MP_FOLDER%\samples\a8\games\PacMad pacmadd
+rem    call :run_mp %1 %MP_FOLDER%\samples\a8\graph_crossplatform fedorahat
+rem    call :run_mp %1 %MP_FOLDER%\samples\a8\graph_crossplatform cannabis
+rem    call :run_mp %1 %MP_FOLDER%\samples\a8\graph_crossplatform snowflake
+rem    call :run_mp %1 %MP_FOLDER%\samples\a8\graph_crossplatform spline
+rem    call :run_mp %1 %MP_FOLDER%\samples\a8\graph_crossplatform fern
     goto :eof
  
