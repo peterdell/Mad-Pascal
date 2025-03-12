@@ -7,7 +7,7 @@ interface
 uses Common;
 
 type
-  ErrorCode =
+  TErrorCode =
     (
     UnknownIdentifier, OParExpected, IdentifierExpected, IncompatibleTypeOf, UserDefined,
     IdNumExpExpected, IncompatibleTypes, IncompatibleEnum, OrdinalExpectedFOR, CantAdrConstantExp,
@@ -20,15 +20,15 @@ type
 
 // ----------------------------------------------------------------------------
 
-procedure Error(ErrTokenIndex: TTokenIndex; Msg: String); overload;
-procedure Error(ErrTokenIndex: TTokenIndex; err: ErrorCode; IdentIndex: TTokenIndex = 0;
-  SrcType: Int64 = 0; DstType: Int64 = 0); overload;
+procedure Error(errorTokenIndex: TTokenIndex; msg: String); overload;
+procedure Error(errorTokenIndex: TTokenIndex; errorCode: TErrorCode; identIndex: TTokenIndex = 0;
+  srcType: Int64 = 0; DstType: Int64 = 0); overload;
 
-procedure Note(NoteTokenIndex: TTokenIndex; IdentIndex: TTokenIndex); overload;
-procedure Note(NoteTokenIndex: TTokenIndex; Msg: String); overload;
+procedure Note(NoteTokenIndex: TTokenIndex; identIndex: TTokenIndex); overload;
+procedure Note(NoteTokenIndex: TTokenIndex; msg: String); overload;
 
-procedure Warning(WarnTokenIndex: TTokenIndex; err: ErrorCode; IdentIndex: TTokenIndex = 0;
-  SrcType: Int64 = 0; DstType: Int64 = 0);
+procedure Warning(warningTokenIndex: TTokenIndex; errorCode: TErrorCode; identIndex: TTokenIndex = 0;
+  srcType: Int64 = 0; DstType: Int64 = 0);
 
 procedure WritelnMsg;
 
@@ -63,57 +63,105 @@ end;
 // ----------------------------------------------------------------------------
 
 
-function ErrorMessage(ErrTokenIndex: TTokenIndex; err: ErrorCode; IdentIndex: TTokenIndex = 0;
-  SrcType: Int64 = 0; DstType: Int64 = 0): String;
+function ErrorMessage(errorTokenIndex: TTokenIndex; errorCode: TErrorCode; identIndex: TTokenIndex = 0;
+  srcType: Int64 = 0; DstType: Int64 = 0): String;
 begin
 
   Result := '';
 
   case err of
 
-    UserDefined: Result := 'User defined: ' + msgUser[Tok[ErrTokenIndex].Value];
+    UserDefined:
+    begin
+      Result := 'User defined: ' + msgUser[Tok[errorTokenIndex].Value];
+    end;
 
-    UnknownIdentifier: if IdentIndex > 0 then
-        Result := 'Identifier not found ''' + Ident[IdentIndex].Alias + ''''
+    UnknownIdentifier:
+    begin
+      if identIndex > 0 then
+        Result := 'Identifier not found ''' + Ident[identIndex].Alias + ''''
       else
-        Result := 'Identifier not found ''' + Tok[ErrTokenIndex].Name + '''';
+        Result := 'Identifier not found ''' + Tok[errorTokenIndex].Name + '''';
+    end;
 
-    IncompatibleTypeOf: Result := 'Incompatible type of ' + Ident[IdentIndex].Name;
-    IncompatibleEnum: if DstType < 0 then
-        Result := 'Incompatible types: got "' + GetEnumName(SrcType) + '" expected "' + InfoAboutToken(abs(DstType)) + '"'
+    IncompatibleTypeOf:
+    begin
+      Result := 'Incompatible type of ' + Ident[identIndex].Name;
+    end;
+
+    IncompatibleEnum:
+    begin
+      if DstType < 0 then
+        Result := 'Incompatible types: got "' + GetEnumName(srcType) + '" expected "' +
+          InfoAboutToken(abs(DstType)) + '"'
       else
-      if SrcType < 0 then
-        Result := 'Incompatible types: got "' + InfoAboutToken(abs(SrcType)) + '" expected "' + GetEnumName(DstType) + '"'
+      if srcType < 0 then
+        Result := 'Incompatible types: got "' + InfoAboutToken(abs(srcType)) + '" expected "' +
+          GetEnumName(DstType) + '"'
       else
-        Result := 'Incompatible types: got "' + GetEnumName(SrcType) + '" expected "' + GetEnumName(DstType) + '"';
+        Result := 'Incompatible types: got "' + GetEnumName(srcType) + '" expected "' + GetEnumName(DstType) + '"';
+    end;
 
-    WrongNumParameters: Result := 'Wrong number of parameters specified for call to "' + Ident[IdentIndex].Name + '"';
+    WrongNumParameters:
+    begin
+      Result := 'Wrong number of parameters specified for call to "' + Ident[identIndex].Name + '"';
+    end;
 
-    CantAdrConstantExp: Result := 'Can''t take the address of constant expressions';
+    CantAdrConstantExp:
+    begin
+      Result := 'Can''t take the address of constant expressions';
+    end;
 
-    OParExpected: Result := '''(''' + ErrTokenFound(ErrTokenIndex);
+    OParExpected:
+    begin
+      Result := '''(''' + ErrTokenFound(errorTokenIndex);
+    end;
 
-    IllegalExpression: Result := 'Illegal expression';
-    VariableExpected: Result := 'Variable identifier expected';
-    OrdinalExpExpected: Result := 'Ordinal expression expected';
-    OrdinalExpectedFOR: Result := 'Ordinal expression expected as ''FOR'' loop counter value';
+    IllegalExpression:
+    begin
+      Result := 'Illegal expression';
+    end;
 
-    IncompatibleTypes: begin
+    VariableExpected: begin
+      Result := 'Variable identifier expected';
+    end;
+
+    OrdinalExpExpected:
+    begin
+      Result := 'Ordinal expression expected';
+    end;
+
+    OrdinalExpectedFOR:
+    begin
+      Result := 'Ordinal expression expected as ''FOR'' loop counter value';
+    end;
+
+    IncompatibleTypes:
+    begin
       Result := 'Incompatible types: got "';
 
-      if SrcType < 0 then Result := Result + '^';
+      if srcType < 0 then Result := Result + '^';
 
-      Result := Result + InfoAboutToken(abs(SrcType)) + '" expected "';
+      Result := Result + InfoAboutToken(abs(srcType)) + '" expected "';
 
       if DstType < 0 then Result := Result + '^';
 
       Result := Result + InfoAboutToken(abs(DstType)) + '"';
     end;
 
-    IdentifierExpected: Result := 'Identifier' + ErrTokenFound(ErrTokenIndex);
-    IdNumExpExpected: Result := 'Identifier, number or expression' + ErrTokenFound(ErrTokenIndex);
+    IdentifierExpected:
+    begin
+      Result := 'Identifier' + ErrTokenFound(errorTokenIndex);
+    end;
 
-    LoHi: Result := 'lo/hi(dword/qword) returns the upper/lower word/dword';
+    IdNumExpExpected: begin
+      Result := 'Identifier, number or expression' + ErrTokenFound(errorTokenIndex);
+    end;
+
+    LoHi:
+    begin
+      Result := 'lo/hi(dword/qword) returns the upper/lower word/dword';
+    end;
 
     IllegalTypeConversion, IncompatibleTypesArray:
     begin
@@ -123,101 +171,150 @@ begin
       else
       begin
         Result := 'Incompatible types: got ';
-        if Ident[IdentIndex].NumAllocElements > 0 then Result := Result + '"Array[0..';
+        if Ident[identIndex].NumAllocElements > 0 then Result := Result + '"Array[0..';
       end;
 
 
-      if Ident[IdentIndex].NumAllocElements_ > 0 then
-        Result := Result + IntToStr(Ident[IdentIndex].NumAllocElements - 1) + '] Of Array[0..' +
-          IntToStr(Ident[IdentIndex].NumAllocElements_ - 1) + '] Of ' + InfoAboutToken(Ident[IdentIndex].AllocElementType) + '" '
+      if Ident[identIndex].NumAllocElements_ > 0 then
+        Result := Result + IntToStr(Ident[identIndex].NumAllocElements - 1) + '] Of Array[0..' +
+          IntToStr(Ident[identIndex].NumAllocElements_ - 1) + '] Of ' +
+          InfoAboutToken(Ident[identIndex].AllocElementType) + '" '
       else
-      if Ident[IdentIndex].NumAllocElements = 0 then
+      if Ident[identIndex].NumAllocElements = 0 then
       begin
 
-        if Ident[IdentIndex].AllocElementType <> UNTYPETOK then
-          Result := Result + '"^' + InfoAboutToken(Ident[IdentIndex].AllocElementType) + '" '
+        if Ident[identIndex].AllocElementType <> UNTYPETOK then
+          Result := Result + '"^' + InfoAboutToken(Ident[identIndex].AllocElementType) + '" '
         else
           Result := Result + '"' + InfoAboutToken(POINTERTOK) + '" ';
 
       end
       else
-        Result := Result + IntToStr(Ident[IdentIndex].NumAllocElements - 1) + '] Of ' + InfoAboutToken(
-          Ident[IdentIndex].AllocElementType) + '" ';
+        Result := Result + IntToStr(Ident[identIndex].NumAllocElements - 1) + '] Of ' +
+          InfoAboutToken(Ident[identIndex].AllocElementType) + '" ';
 
       if err = IllegalTypeConversion then
-        Result := Result + 'to "' + InfoAboutToken(SrcType) + '"'
+        Result := Result + 'to "' + InfoAboutToken(srcType) + '"'
       else
-      if SrcType < 0 then
+      if srcType < 0 then
       begin
 
         Result := Result + 'expected ';
 
-        if Ident[abs(SrcType)].NumAllocElements_ > 0 then
-          Result := Result + '"Array[0..' + IntToStr(Ident[abs(SrcType)].NumAllocElements - 1) +
-            '] Of Array[0..' + IntToStr(Ident[abs(SrcType)].NumAllocElements_ - 1) + '] Of ' + InfoAboutToken(
-            Ident[IdentIndex].AllocElementType) + '"'
+        if Ident[abs(srcType)].NumAllocElements_ > 0 then
+          Result := Result + '"Array[0..' + IntToStr(Ident[abs(srcType)].NumAllocElements - 1) +
+            '] Of Array[0..' + IntToStr(Ident[abs(srcType)].NumAllocElements_ - 1) + '] Of ' +
+            InfoAboutToken(Ident[identIndex].AllocElementType) + '"'
         else
-        if Ident[abs(SrcType)].AllocElementType in [RECORDTOK, OBJECTTOK] then
-          Result := Result + '"^' + Types[Ident[abs(SrcType)].NumAllocElements].Field[0].Name + '"'
+        if Ident[abs(srcType)].AllocElementType in [RECORDTOK, OBJECTTOK] then
+          Result := Result + '"^' + Types[Ident[abs(srcType)].NumAllocElements].Field[0].Name + '"'
         else
         begin
 
-          if Ident[abs(SrcType)].DataType in [RECORDTOK, OBJECTTOK] then
-            Result := Result + '"' + Types[Ident[abs(SrcType)].NumAllocElements].Field[0].Name + '"'
+          if Ident[abs(srcType)].DataType in [RECORDTOK, OBJECTTOK] then
+            Result := Result + '"' + Types[Ident[abs(srcType)].NumAllocElements].Field[0].Name + '"'
           else
-            Result := Result + '"Array[0..' + IntToStr(Ident[abs(SrcType)].NumAllocElements - 1) +
-              '] Of ' + InfoAboutToken(Ident[abs(SrcType)].AllocElementType) + '"';
+            Result := Result + '"Array[0..' + IntToStr(Ident[abs(srcType)].NumAllocElements - 1) +
+              '] Of ' + InfoAboutToken(Ident[abs(srcType)].AllocElementType) + '"';
 
         end;
 
       end
       else
-        Result := Result + 'expected "' + InfoAboutToken(SrcType) + '"';
+        Result := Result + 'expected "' + InfoAboutToken(srcType) + '"';
 
     end;
 
-    AlwaysTrue: Result := 'Comparison might be always true due to range of constant and expression';
+    AlwaysTrue:
+    begin
+      Result := 'Comparison might be always true due to range of constant and expression';
+    end;
 
-    AlwaysFalse: Result := 'Comparison might be always false due to range of constant and expression';
+    AlwaysFalse:
+    begin
+      Result := 'Comparison might be always false due to range of constant and expression';
+    end;
 
-    RangeCheckError: begin
-      Result := 'Range check error while evaluating constants (' + IntToStr(SrcType) +
-        ' must be between ' + IntToStr(LowBound(ErrTokenIndex, DstType)) + ' and ';
+    RangeCheckError:
+    begin
+      Result := 'Range check error while evaluating constants (' + IntToStr(srcType) +
+        ' must be between ' + IntToStr(LowBound(errorTokenIndex, DstType)) + ' and ';
 
-      if IdentIndex > 0 then
-        Result := Result + IntToStr(Ident[IdentIndex].NumAllocElements - 1) + ')'
+      if identIndex > 0 then
+        Result := Result + IntToStr(Ident[identIndex].NumAllocElements - 1) + ')'
       else
-        Result := Result + IntToStr(HighBound(ErrTokenIndex, DstType)) + ')';
+        Result := Result + IntToStr(HighBound(errorTokenIndex, DstType)) + ')';
 
     end;
 
     RangeCheckError_: begin
-      Result := 'Range check error while evaluating constants (' + IntToStr(SrcType) +
-        ' must be between ' + IntToStr(LowBound(ErrTokenIndex, DstType)) + ' and ';
+      Result := 'Range check error while evaluating constants (' + IntToStr(srcType) +
+        ' must be between ' + IntToStr(LowBound(errorTokenIndex, DstType)) + ' and ';
 
-      if IdentIndex > 0 then
-        Result := Result + IntToStr(Ident[IdentIndex].NumAllocElements_ - 1) + ')'
+      if identIndex > 0 then
+        Result := Result + IntToStr(Ident[identIndex].NumAllocElements_ - 1) + ')'
       else
-        Result := Result + IntToStr(HighBound(ErrTokenIndex, DstType)) + ')';
-
+        Result := Result + IntToStr(HighBound(errorTokenIndex, DstType)) + ')';
     end;
 
-    VariableNotInit: Result := 'Variable ''' + Ident[IdentIndex].Name + ''' does not seem to be initialized';
-    ShortStringLength: Result := 'String literal has more characters than short string length';
-    StringTruncated: Result := 'String constant truncated to fit STRING[' + IntToStr(
-        Ident[IdentIndex].NumAllocElements - 1) + ']';
-    CantReadWrite: Result := 'Can''t read or write variables of this type';
-    TypeMismatch: Result := 'Type mismatch';
-    UnreachableCode: Result := 'unreachable code';
-    IllegalQualifier: Result := 'Illegal qualifier';
-    SubrangeBounds: Result := 'Constant expression violates subrange bounds';
-    TooManyParameters: Result := 'Too many formal parameters in ' + Ident[IdentIndex].Name;
-    CantDetermine: Result := 'Can''t determine which overloaded function ''' + Ident[IdentIndex].Name + ''' to call';
-    UpperBoundOfRange: Result := 'Upper bound of range is less than lower bound';
-    HighLimit: Result := 'High range limit > ' + IntToStr(High(Word));
+    VariableNotInit:
+    begin
+      Result := 'Variable ''' + Ident[identIndex].Name + ''' does not seem to be initialized';
+    end;
 
+    ShortStringLength: begin
+      Result := 'String literal has more characters than short string length';
+    end;
 
-    StripedAllowed: Result := 'Striped array is allowed for maximum [0..255] size';
+    StringTruncated:
+    begin
+      Result := 'String constant truncated to fit STRING[' + IntToStr(Ident[identIndex].NumAllocElements - 1) + ']';
+    end;
+
+    CantReadWrite:
+    begin
+      Result := 'Can''t read or write variables of this type';
+    end;
+
+    TypeMismatch: begin
+      Result := 'Type mismatch';
+    end;
+
+    UnreachableCode: begin
+      Result := 'unreachable code';
+    end;
+
+    IllegalQualifier: begin
+      Result := 'Illegal qualifier';
+    end;
+
+    SubrangeBounds: begin
+      Result := 'Constant expression violates subrange bounds';
+    end;
+
+    TooManyParameters: begin
+      Result := 'Too many formal parameters in ' + Ident[identIndex].Name;
+    end;
+
+    CantDetermine:
+    begin
+      Result := 'Can''t determine which overloaded function ''' + Ident[identIndex].Name + ''' to call';
+    end;
+
+    UpperBoundOfRange:
+    begin
+      Result := 'Upper bound of range is less than lower bound';
+    end;
+
+    HighLimit:
+    begin
+      Result := 'High range limit > ' + IntToStr(High(Word));
+    end;
+
+    StripedAllowed:
+    begin
+      Result := 'Striped array is allowed for maximum [0..255] size';
+    end;
   end;
 
 end;
@@ -227,16 +324,16 @@ end;
 // ----------------------------------------------------------------------------
 
 
-procedure Error(ErrTokenIndex: TTokenIndex; err: ErrorCode; IdentIndex: TTokenIndex = 0;
-  SrcType: Int64 = 0; DstType: Int64 = 0);
+procedure Error(errorTokenIndex: TTokenIndex; errorCode: TErrorCode; identIndex: TTokenIndex = 0;
+  srcType: Int64 = 0; DstType: Int64 = 0);
 var
-  Msg: String;
+  msg: String;
 begin
 
   if not isConst then
   begin
-    Msg := ErrorMessage(ErrTokenIndex, err, IdentIndex, SrcType, DstType);
-    Error(ErrTokenIndex, msg);
+    msg := ErrorMessage(errorTokenIndex, err, identIndex, srcType, DstType);
+    Error(errorTokenIndex, msg);
   end;
 end;
 
@@ -245,7 +342,7 @@ end;
 // ----------------------------------------------------------------------------
 
 
-procedure Error(ErrTokenIndex: TTokenIndex; Msg: String);
+procedure Error(errorTokenIndex: TTokenIndex; msg: String);
 var
   token, previousToken: TToken;
 begin
@@ -259,19 +356,19 @@ begin
 
     WritelnMsg;
 
-    if ErrTokenIndex > NumTok then ErrTokenIndex := NumTok;
+    if errorTokenIndex > NumTok then errorTokenIndex := NumTok;
 
     TextColor(LIGHTRED);
-    token := Tok[ErrTokenIndex];
-    if (ErrTokenIndex > 1) then
+    token := Tok[errorTokenIndex];
+    if (errorTokenIndex > 1) then
     begin
-      previousToken := Tok[ErrTokenIndex - 1];
+      previousToken := Tok[errorTokenIndex - 1];
       WriteLn(UnitName[token.UnitIndex].Path + ' (' + IntToStr(token.Line) + ',' +
-        IntToStr(Succ(previousToken.Column)) + ')' + ' Error: ' + Msg);
+        IntToStr(Succ(previousToken.Column)) + ')' + ' Error: ' + msg);
     end
     else
     begin
-      WriteLn(UnitName[token.UnitIndex].Path + ' (' + IntToStr(token.Line) + ')' + ' Error: ' + Msg);
+      WriteLn(UnitName[token.UnitIndex].Path + ' (' + IntToStr(token.Line) + ')' + ' Error: ' + msg);
     end;
 
 
@@ -298,20 +395,20 @@ end;
 // ----------------------------------------------------------------------------
 
 
-procedure Warning(WarnTokenIndex: TTokenIndex; err: ErrorCode; IdentIndex: TTokenIndex = 0;
-  SrcType: Int64 = 0; DstType: Int64 = 0);
+procedure Warning(warningTokenIndex: TTokenIndex; errorCode: TErrorCode; identIndex: TTokenIndex = 0;
+  srcType: Int64 = 0; DstType: Int64 = 0);
 var
   i: Integer;
-  Msg, a: String;
+  msg, a: String;
 begin
 
   if pass = TPass.CODE_GENERATION then
   begin
 
-    Msg := ErrorMessage(WarnTokenIndex, err, IdentIndex, SrcType, DstType);
+    msg := ErrorMessage(warningTokenIndex, err, identIndex, srcType, DstType);
 
-    a := UnitName[Tok[WarnTokenIndex].UnitIndex].Path + ' (' + IntToStr(Tok[WarnTokenIndex].Line) +
-      ')' + ' Warning: ' + Msg;
+    a := UnitName[Tok[warningTokenIndex].UnitIndex].Path + ' (' + IntToStr(Tok[warningTokenIndex].Line) +
+      ')' + ' Warning: ' + msg;
 
     for i := High(msgWarning) - 1 downto 0 do
       if msgWarning[i] = a then exit;
@@ -346,27 +443,27 @@ end;
 // ----------------------------------------------------------------------------
 
 
-procedure Note(NoteTokenIndex: TTokenIndex; IdentIndex: TTokenIndex); overload;
+procedure Note(NoteTokenIndex: TTokenIndex; identIndex: TTokenIndex); overload;
 var
   a: String;
 begin
 
   if Pass = TPass.CODE_GENERATION then
-    if pos('.', Ident[IdentIndex].Name) = 0 then
+    if pos('.', Ident[identIndex].Name) = 0 then
     begin
 
       a := UnitName[Tok[NoteTokenIndex].UnitIndex].Path + ' (' + IntToStr(Tok[NoteTokenIndex].Line) +
         ')' + ' Note: Local ';
 
-      if Ident[IdentIndex].Kind <> UNITTYPE then
+      if Ident[identIndex].Kind <> UNITTYPE then
       begin
 
-        case Ident[IdentIndex].Kind of
+        case Ident[identIndex].Kind of
           CONSTANT: a := a + 'const';
           USERTYPE: a := a + 'type';
           LABELTYPE: a := a + 'label';
 
-          VARIABLE: if Ident[IdentIndex].isAbsolute then
+          VARIABLE: if Ident[identIndex].isAbsolute then
               a := a + 'absolutevar'
             else
               a := a + 'variable';
@@ -375,9 +472,9 @@ begin
           FUNCTIONTOK: a := a + 'func';
         end;
 
-        a := a + ' ''' + Ident[IdentIndex].Name + '''' + ' not used';
+        a := a + ' ''' + Ident[identIndex].Name + '''' + ' not used';
 
-        if pos('@FN', Ident[IdentIndex].Name) = 1 then
+        if pos('@FN', Ident[identIndex].Name) = 1 then
 
         else
           newMsg(msgNote, a);
@@ -393,7 +490,7 @@ end;
 // ----------------------------------------------------------------------------
 
 
-procedure Note(NoteTokenIndex: TTokenIndex; Msg: String); overload;
+procedure Note(NoteTokenIndex: TTokenIndex; msg: String); overload;
 var
   a: String;
 begin
@@ -403,7 +500,7 @@ begin
 
     a := UnitName[Tok[NoteTokenIndex].UnitIndex].Path + ' (' + IntToStr(Tok[NoteTokenIndex].Line) + ')' + ' Note: ';
 
-    a := a + Msg;
+    a := a + msg;
 
     newMsg(msgNote, a);
 
