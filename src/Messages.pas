@@ -69,7 +69,7 @@ begin
 
   Result := '';
 
-  case err of
+  case errorCode of
 
     UserDefined:
     begin
@@ -166,7 +166,7 @@ begin
     IllegalTypeConversion, IncompatibleTypesArray:
     begin
 
-      if err = IllegalTypeConversion then
+      if errorCode = IllegalTypeConversion then
         Result := 'Illegal type conversion: "Array[0..'
       else
       begin
@@ -193,7 +193,7 @@ begin
         Result := Result + IntToStr(Ident[identIndex].NumAllocElements - 1) + '] Of ' +
           InfoAboutToken(Ident[identIndex].AllocElementType) + '" ';
 
-      if err = IllegalTypeConversion then
+      if errorCode = IllegalTypeConversion then
         Result := Result + 'to "' + InfoAboutToken(srcType) + '"'
       else
       if srcType < 0 then
@@ -332,7 +332,7 @@ begin
 
   if not isConst then
   begin
-    msg := ErrorMessage(errorTokenIndex, err, identIndex, srcType, DstType);
+    msg := ErrorMessage(errorTokenIndex, errorCode, identIndex, srcType, DstType);
     Error(errorTokenIndex, msg);
   end;
 end;
@@ -405,7 +405,7 @@ begin
   if pass = TPass.CODE_GENERATION then
   begin
 
-    msg := ErrorMessage(warningTokenIndex, err, identIndex, srcType, DstType);
+    msg := ErrorMessage(warningTokenIndex, errorCode, identIndex, srcType, DstType);
 
     a := UnitName[Tok[warningTokenIndex].UnitIndex].Path + ' (' + IntToStr(Tok[warningTokenIndex].Line) +
       ')' + ' Warning: ' + msg;
