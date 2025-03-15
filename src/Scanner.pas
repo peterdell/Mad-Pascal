@@ -83,7 +83,7 @@ end;
 
 procedure omin_spacje (var i:integer; const a:string);
 (*----------------------------------------------------------------------------*)
-(*  Skipp whitespace characters until the next non-whitespace character       *)
+(*  Skip whitespace characters until the next non-whitespace character       *)
 (*----------------------------------------------------------------------------*)
 begin
 

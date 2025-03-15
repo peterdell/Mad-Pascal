@@ -9,9 +9,10 @@ uses
   FileIO,
   MathEvaluate,
   Scanner,
-  Utilities {$IFDEF PAS2JS}
+  Utilities
+  {$IFDEF PAS2JS}
      ,browserconsole
-              {$ENDIF},
+  {$ENDIF},
   SysUtils;
 
   procedure StartTest(Name: String);

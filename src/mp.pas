@@ -39,7 +39,7 @@ Contributors:
 + David Schmenk :
 	- IEEE-754 (32bit) Single[Float]
 
-+ Daniel Koźmiński :
++ Daniel Kozminski :
 	- unit STRINGUTILS
 	- unit CIO
 
@@ -70,14 +70,17 @@ Contributors:
 	- unit LZ4: unLZ4
 	- unit aPLib: unAPL
 
-+ Krzysztof Święcicki :
++ Krzysztof Swiecicki :
 	- unit PP
 
-+ Marcin Żukowski :
++ Marcin Zukowski :
 	- unit FASTGRAPH: fLine
 
 + Michael Jaskula :
 	- {$DEFINE BASICOFF} (base\atari\basicoff.asm)
+
++ Peter Dell :
+	- improved sources to make compilation compatible with pas2js (https://github.com/fpc/pas2js)
 
 + Piotr Fusik (https://github.com/pfusik) :
 	- base\common\shortreal.asm (div24by15)
@@ -114,7 +117,7 @@ Contributors:
 	- unit LZJB
 	- unit RC4
 
-+ Wojciech Bociański (http://bocianu.atari.pl/) :
++ Wojciech Bocianski (http://bocianu.atari.pl/) :
 	- library BLIBS: B_CRT, B_DL, B_PMG, B_SYSTEM, B_UTILS, XBIOS
 	- MADSTRAP
 	- PASDOC
